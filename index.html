@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Goal Tracker</title>
+  <style>
+:root {
+  color-scheme: light;
+  --surface-1:      #fcfcfb;
+  --surface-2:      #f9f9f7;
+  --text-primary:   #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted:     #898781;
+  --gridline:       #e1e0d9;
+  --border:         rgba(11, 11, 11, 0.10);
+  --series-ellie:   #2a78d6;
+  --series-lilly:   #eb6834;
+  --status-good:    #0ca30c;
+  --status-critical:#d03b3b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --surface-2:      #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --border:         rgba(255, 255, 255, 0.10);
+    --series-ellie:   #3987e5;
+    --series-lilly:   #d95926;
+    --status-good:    #0ca30c;
+    --status-critical:#e66767;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1:      #1a1a19;
+  --surface-2:      #0d0d0d;
+  --text-primary:   #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted:     #898781;
+  --gridline:       #2c2c2a;
+  --border:         rgba(255, 255, 255, 0.10);
+  --series-ellie:   #3987e5;
+  --series-lilly:   #d95926;
+  --status-good:    #0ca30c;
+  --status-critical:#e66767;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 88px;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+header.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-top: 8px;
+}
+
+header.top h1 {
+  font-size: 20px;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+header.top .sub {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.controls-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+select, input, textarea {
+  font-family: inherit;
+  font-size: 15px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+select:focus, input:focus, textarea:focus {
+  outline: 2px solid var(--series-ellie);
+  outline-offset: 1px;
+}
+
+.player-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.player-tabs button {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.player-tabs button.active {
+  background: var(--surface-2);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 1px var(--border);
+}
+
+.player-tabs button[data-player="Ellie"].active { color: var(--series-ellie); }
+.player-tabs button[data-player="Lilly"].active { color: var(--series-lilly); }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+}
+
+.stat-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--accent, var(--gridline));
+}
+
+.stat-card .player-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent, var(--text-secondary));
+  margin-bottom: 8px;
+}
+
+.stat-card .metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.metric .value {
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: proportional-nums;
+  line-height: 1.1;
+}
+
+.metric .label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.section-header h2 {
+  font-size: 15px;
+  margin: 0;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: var(--series-ellie);
+  border-color: var(--series-ellie);
+  color: #fff;
+}
+
+.btn.small {
+  padding: 4px 9px;
+  font-size: 12px;
+}
+
+.btn.danger {
+  color: var(--status-critical);
+}
+
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+table.data-table th, table.data-table td {
+  padding: 9px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--gridline);
+}
+
+table.data-table th {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+table.data-table tr:last-child td { border-bottom: none; }
+
+.game-card-list { display: flex; flex-direction: column; gap: 8px; }
+
+.game-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.game-card .row1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.game-card .opponent { font-weight: 700; }
+.game-card .date { color: var(--text-muted); font-size: 12px; }
+.game-card .team-tag { color: var(--text-secondary); font-size: 12px; margin-bottom: 6px; }
+
+.game-card .entries { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; }
+.game-card .entry { font-size: 13px; }
+.game-card .entry .name { font-weight: 700; }
+.game-card .entry.Ellie .name { color: var(--series-ellie); }
+.game-card .entry.Lilly .name { color: var(--series-lilly); }
+
+.game-card .actions { display: flex; gap: 6px; }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 32px 16px;
+  background: var(--surface-1);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.fab-row {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--surface-2) 70%, transparent);
+}
+
+.fab-row .btn { flex: 1; max-width: 340px; padding: 12px; font-size: 15px; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface-1);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+@media (min-width: 560px) {
+  .modal-overlay { align-items: center; }
+  .modal { border-radius: 16px; }
+}
+
+.modal h3 { margin-top: 0; }
+
+.field { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+.field input, .field select, .field textarea { width: 100%; }
+
+.field-row { display: flex; gap: 10px; }
+.field-row .field { flex: 1; }
+
+.checkbox-row { display: flex; gap: 14px; }
+.checkbox-row label { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 400; color: var(--text-primary); }
+
+.player-entry-block {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.player-entry-block .player-entry-title { font-weight: 700; margin-bottom: 8px; }
+.player-entry-block.Ellie .player-entry-title { color: var(--series-ellie); }
+.player-entry-block.Lilly .player-entry-title { color: var(--series-lilly); }
+
+.modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+.modal-actions .btn { flex: 1; }
+
+.small-note { font-size: 12px; color: var(--text-muted); margin-top: -2px; }
+
+.datalist-hint { font-size: 11px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <h1>Goal Tracker</h1>
+        <div class="sub">Ellie &amp; Lilly's soccer stats</div>
+      </div>
+    </header>
+
+    <div class="controls-row">
+      <div class="player-tabs">
+        <button data-player="Both" class="active">Both</button>
+        <button data-player="Ellie">Ellie</button>
+        <button data-player="Lilly">Lilly</button>
+      </div>
+      <select id="seasonFilter"></select>
+    </div>
+
+    <div class="stat-grid" id="statGrid"></div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>Teams</h2>
+        <button class="btn small" id="addTeamBtn">+ Add team</button>
+      </div>
+      <div id="teamsList"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>Games</h2>
+        <button class="btn small" id="exportCsvBtn">Export CSV</button>
+      </div>
+      <div class="game-card-list" id="gamesList"></div>
+    </div>
+  </div>
+
+  <div class="fab-row">
+    <button class="btn primary" id="addGameBtn">+ Log a game</button>
+  </div>
+
+  <!-- Game modal -->
+  <div class="modal-overlay" id="gameModalOverlay">
+    <div class="modal">
+      <h3 id="gameModalTitle">Add game</h3>
+      <div class="field">
+        <label>Team</label>
+        <select id="gameTeam"></select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="gameDate">
+        </div>
+        <div class="field">
+          <label>Opponent</label>
+          <input type="text" id="gameOpponent" placeholder="e.g. Riverside FC">
+        </div>
+      </div>
+      <div id="gamePlayerBlocks"></div>
+      <div class="field">
+        <label>Notes (optional)</label>
+        <textarea id="gameNotes" rows="2"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="cancelGameBtn">Cancel</button>
+        <button class="btn primary" id="saveGameBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team modal -->
+  <div class="modal-overlay" id="teamModalOverlay">
+    <div class="modal">
+      <h3 id="teamModalTitle">Add team</h3>
+      <div class="field">
+        <label>Team name</label>
+        <input type="text" id="teamName" placeholder="e.g. Sharks U10">
+      </div>
+      <div class="field">
+        <label>Season</label>
+        <input type="text" id="teamSeason" list="seasonSuggestions" placeholder="e.g. 2026-27">
+        <datalist id="seasonSuggestions"></datalist>
+        <div class="datalist-hint">Type a new season name or pick an existing one.</div>
+      </div>
+      <div class="field">
+        <label>Players on this team</label>
+        <div class="checkbox-row">
+          <label><input type="checkbox" id="teamPlayer_Ellie"> Ellie</label>
+          <label><input type="checkbox" id="teamPlayer_Lilly"> Lilly</label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="cancelTeamBtn">Cancel</button>
+        <button class="btn primary" id="saveTeamBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+const PLAYERS = ["Ellie", "Lilly"];
+const STORAGE_KEY = "soccerStats:v1";
+
+const store = {
+  load() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { teams: [], games: [] };
+    try {
+      const data = JSON.parse(raw);
+      return { teams: data.teams || [], games: data.games || [] };
+    } catch {
+      return { teams: [], games: [] };
+    }
+  },
+  save(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  },
+};
+
+let state = store.load();
+let filters = { player: "Both", season: "All" };
+let editingGameId = null;
+let editingTeamId = null;
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function persist() {
+  store.save(state);
+  onDataChanged(state);
+  render();
+}
+
+// Hook point for a future backup sync (e.g. writing new entries to the
+// OneDrive Excel file via Microsoft Graph). No-op today.
+function onDataChanged(_data) {}
+
+function getSeasons() {
+  const seasons = new Set(state.teams.map((t) => t.season));
+  return Array.from(seasons).sort().reverse();
+}
+
+function getTeam(id) {
+  return state.teams.find((t) => t.id === id);
+}
+
+function teamsForFilters() {
+  return state.teams.filter((t) => {
+    if (filters.season !== "All" && t.season !== filters.season) return false;
+    if (filters.player !== "Both" && !t.players.includes(filters.player)) return false;
+    return true;
+  });
+}
+
+function gamesForFilters() {
+  const teamIds = new Set(teamsForFilters().map((t) => t.id));
+  return state.games
+    .filter((g) => teamIds.has(g.teamId))
+    .filter((g) => {
+      if (filters.player === "Both") return true;
+      return g.entries.some((e) => e.player === filters.player);
+    })
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+function statsFor(player) {
+  const teamIds = new Set(
+    state.teams
+      .filter((t) => (filters.season === "All" || t.season === filters.season) && t.players.includes(player))
+      .map((t) => t.id)
+  );
+  let goals = 0, assists = 0, gamesPlayed = 0;
+  for (const g of state.games) {
+    if (!teamIds.has(g.teamId)) continue;
+    const entry = g.entries.find((e) => e.player === player);
+    if (!entry) continue;
+    gamesPlayed += 1;
+    goals += Number(entry.goals) || 0;
+    assists += Number(entry.assists) || 0;
+  }
+  return { goals, assists, gamesPlayed, perGame: gamesPlayed ? (goals / gamesPlayed).toFixed(1) : "0.0" };
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
+function render() {
+  renderSeasonOptions();
+  renderStatCards();
+  renderTeams();
+  renderGames();
+}
+
+function renderSeasonOptions() {
+  const sel = document.getElementById("seasonFilter");
+  const seasons = getSeasons();
+  const current = filters.season;
+  sel.innerHTML = ["All", ...seasons]
+    .map((s) => `<option value="${s}" ${s === current ? "selected" : ""}>${s === "All" ? "All seasons" : s}</option>`)
+    .join("");
+
+  const seasonList = document.getElementById("seasonSuggestions");
+  seasonList.innerHTML = seasons.map((s) => `<option value="${s}">`).join("");
+}
+
+function renderStatCards() {
+  const grid = document.getElementById("statGrid");
+  const players = filters.player === "Both" ? PLAYERS : [filters.player];
+  grid.innerHTML = players
+    .map((p) => {
+      const s = statsFor(p);
+      const accentVar = p === "Ellie" ? "var(--series-ellie)" : "var(--series-lilly)";
+      return `
+        <div class="stat-card" style="--accent:${accentVar}">
+          <div class="player-name">${p}</div>
+          <div class="metrics">
+            <div class="metric"><div class="value">${s.goals}</div><div class="label">Goals</div></div>
+            <div class="metric"><div class="value">${s.assists}</div><div class="label">Assists</div></div>
+            <div class="metric"><div class="value">${s.gamesPlayed}</div><div class="label">Games</div></div>
+            <div class="metric"><div class="value">${s.perGame}</div><div class="label">Goals / game</div></div>
+          </div>
+        </div>`;
+    })
+    .join("");
+}
+
+function renderTeams() {
+  const container = document.getElementById("teamsList");
+  const teams = teamsForFilters().sort((a, b) => (a.season < b.season ? 1 : -1));
+  if (teams.length === 0) {
+    container.innerHTML = `<div class="empty-state">No teams yet. Add a team to get started.</div>`;
+    return;
+  }
+  container.innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Team</th><th>Season</th><th>Players</th><th></th></tr></thead>
+      <tbody>
+        ${teams
+          .map(
+            (t) => `
+          <tr>
+            <td>${escapeHtml(t.name)}</td>
+            <td>${escapeHtml(t.season)}</td>
+            <td>${t.players.join(", ")}</td>
+            <td><button class="btn small" data-action="edit-team" data-id="${t.id}">Edit</button></td>
+          </tr>`
+          )
+          .join("")}
+      </tbody>
+    </table>`;
+}
+
+function renderGames() {
+  const container = document.getElementById("gamesList");
+  const games = gamesForFilters();
+  if (games.length === 0) {
+    container.innerHTML = `<div class="empty-state">No games logged yet for this filter.</div>`;
+    return;
+  }
+  container.innerHTML = games
+    .map((g) => {
+      const team = getTeam(g.teamId);
+      const entries = g.entries
+        .filter((e) => filters.player === "Both" || e.player === filters.player)
+        .map(
+          (e) => `<div class="entry ${e.player}"><span class="name">${e.player}</span> — ${e.goals}G ${e.assists}A</div>`
+        )
+        .join("");
+      return `
+        <div class="game-card">
+          <div class="row1">
+            <span class="opponent">vs ${escapeHtml(g.opponent)}</span>
+            <span class="date">${fmtDate(g.date)}</span>
+          </div>
+          <div class="team-tag">${team ? escapeHtml(team.name) + " · " + escapeHtml(team.season) : "Unknown team"}</div>
+          <div class="entries">${entries}</div>
+          <div class="actions">
+            <button class="btn small" data-action="edit-game" data-id="${g.id}">Edit</button>
+            <button class="btn small danger" data-action="delete-game" data-id="${g.id}">Delete</button>
+          </div>
+        </div>`;
+    })
+    .join("");
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str ?? "";
+  return div.innerHTML;
+}
+
+// ---- Team modal ----
+
+function openTeamModal(teamId) {
+  editingTeamId = teamId || null;
+  const team = teamId ? getTeam(teamId) : null;
+  document.getElementById("teamModalTitle").textContent = team ? "Edit team" : "Add team";
+  document.getElementById("teamName").value = team ? team.name : "";
+  document.getElementById("teamSeason").value = team ? team.season : "";
+  PLAYERS.forEach((p) => {
+    document.getElementById("teamPlayer_" + p).checked = team ? team.players.includes(p) : true;
+  });
+  document.getElementById("teamModalOverlay").classList.add("open");
+}
+
+function closeTeamModal() {
+  document.getElementById("teamModalOverlay").classList.remove("open");
+  editingTeamId = null;
+}
+
+function saveTeam() {
+  const name = document.getElementById("teamName").value.trim();
+  const season = document.getElementById("teamSeason").value.trim();
+  const players = PLAYERS.filter((p) => document.getElementById("teamPlayer_" + p).checked);
+  if (!name || !season || players.length === 0) {
+    alert("Please fill in team name, season, and at least one player.");
+    return;
+  }
+  if (editingTeamId) {
+    const team = getTeam(editingTeamId);
+    team.name = name;
+    team.season = season;
+    team.players = players;
+  } else {
+    state.teams.push({ id: uid(), name, season, players });
+  }
+  closeTeamModal();
+  persist();
+}
+
+// ---- Game modal ----
+
+function openGameModal(gameId) {
+  editingGameId = gameId || null;
+  const game = gameId ? state.games.find((g) => g.id === gameId) : null;
+  document.getElementById("gameModalTitle").textContent = game ? "Edit game" : "Add game";
+
+  const teamSelect = document.getElementById("gameTeam");
+  const teams = state.teams.slice().sort((a, b) => (a.season < b.season ? 1 : -1));
+  teamSelect.innerHTML = teams
+    .map((t) => `<option value="${t.id}">${escapeHtml(t.name)} (${escapeHtml(t.season)})</option>`)
+    .join("");
+
+  if (teams.length === 0) {
+    alert("Add a team first before logging a game.");
+    return;
+  }
+
+  teamSelect.value = game ? game.teamId : teams[0].id;
+  document.getElementById("gameDate").value = game ? game.date : new Date().toISOString().slice(0, 10);
+  document.getElementById("gameOpponent").value = game ? game.opponent : "";
+  document.getElementById("gameNotes").value = game ? game.notes || "" : "";
+
+  renderGamePlayerBlocks(game);
+  document.getElementById("gameModalOverlay").classList.add("open");
+}
+
+function renderGamePlayerBlocks(game) {
+  const teamId = document.getElementById("gameTeam").value;
+  const team = getTeam(teamId);
+  const container = document.getElementById("gamePlayerBlocks");
+  const players = team ? team.players : [];
+  container.innerHTML = players
+    .map((p) => {
+      const existing = game ? game.entries.find((e) => e.player === p) : null;
+      return `
+        <div class="player-entry-block ${p}">
+          <div class="player-entry-title">${p}</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Goals</label>
+              <input type="number" min="0" step="1" id="entryGoals_${p}" value="${existing ? existing.goals : 0}">
+            </div>
+            <div class="field">
+              <label>Assists</label>
+              <input type="number" min="0" step="1" id="entryAssists_${p}" value="${existing ? existing.assists : 0}">
+            </div>
+          </div>
+        </div>`;
+    })
+    .join("");
+}
+
+function closeGameModal() {
+  document.getElementById("gameModalOverlay").classList.remove("open");
+  editingGameId = null;
+}
+
+function saveGame() {
+  const teamId = document.getElementById("gameTeam").value;
+  const team = getTeam(teamId);
+  const date = document.getElementById("gameDate").value;
+  const opponent = document.getElementById("gameOpponent").value.trim();
+  const notes = document.getElementById("gameNotes").value.trim();
+
+  if (!date || !opponent) {
+    alert("Please fill in the date and opponent.");
+    return;
+  }
+
+  const entries = team.players.map((p) => ({
+    player: p,
+    goals: Number(document.getElementById("entryGoals_" + p).value) || 0,
+    assists: Number(document.getElementById("entryAssists_" + p).value) || 0,
+  }));
+
+  if (editingGameId) {
+    const game = state.games.find((g) => g.id === editingGameId);
+    Object.assign(game, { teamId, date, opponent, notes, entries });
+  } else {
+    state.games.push({ id: uid(), teamId, date, opponent, notes, entries });
+  }
+  closeGameModal();
+  persist();
+}
+
+function deleteGame(id) {
+  if (!confirm("Delete this game entry?")) return;
+  state.games = state.games.filter((g) => g.id !== id);
+  persist();
+}
+
+// ---- CSV export (manual backup bridge until OneDrive sync is wired up) ----
+
+function exportCsv() {
+  const rows = [["Date", "Season", "Team", "Player", "Opponent", "Goals", "Assists", "Notes"]];
+  state.games
+    .slice()
+    .sort((a, b) => (a.date < b.date ? -1 : 1))
+    .forEach((g) => {
+      const team = getTeam(g.teamId);
+      g.entries.forEach((e) => {
+        rows.push([g.date, team ? team.season : "", team ? team.name : "", e.player, g.opponent, e.goals, e.assists, g.notes || ""]);
+      });
+    });
+  const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "soccer-stats-export.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ---- Wire up ----
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("seasonFilter").addEventListener("change", (e) => {
+    filters.season = e.target.value;
+    render();
+  });
+
+  document.querySelectorAll(".player-tabs button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filters.player = btn.dataset.player;
+      document.querySelectorAll(".player-tabs button").forEach((b) => b.classList.toggle("active", b === btn));
+      render();
+    });
+  });
+
+  document.getElementById("addGameBtn").addEventListener("click", () => openGameModal(null));
+  document.getElementById("addTeamBtn").addEventListener("click", () => openTeamModal(null));
+  document.getElementById("exportCsvBtn").addEventListener("click", exportCsv);
+
+  document.getElementById("gameTeam").addEventListener("change", () => renderGamePlayerBlocks(null));
+  document.getElementById("saveGameBtn").addEventListener("click", saveGame);
+  document.getElementById("cancelGameBtn").addEventListener("click", closeGameModal);
+
+  document.getElementById("saveTeamBtn").addEventListener("click", saveTeam);
+  document.getElementById("cancelTeamBtn").addEventListener("click", closeTeamModal);
+
+  document.getElementById("gamesList").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    if (btn.dataset.action === "edit-game") openGameModal(id);
+    if (btn.dataset.action === "delete-game") deleteGame(id);
+  });
+
+  document.getElementById("teamsList").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    if (btn.dataset.action === "edit-team") openTeamModal(btn.dataset.id);
+  });
+
+  render();
+});
+  </script>
+</body>
+</html>
