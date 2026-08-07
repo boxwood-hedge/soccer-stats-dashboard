@@ -14,8 +14,9 @@
   --text-muted:     #898781;
   --gridline:       #e1e0d9;
   --border:         rgba(11, 11, 11, 0.10);
-  --series-ellie:   #2a78d6;
-  --series-lilly:   #eb6834;
+  --series-ellie:   #c62e2e;
+  --series-lilly:   #2a78d6;
+  --series-both:    #6b6a64;
   --status-good:    #0ca30c;
   --status-critical:#d03b3b;
 }
@@ -30,8 +31,9 @@
     --text-muted:     #898781;
     --gridline:       #2c2c2a;
     --border:         rgba(255, 255, 255, 0.10);
-    --series-ellie:   #3987e5;
-    --series-lilly:   #d95926;
+    --series-ellie:   #e05a5a;
+    --series-lilly:   #3987e5;
+    --series-both:    #8a8980;
     --status-good:    #0ca30c;
     --status-critical:#e66767;
   }
@@ -46,8 +48,9 @@
   --text-muted:     #898781;
   --gridline:       #2c2c2a;
   --border:         rgba(255, 255, 255, 0.10);
-  --series-ellie:   #3987e5;
-  --series-lilly:   #d95926;
+  --series-ellie:   #e05a5a;
+  --series-lilly:   #3987e5;
+  --series-both:    #8a8980;
   --status-good:    #0ca30c;
   --status-critical:#e66767;
 }
@@ -115,52 +118,6 @@ header.top .sub {
 .player-tabs button[data-player="Ellie"].active { color: var(--series-ellie); }
 .player-tabs button[data-player="Lilly"].active { color: var(--series-lilly); }
 
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-@media (max-width: 480px) {
-  .stat-grid { grid-template-columns: 1fr; }
-}
-
-.stat-card {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  border-left: 4px solid var(--accent, var(--gridline));
-}
-
-.stat-card .player-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent, var(--text-secondary));
-  margin-bottom: 8px;
-}
-
-.stat-card .metrics {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.metric .value {
-  font-size: 22px;
-  font-weight: 700;
-  font-variant-numeric: proportional-nums;
-  line-height: 1.1;
-}
-
-.metric .label {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
 .section {
   margin-bottom: 24px;
 }
@@ -209,56 +166,6 @@ select {
   padding: 6px 8px;
 }
 
-.pivot-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 12px;
-  padding: 12px;
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-
-.pivot-controls .control-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.pivot-controls label.group-label {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  font-weight: 600;
-}
-
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  max-width: 420px;
-}
-
-.chip {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text-secondary);
-  cursor: pointer;
-  user-select: none;
-}
-
-.chip.active {
-  background: var(--series-ellie);
-  border-color: var(--series-ellie);
-  color: #fff;
-}
-
 table.data-table {
   width: 100%;
   border-collapse: collapse;
@@ -293,6 +200,34 @@ table.data-table tr:last-child td { border-bottom: none; }
 table.data-table tbody tr:hover { background: var(--surface-2); }
 
 .table-scroll { overflow-x: auto; border-radius: 12px; }
+
+table.summary-table td.player-cell {
+  text-align: center;
+  font-weight: 700;
+  color: #fff;
+  border-bottom: 1px solid var(--border);
+}
+table.summary-table td.player-cell.player-Ellie { background: var(--series-ellie); }
+table.summary-table td.player-cell.player-Lilly { background: var(--series-lilly); }
+table.summary-table td.player-cell.player-Both { background: var(--series-both); }
+
+table.summary-table td.season-cell {
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 600;
+  background: var(--surface-2);
+}
+
+table.summary-table td.team-cell {
+  text-align: left;
+}
+
+table.summary-table tr.all-row td {
+  font-weight: 700;
+}
+table.summary-table tr.all-row.player-Ellie td:not(.player-cell):not(.season-cell) { background: color-mix(in srgb, var(--series-ellie) 8%, var(--surface-1)); }
+table.summary-table tr.all-row.player-Lilly td:not(.player-cell):not(.season-cell) { background: color-mix(in srgb, var(--series-lilly) 8%, var(--surface-1)); }
+table.summary-table tr.all-row.player-Both td:not(.player-cell):not(.season-cell) { background: color-mix(in srgb, var(--series-both) 10%, var(--surface-1)); }
 
 .game-card-list { display: flex; flex-direction: column; gap: 8px; }
 
@@ -346,39 +281,12 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
       <div class="sub">Ellie &amp; Lilly's soccer stats &mdash; synced from the family stats spreadsheet</div>
     </header>
 
-    <div class="player-tabs">
-      <button data-player="Both" class="active">Both</button>
-      <button data-player="Ellie">Ellie</button>
-      <button data-player="Lilly">Lilly</button>
-    </div>
-
-    <div class="stat-grid" id="statGrid"></div>
-
     <div class="section">
       <div class="section-header">
         <h2>Summary</h2>
       </div>
-      <div class="pivot-controls">
-        <div class="control-group">
-          <label class="group-label">Group rows by</label>
-          <select id="groupBySelect">
-            <option value="team">Team</option>
-            <option value="teamSeason">Team + Season</option>
-            <option value="season">Season</option>
-            <option value="seasonYear">Full year</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label class="group-label">Season(s)</label>
-          <div class="chip-row" id="seasonYearChips"></div>
-        </div>
-        <div class="control-group">
-          <label class="group-label">Team(s)</label>
-          <div class="chip-row" id="teamChips"></div>
-        </div>
-      </div>
       <div class="table-scroll">
-        <table class="data-table" id="pivotTable"></table>
+        <table class="data-table summary-table" id="summaryTable"></table>
       </div>
     </div>
 
@@ -386,6 +294,11 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
       <div class="section-header">
         <h2>Games</h2>
         <button class="btn small" id="exportCsvBtn">Export CSV</button>
+      </div>
+      <div class="player-tabs">
+        <button data-player="Both" class="active">Both</button>
+        <button data-player="Ellie">Ellie</button>
+        <button data-player="Lilly">Lilly</button>
       </div>
       <div class="game-card-list" id="gamesList"></div>
     </div>
@@ -395,12 +308,7 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 const PLAYERS = ["Ellie", "Lilly"];
 
 let allGames = [];
-let filters = {
-  player: "Both",
-  seasonYears: new Set(),
-  teams: new Set(),
-  groupBy: "team",
-};
+let filters = { player: "Both" }; // Games list only; the Summary table is fixed.
 
 function fmtDate(iso) {
   const d = new Date(iso + "T00:00:00");
@@ -462,153 +370,112 @@ function computeStats(entries) {
   };
 }
 
-function gamesForPlayer(player) {
-  return allGames.filter((g) => g.player === player);
-}
-
-function seasonYearFilteredGames(entries) {
-  if (filters.seasonYears.size === 0) return entries;
-  return entries.filter((g) => filters.seasonYears.has(seasonYearOf(g.season)));
-}
-
-function teamFilteredGames(entries) {
-  if (filters.teams.size === 0) return entries;
-  return entries.filter((g) => filters.teams.has(g.team));
-}
-
-function applyPivotFilters(entries) {
-  return teamFilteredGames(seasonYearFilteredGames(entries));
-}
-
-function render() {
-  renderStatCards();
-  renderPivotControls();
-  renderPivotTable();
-  renderGames();
-}
-
-function renderStatCards() {
-  const grid = document.getElementById("statGrid");
-  const players = filters.player === "Both" ? PLAYERS : [filters.player];
-  grid.innerHTML = players
-    .map((p) => {
-      const stats = computeStats(applyPivotFilters(gamesForPlayer(p)));
-      const accentVar = p === "Ellie" ? "var(--series-ellie)" : "var(--series-lilly)";
-      return `
-        <div class="stat-card" style="--accent:${accentVar}">
-          <div class="player-name">${p}</div>
-          <div class="metrics">
-            <div class="metric"><div class="value">${stats.G}</div><div class="label">Goals</div></div>
-            <div class="metric"><div class="value">${stats.A}</div><div class="label">Assists</div></div>
-            <div class="metric"><div class="value">${stats.MP}</div><div class="label">Games</div></div>
-            <div class="metric"><div class="value">${stats.goalsPerGame.toFixed(2)}</div><div class="label">Goals / game</div></div>
-            <div class="metric"><div class="value">${(stats.pctOfGF * 100).toFixed(0)}%</div><div class="label">% of team GF</div></div>
-            <div class="metric"><div class="value">${stats.GF}-${stats.GA}</div><div class="label">Team GF-GA</div></div>
-          </div>
-        </div>`;
-    })
-    .join("");
-}
-
 function allSeasonYears() {
   return Array.from(new Set(allGames.map((g) => seasonYearOf(g.season)))).sort().reverse();
 }
 
-function teamsInSelectedSeasonYears() {
-  const games = seasonYearFilteredGames(allGames);
-  return Array.from(new Set(games.map((g) => g.team))).sort();
+// The Summary table only ever shows this full soccer-year and later (older
+// history is still browsable in the Games list below). Rolls over in August,
+// so a year from now this becomes 2026, keeping the table on the current and
+// prior full year automatically.
+const EARLIEST_SUMMARY_YEAR = 2025;
+
+function currentSeasonYear() {
+  const now = new Date();
+  const anchor = now.getMonth() + 1 >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+  return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
 }
 
-function renderPivotControls() {
-  document.getElementById("groupBySelect").value = filters.groupBy;
-
-  const seasonYearContainer = document.getElementById("seasonYearChips");
-  seasonYearContainer.innerHTML = allSeasonYears()
-    .map(
-      (sy) =>
-        `<span class="chip ${filters.seasonYears.has(sy) ? "active" : ""}" data-season-year="${escapeHtml(sy)}">${escapeHtml(sy)}</span>`
-    )
-    .join("");
-
-  const teamContainer = document.getElementById("teamChips");
-  teamContainer.innerHTML = teamsInSelectedSeasonYears()
-    .map(
-      (t) =>
-        `<span class="chip ${filters.teams.has(t) ? "active" : ""}" data-team="${escapeHtml(t)}">${escapeHtml(t)}</span>`
-    )
-    .join("");
+function render() {
+  renderSummaryTable();
+  renderGames();
 }
 
-function groupKeyFns() {
-  switch (filters.groupBy) {
-    case "teamSeason":
-      return { key: (g) => `${g.team}|${g.season}`, cols: (g) => [g.team, g.season] , headers: ["Team", "Season"] };
-    case "season":
-      return { key: (g) => g.season, cols: (g) => [g.season], headers: ["Season"] };
-    case "seasonYear":
-      return { key: (g) => seasonYearOf(g.season), cols: (g) => [seasonYearOf(g.season)], headers: ["Season"] };
-    default:
-      return { key: (g) => g.team, cols: (g) => [g.team], headers: ["Team"] };
+// Builds the fixed Player > Season(full year) > Team hierarchy: each player's
+// most recent full season-year first, an "All" subtotal per season-year, then
+// each team they played on that year (A-Z). "Both" only gets "All" rows,
+// combining the girls without double-counting shared games (see computeStats).
+function buildSummaryRows() {
+  const dataSeasonYears = allSeasonYears().filter(
+    (sy) => parseInt(sy, 10) >= EARLIEST_SUMMARY_YEAR
+  );
+  const seasonYears = Array.from(new Set([currentSeasonYear(), ...dataSeasonYears]))
+    .sort()
+    .reverse();
+
+  const rows = [];
+  for (const player of ["Ellie", "Lilly", "Both"]) {
+    const playerGames = player === "Both" ? allGames : allGames.filter((g) => g.player === player);
+
+    for (const sy of seasonYears) {
+      const syGames = playerGames.filter((g) => seasonYearOf(g.season) === sy);
+      if (syGames.length === 0 && sy !== currentSeasonYear()) continue;
+
+      rows.push({ player, seasonYear: sy, team: "All", stats: computeStats(syGames), isAllRow: true });
+
+      if (player === "Both") continue; // no per-team breakdown for the combined view
+
+      const teams = Array.from(new Set(syGames.map((g) => g.team))).sort();
+      for (const team of teams) {
+        const teamGames = syGames.filter((g) => g.team === team);
+        rows.push({ player, seasonYear: sy, team, stats: computeStats(teamGames), isAllRow: false });
+      }
+    }
   }
+  return rows;
 }
 
-function renderPivotTable() {
-  const table = document.getElementById("pivotTable");
-  const players = filters.player === "Both" ? PLAYERS : [filters.player];
-  const entries = applyPivotFilters(allGames.filter((g) => players.includes(g.player)));
+function renderSummaryTable() {
+  const table = document.getElementById("summaryTable");
+  const rows = buildSummaryRows();
 
-  const { key, cols, headers } = groupKeyFns();
-  const groups = new Map();
-  for (const g of entries) {
-    const k = key(g);
-    if (!groups.has(k)) groups.set(k, { cols: cols(g), rows: [] });
-    groups.get(k).rows.push(g);
-  }
+  const bodyRows = rows
+    .map((r, i) => {
+      const prev = rows[i - 1];
+      const playerSpan = !prev || prev.player !== r.player
+        ? rows.filter((x) => x.player === r.player).length
+        : 0;
+      const seasonSpan = !prev || prev.player !== r.player || prev.seasonYear !== r.seasonYear
+        ? rows.filter((x) => x.player === r.player && x.seasonYear === r.seasonYear).length
+        : 0;
 
-  const rows = Array.from(groups.values())
-    .map((group) => ({ cols: group.cols, stats: computeStats(group.rows) }))
-    .sort((a, b) => b.stats.MP - a.stats.MP);
+      const playerCell = playerSpan
+        ? `<td class="player-cell player-${r.player}" rowspan="${playerSpan}">${escapeHtml(r.player)}</td>`
+        : "";
+      const seasonCell = seasonSpan
+        ? `<td class="season-cell" rowspan="${seasonSpan}">${escapeHtml(r.seasonYear)}</td>`
+        : "";
 
-  if (rows.length === 0) {
-    table.innerHTML = "";
-    table.insertAdjacentHTML(
-      "afterend",
-      ""
-    );
-    document.getElementById("pivotTable").outerHTML =
-      '<div class="empty-state" id="pivotTable">No games match the current filters.</div>';
-    return;
-  }
-
-  table.innerHTML = `
-    <thead>
-      <tr>
-        ${headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}
-        <th>MP</th><th>G</th><th>G/MP</th><th>% of GF</th><th>A</th><th>A/MP</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows
-        .map(
-          (r) => `
-        <tr>
-          ${r.cols.map((c) => `<td>${escapeHtml(c)}</td>`).join("")}
+      return `
+        <tr class="player-${r.player} ${r.isAllRow ? "all-row" : ""}">
+          ${playerCell}
+          ${seasonCell}
+          <td class="team-cell">${escapeHtml(r.team)}</td>
           <td>${r.stats.MP}</td>
+          <td>${r.stats.GF}-${r.stats.GA}</td>
           <td>${r.stats.G}</td>
           <td>${r.stats.goalsPerGame.toFixed(2)}</td>
           <td>${(r.stats.pctOfGF * 100).toFixed(0)}%</td>
           <td>${r.stats.A}</td>
           <td>${r.stats.assistsPerGame.toFixed(2)}</td>
-        </tr>`
-        )
-        .join("")}
-    </tbody>`;
+        </tr>`;
+    })
+    .join("");
+
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Player</th><th>Season</th><th>Team</th><th>Games</th><th>Team GF-GA</th>
+        <th>Goals</th><th>Goals/Game</th><th>% of Team GF</th><th>Assists</th><th>Assists/Game</th>
+      </tr>
+    </thead>
+    <tbody>${bodyRows}</tbody>`;
 }
 
 function renderGames() {
   const container = document.getElementById("gamesList");
   const players = filters.player === "Both" ? PLAYERS : [filters.player];
-  const entries = applyPivotFilters(allGames.filter((g) => players.includes(g.player)));
+  const entries = allGames.filter((g) => players.includes(g.player));
 
   const byGame = new Map();
   for (const e of entries) {
@@ -633,6 +500,7 @@ function renderGames() {
             `<div class="entry ${e.player}"><span class="name">${e.player}</span> &mdash; ${e.goals}G ${e.assists}A</div>`
         )
         .join("");
+      const notes = rows.map((r) => r.notes).find((n) => n) || "";
       return `
         <div class="game-card">
           <div class="row1">
@@ -642,6 +510,7 @@ function renderGames() {
           </div>
           <div class="team-tag">${escapeHtml(first.team)} &middot; ${escapeHtml(first.season)}</div>
           <div class="entries">${entryHtml}</div>
+          ${notes ? `<div class="notes">${escapeHtml(notes)}</div>` : ""}
         </div>`;
     })
     .join("");
@@ -671,10 +540,6 @@ async function loadData() {
   const res = await fetch("data/games.json", { cache: "no-store" });
   const data = await res.json();
   allGames = data.games || [];
-
-  // Default the season filter to the most recent full soccer year.
-  const seasonYears = allSeasonYears();
-  if (seasonYears.length > 0) filters.seasonYears.add(seasonYears[0]);
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -682,32 +547,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     btn.addEventListener("click", () => {
       filters.player = btn.dataset.player;
       document.querySelectorAll(".player-tabs button").forEach((b) => b.classList.toggle("active", b === btn));
-      render();
+      renderGames();
     });
-  });
-
-  document.getElementById("groupBySelect").addEventListener("change", (e) => {
-    filters.groupBy = e.target.value;
-    renderPivotTable();
-  });
-
-  document.getElementById("seasonYearChips").addEventListener("click", (e) => {
-    const chip = e.target.closest(".chip");
-    if (!chip) return;
-    const sy = chip.dataset.seasonYear;
-    if (filters.seasonYears.has(sy)) filters.seasonYears.delete(sy);
-    else filters.seasonYears.add(sy);
-    filters.teams.clear(); // team filter is scoped to season-year selection; reset it
-    render();
-  });
-
-  document.getElementById("teamChips").addEventListener("click", (e) => {
-    const chip = e.target.closest(".chip");
-    if (!chip) return;
-    const t = chip.dataset.team;
-    if (filters.teams.has(t)) filters.teams.delete(t);
-    else filters.teams.add(t);
-    render();
   });
 
   document.getElementById("exportCsvBtn").addEventListener("click", exportCsv);
