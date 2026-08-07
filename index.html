@@ -14,7 +14,7 @@
   --text-muted:     #898781;
   --gridline:       #e1e0d9;
   --border:         rgba(11, 11, 11, 0.10);
-  --series-ellie:   #c62e2e;
+  --series-ellie:   #1f8f5f;
   --series-lilly:   #2a78d6;
   --series-both:    #6b6a64;
   --status-good:    #0ca30c;
@@ -31,7 +31,7 @@
     --text-muted:     #898781;
     --gridline:       #2c2c2a;
     --border:         rgba(255, 255, 255, 0.10);
-    --series-ellie:   #e05a5a;
+    --series-ellie:   #3ecf94;
     --series-lilly:   #3987e5;
     --series-both:    #8a8980;
     --status-good:    #0ca30c;
@@ -204,12 +204,12 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 table.summary-table td.player-cell {
   text-align: center;
   font-weight: 700;
-  color: #fff;
-  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  border-left: 4px solid transparent;
 }
-table.summary-table td.player-cell.player-Ellie { background: var(--series-ellie); }
-table.summary-table td.player-cell.player-Lilly { background: var(--series-lilly); }
-table.summary-table td.player-cell.player-Both { background: var(--series-both); }
+table.summary-table td.player-cell.player-Ellie { color: var(--series-ellie); border-left-color: var(--series-ellie); }
+table.summary-table td.player-cell.player-Lilly { color: var(--series-lilly); border-left-color: var(--series-lilly); }
+table.summary-table td.player-cell.player-Both { color: var(--series-both); border-left-color: var(--series-both); }
 
 table.summary-table td.season-cell {
   text-align: center;
