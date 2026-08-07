@@ -15,6 +15,7 @@ jobs:
       - name: Run sync script
         env:
           MS_GRAPH_REFRESH_TOKEN: ${{ secrets.MS_GRAPH_REFRESH_TOKEN }}
+          ONEDRIVE_SHARE_URL: ${{ secrets.ONEDRIVE_SHARE_URL }}
         run: python3 scripts/sync_onedrive.py
 
       - name: Commit updated data
