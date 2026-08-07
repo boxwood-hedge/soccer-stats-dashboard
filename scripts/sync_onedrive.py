@@ -50,9 +50,17 @@ def cell(row, idx):
     return row[idx] if idx < len(row) else ""
 
 
-def parse_games(values):
+def parse_start_row(address):
+    # e.g. "Sheet1!A1:N500" -> 1
+    cell_ref = address.split("!")[-1].split(":")[0]
+    digits = "".join(ch for ch in cell_ref if ch.isdigit())
+    return int(digits) if digits else 1
+
+
+def parse_games(values, start_row=1):
     games = []
-    for row in values:
+    for offset, row in enumerate(values):
+        row_number = start_row + offset
         raw_date = cell(row, COL_DATE)
         if not isinstance(raw_date, (int, float)) or not raw_date:
             continue  # skip title/header/blank rows
@@ -74,6 +82,7 @@ def parse_games(values):
                 continue  # this player didn't play in this row
             games.append(
                 {
+                    "rowNumber": row_number,
                     "date": game_date.isoformat(),
                     "season": season,
                     "team": team,
@@ -140,14 +149,15 @@ def main():
         access_token,
     )
     values = used_range.get("values", [])
-    print(f"Used range: {used_range.get('address')} ({len(values)} rows)")
+    address = used_range.get("address", "")
+    print(f"Used range: {address} ({len(values)} rows)")
 
-    games = parse_games(values)
+    games = parse_games(values, start_row=parse_start_row(address))
     print(f"Parsed {len(games)} player-game record(s) on/after {CUTOFF.isoformat()}.")
 
     os.makedirs("data", exist_ok=True)
     with open("data/games.json", "w") as f:
-        json.dump({"games": games}, f, indent=2)
+        json.dump({"sheet": sheet, "games": games}, f, indent=2)
 
     print("Wrote data/games.json.")
 
