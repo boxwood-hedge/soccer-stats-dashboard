@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import sys
@@ -51,21 +52,14 @@ def main():
             "sign-in and update the secret (never via this log)."
         )
 
-    shared = get_json(f"{GRAPH}/me/drive/sharedWithMe", access_token)
-    shared_items = shared.get("value", [])
-    print(f"Found {len(shared_items)} item(s) shared with this account:")
-    for item in shared_items:
-        print(" -", item.get("name"), "(", item.get("remoteItem", {}).get("file", {}).get("mimeType", "?"), ")")
+    share_url = os.environ["ONEDRIVE_SHARE_URL"]
+    encoded = "u!" + base64.urlsafe_b64encode(share_url.encode()).decode().rstrip("=")
 
-    xlsx_items = [item for item in shared_items if item.get("name", "").lower().endswith(".xlsx")]
+    drive_item = get_json(f"{GRAPH}/shares/{encoded}/driveItem", access_token)
+    print("Resolved shared file:", drive_item.get("name"))
 
-    if not xlsx_items:
-        print("No shared Excel file found. Check that it's shared with this account.")
-        sys.exit(1)
-
-    target = xlsx_items[0]
-    drive_id = target["remoteItem"]["parentReference"]["driveId"]
-    item_id = target["remoteItem"]["id"]
+    drive_id = drive_item["parentReference"]["driveId"]
+    item_id = drive_item["id"]
 
     worksheets = get_json(
         f"{GRAPH}/drives/{drive_id}/items/{item_id}/workbook/worksheets", access_token
