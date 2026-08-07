@@ -88,6 +88,14 @@ header.top .sub {
   color: var(--text-muted);
 }
 
+.games-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .player-tabs {
   display: inline-flex;
   gap: 4px;
@@ -95,7 +103,6 @@ header.top .sub {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 3px;
-  margin-bottom: 16px;
 }
 
 .player-tabs button {
@@ -229,34 +236,8 @@ table.summary-table tr.all-row.player-Ellie td:not(.player-cell):not(.season-cel
 table.summary-table tr.all-row.player-Lilly td:not(.player-cell):not(.season-cell) { background: color-mix(in srgb, var(--series-lilly) 8%, var(--surface-1)); }
 table.summary-table tr.all-row.player-Both td:not(.player-cell):not(.season-cell) { background: color-mix(in srgb, var(--series-both) 10%, var(--surface-1)); }
 
-.game-card-list { display: flex; flex-direction: column; gap: 8px; }
-
-.game-card {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-}
-
-.game-card .row1 {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 6px;
-  gap: 8px;
-}
-
-.game-card .opponent { font-weight: 700; }
-.game-card .score { color: var(--text-secondary); font-weight: 700; font-variant-numeric: tabular-nums; }
-.game-card .date { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
-.game-card .team-tag { color: var(--text-secondary); font-size: 12px; margin-bottom: 6px; }
-
-.game-card .entries { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
-.game-card .entry { font-size: 13px; }
-.game-card .entry .name { font-weight: 700; }
-.game-card .entry.Ellie .name { color: var(--series-ellie); }
-.game-card .entry.Lilly .name { color: var(--series-lilly); }
-.game-card .notes { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+table.data-table td.player-name.player-Ellie { color: var(--series-ellie); font-weight: 700; }
+table.data-table td.player-name.player-Lilly { color: var(--series-lilly); font-weight: 700; }
 
 .empty-state {
   text-align: center;
@@ -266,6 +247,13 @@ table.summary-table tr.all-row.player-Both td:not(.player-cell):not(.season-cell
   border: 1px dashed var(--border);
   border-radius: 12px;
   font-size: 14px;
+}
+
+table.data-table td.empty-cell {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 24px 16px;
+  white-space: normal;
 }
 
 .sync-note {
@@ -293,12 +281,18 @@ table.summary-table tr.all-row.player-Both td:not(.player-cell):not(.season-cell
       <div class="section-header">
         <h2>Games</h2>
       </div>
-      <div class="player-tabs">
-        <button data-player="Both" class="active">Both</button>
-        <button data-player="Ellie">Ellie</button>
-        <button data-player="Lilly">Lilly</button>
+      <div class="games-filters">
+        <div class="player-tabs">
+          <button data-player="Both" class="active">Both</button>
+          <button data-player="Ellie">Ellie</button>
+          <button data-player="Lilly">Lilly</button>
+        </div>
+        <select id="seasonFilter"><option value="">All seasons</option></select>
+        <select id="teamFilter"><option value="">All teams</option></select>
       </div>
-      <div class="game-card-list" id="gamesList"></div>
+      <div class="table-scroll">
+        <table class="data-table" id="gamesTable"></table>
+      </div>
     </div>
   </div>
 
@@ -306,7 +300,7 @@ table.summary-table tr.all-row.player-Both td:not(.player-cell):not(.season-cell
 const PLAYERS = ["Ellie", "Lilly"];
 
 let allGames = [];
-let filters = { player: "Both" }; // Games list only; the Summary table is fixed.
+let filters = { player: "Both", season: "", team: "" }; // Games list only; the Summary table is fixed.
 
 function fmtDate(iso) {
   const d = new Date(iso + "T00:00:00");
@@ -470,48 +464,64 @@ function renderSummaryTable() {
     <tbody>${bodyRows}</tbody>`;
 }
 
+function outcomeLetter(gf, ga) {
+  if (gf > ga) return "W";
+  if (gf < ga) return "L";
+  return "T";
+}
+
+function populateGameFilters() {
+  const seasonSelect = document.getElementById("seasonFilter");
+  const teamSelect = document.getElementById("teamFilter");
+
+  const seasons = Array.from(new Set(allGames.map((g) => g.season))).sort().reverse();
+  seasonSelect.innerHTML =
+    `<option value="">All seasons</option>` +
+    seasons.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
+
+  const teams = Array.from(new Set(allGames.map((g) => g.team))).sort();
+  teamSelect.innerHTML =
+    `<option value="">All teams</option>` +
+    teams.map((t) => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+}
+
 function renderGames() {
-  const container = document.getElementById("gamesList");
+  const table = document.getElementById("gamesTable");
   const players = filters.player === "Both" ? PLAYERS : [filters.player];
-  const entries = allGames.filter((g) => players.includes(g.player));
 
-  const byGame = new Map();
-  for (const e of entries) {
-    const k = uniqueGameKey(e);
-    if (!byGame.has(k)) byGame.set(k, []);
-    byGame.get(k).push(e);
-  }
+  const rows = allGames
+    .filter((g) => players.includes(g.player))
+    .filter((g) => !filters.season || g.season === filters.season)
+    .filter((g) => !filters.team || g.team === filters.team)
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
 
-  const games = Array.from(byGame.values()).sort((a, b) => (a[0].date < b[0].date ? 1 : -1));
+  const bodyHtml =
+    rows.length === 0
+      ? `<tr><td class="empty-cell" colspan="8">No games logged yet for this filter.</td></tr>`
+      : rows
+          .map(
+            (g) => `
+        <tr>
+          <td class="player-name player-${g.player}">${escapeHtml(g.player)}</td>
+          <td>${escapeHtml(g.season)}</td>
+          <td>${escapeHtml(g.team)}</td>
+          <td>${escapeHtml(g.opponent)}</td>
+          <td>${fmtDate(g.date)}</td>
+          <td>${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</td>
+          <td>${g.goals}</td>
+          <td>${g.assists}</td>
+        </tr>`
+          )
+          .join("");
 
-  if (games.length === 0) {
-    container.innerHTML = `<div class="empty-state">No games logged yet for this filter.</div>`;
-    return;
-  }
-
-  container.innerHTML = games
-    .map((rows) => {
-      const first = rows[0];
-      const entryHtml = rows
-        .map(
-          (e) =>
-            `<div class="entry ${e.player}"><span class="name">${e.player}</span> &mdash; ${e.goals}G ${e.assists}A</div>`
-        )
-        .join("");
-      const notes = rows.map((r) => r.notes).find((n) => n) || "";
-      return `
-        <div class="game-card">
-          <div class="row1">
-            <span class="opponent">vs ${escapeHtml(first.opponent)}</span>
-            <span class="score">${first.teamGoalsFor}-${first.teamGoalsAgainst}</span>
-            <span class="date">${fmtDate(first.date)}</span>
-          </div>
-          <div class="team-tag">${escapeHtml(first.team)} &middot; ${escapeHtml(first.season)}</div>
-          <div class="entries">${entryHtml}</div>
-          ${notes ? `<div class="notes">${escapeHtml(notes)}</div>` : ""}
-        </div>`;
-    })
-    .join("");
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Player</th><th>Season</th><th>Team</th><th>Opponent</th><th>Date</th>
+        <th>Team GF-GA</th><th>Goals</th><th>Assists</th>
+      </tr>
+    </thead>
+    <tbody>${bodyHtml}</tbody>`;
 }
 
 async function loadData() {
@@ -529,7 +539,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
+  document.getElementById("seasonFilter").addEventListener("change", (e) => {
+    filters.season = e.target.value;
+    renderGames();
+  });
+
+  document.getElementById("teamFilter").addEventListener("change", (e) => {
+    filters.team = e.target.value;
+    renderGames();
+  });
+
   await loadData();
+  populateGameFilters();
   render();
 });
   </script>
