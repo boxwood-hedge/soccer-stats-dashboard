@@ -42,26 +42,22 @@ def main():
     new_refresh_token = token_resp.get("refresh_token", refresh_token)
 
     if new_refresh_token != refresh_token:
+        # Never print token values into the log: Action logs are readable by anyone with
+        # repo read access. If rotation breaks the next run, regenerate via device-code
+        # login and hand the new value off out-of-band, same as the initial setup.
         print(
-            "::warning::Microsoft issued a new refresh token. The MS_GRAPH_REFRESH_TOKEN "
-            "secret needs to be updated manually or the next run may fail to authenticate."
+            "::warning::Microsoft issued a new refresh token. The stored MS_GRAPH_REFRESH_TOKEN "
+            "secret is now stale; if the next run fails to authenticate, redo the device-code "
+            "sign-in and update the secret (never via this log)."
         )
-        with open(os.environ.get("GITHUB_STEP_SUMMARY", os.devnull), "a") as f:
-            f.write(
-                "\n**Refresh token rotated.** Update the `MS_GRAPH_REFRESH_TOKEN` secret "
-                "with the value printed in this step's log (masked runs may hide it; re-run "
-                "with debug logging if needed).\n"
-            )
-        print(f"NEW_REFRESH_TOKEN={new_refresh_token}")
 
     shared = get_json(f"{GRAPH}/me/drive/sharedWithMe", access_token)
-    xlsx_items = [
-        item for item in shared.get("value", []) if item.get("name", "").lower().endswith(".xlsx")
-    ]
+    shared_items = shared.get("value", [])
+    print(f"Found {len(shared_items)} item(s) shared with this account:")
+    for item in shared_items:
+        print(" -", item.get("name"), "(", item.get("remoteItem", {}).get("file", {}).get("mimeType", "?"), ")")
 
-    print(f"Found {len(xlsx_items)} shared .xlsx file(s):")
-    for item in xlsx_items:
-        print(" -", item["name"])
+    xlsx_items = [item for item in shared_items if item.get("name", "").lower().endswith(".xlsx")]
 
     if not xlsx_items:
         print("No shared Excel file found. Check that it's shared with this account.")
