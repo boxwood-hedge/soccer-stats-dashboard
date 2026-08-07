@@ -292,7 +292,6 @@ table.summary-table tr.all-row.player-Both td:not(.player-cell):not(.season-cell
     <div class="section">
       <div class="section-header">
         <h2>Games</h2>
-        <button class="btn small" id="exportCsvBtn">Export CSV</button>
       </div>
       <div class="player-tabs">
         <button data-player="Both" class="active">Both</button>
@@ -515,26 +514,6 @@ function renderGames() {
     .join("");
 }
 
-function exportCsv() {
-  const rows = [
-    ["Date", "Season", "Team", "Opponent", "Player", "Goals", "Assists", "Team GF", "Team GA", "Notes"],
-  ];
-  allGames
-    .slice()
-    .sort((a, b) => (a.date < b.date ? -1 : 1))
-    .forEach((g) => {
-      rows.push([g.date, g.season, g.team, g.opponent, g.player, g.goals, g.assists, g.teamGoalsFor, g.teamGoalsAgainst, g.notes || ""]);
-    });
-  const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "soccer-stats-export.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 async function loadData() {
   const res = await fetch("data/games.json", { cache: "no-store" });
   const data = await res.json();
@@ -549,8 +528,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderGames();
     });
   });
-
-  document.getElementById("exportCsvBtn").addEventListener("click", exportCsv);
 
   await loadData();
   render();
