@@ -225,7 +225,7 @@ table.summary-table td.season-cell {
   background: var(--surface-2);
 }
 
-table.summary-table td.team-cell {
+table.summary-table td.team-cell, table.summary-table th.team-cell {
   text-align: left;
 }
 
@@ -457,7 +457,7 @@ function renderSummaryTable() {
   table.innerHTML = `
     <thead>
       <tr>
-        <th>Player</th><th>Season</th><th>Team</th><th>Games</th><th>Team GF-GA</th>
+        <th>Player</th><th>Season</th><th class="team-cell">Team</th><th>Games</th><th>Team GF-GA</th>
         <th>Goals</th><th>Goals/Game</th><th>% of Team GF</th><th>Assists</th><th>Assists/Game</th>
       </tr>
     </thead>
