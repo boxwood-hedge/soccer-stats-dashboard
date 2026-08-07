@@ -504,9 +504,9 @@ function renderGames() {
         <tr>
           <td class="player-name player-${g.player}">${escapeHtml(g.player)}</td>
           <td>${escapeHtml(g.season)}</td>
+          <td>${fmtDate(g.date)}</td>
           <td>${escapeHtml(g.team)}</td>
           <td>${escapeHtml(g.opponent)}</td>
-          <td>${fmtDate(g.date)}</td>
           <td>${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</td>
           <td>${g.goals}</td>
           <td>${g.assists}</td>
@@ -517,7 +517,7 @@ function renderGames() {
   table.innerHTML = `
     <thead>
       <tr>
-        <th>Player</th><th>Season</th><th>Team</th><th>Opponent</th><th>Date</th>
+        <th>Player</th><th>Season</th><th>Date</th><th>Team</th><th>Opponent</th>
         <th>Team GF-GA</th><th>Goals</th><th>Assists</th>
       </tr>
     </thead>
