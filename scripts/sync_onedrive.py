@@ -4,14 +4,25 @@ import os
 import sys
 import urllib.parse
 import urllib.request
+from datetime import date, timedelta
 
 CLIENT_ID = "a590158a-5f89-42c5-a278-b5cbeefc9b0e"
 TOKEN_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
 GRAPH = "https://graph.microsoft.com/v1.0"
 
-# Game log columns A-N, summary/pivot columns P-X (see index.html for how these render).
-GAME_LOG_COLS = slice(0, 14)
-SUMMARY_COLS = slice(15, 24)
+# Game log column layout (0-indexed): Date, Season, Team, Opponent, MP-Ellie,
+# MP-Lilly, GF Total, GA Total, G-Ellie, G-Lilly, A-Ellie, A-Lilly, Other Notes.
+PLAYERS = [
+    {"name": "Ellie", "mp": 4, "goals": 8, "assists": 10},
+    {"name": "Lilly", "mp": 5, "goals": 9, "assists": 11},
+]
+COL_DATE, COL_SEASON, COL_TEAM, COL_OPPONENT = 0, 1, 2, 3
+COL_GF, COL_GA, COL_NOTES = 6, 7, 12
+
+# Only import games on/after this date - earlier rows are pre-2025 aggregate
+# entries covering many games at once and don't fit the one-row-per-player-game model.
+CUTOFF = date(2025, 4, 12)
+EXCEL_EPOCH = date(1899, 12, 30)
 
 
 def post_form(url, data):
@@ -25,6 +36,58 @@ def get_json(url, token):
     req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
     with urllib.request.urlopen(req) as resp:
         return json.loads(resp.read())
+
+
+def safe_num(value):
+    try:
+        n = float(value)
+        return int(n) if n == int(n) else n
+    except (TypeError, ValueError):
+        return 0
+
+
+def cell(row, idx):
+    return row[idx] if idx < len(row) else ""
+
+
+def parse_games(values):
+    games = []
+    for row in values:
+        raw_date = cell(row, COL_DATE)
+        if not isinstance(raw_date, (int, float)) or not raw_date:
+            continue  # skip title/header/blank rows
+
+        game_date = EXCEL_EPOCH + timedelta(days=int(raw_date))
+        if game_date < CUTOFF:
+            continue
+
+        season = cell(row, COL_SEASON)
+        team = cell(row, COL_TEAM)
+        opponent = cell(row, COL_OPPONENT)
+        team_gf = safe_num(cell(row, COL_GF))
+        team_ga = safe_num(cell(row, COL_GA))
+        notes = cell(row, COL_NOTES)
+
+        for p in PLAYERS:
+            mp = safe_num(cell(row, p["mp"]))
+            if mp <= 0:
+                continue  # this player didn't play in this row
+            games.append(
+                {
+                    "date": game_date.isoformat(),
+                    "season": season,
+                    "team": team,
+                    "opponent": opponent,
+                    "player": p["name"],
+                    "goals": safe_num(cell(row, p["goals"])),
+                    "assists": safe_num(cell(row, p["assists"])),
+                    "teamGoalsFor": team_gf,
+                    "teamGoalsAgainst": team_ga,
+                    "notes": notes,
+                }
+            )
+    games.sort(key=lambda g: g["date"], reverse=True)
+    return games
 
 
 def main():
@@ -79,14 +142,14 @@ def main():
     values = used_range.get("values", [])
     print(f"Used range: {used_range.get('address')} ({len(values)} rows)")
 
-    game_log = [row[GAME_LOG_COLS] for row in values]
-    summary = [row[SUMMARY_COLS] for row in values]
+    games = parse_games(values)
+    print(f"Parsed {len(games)} player-game record(s) on/after {CUTOFF.isoformat()}.")
 
     os.makedirs("data", exist_ok=True)
-    with open("data/onedrive-export.json", "w") as f:
-        json.dump({"sheet": sheet, "gameLog": game_log, "summary": summary}, f, indent=2)
+    with open("data/games.json", "w") as f:
+        json.dump({"games": games}, f, indent=2)
 
-    print(f"Wrote data/onedrive-export.json with {len(game_log)} rows.")
+    print("Wrote data/games.json.")
 
 
 if __name__ == "__main__":
