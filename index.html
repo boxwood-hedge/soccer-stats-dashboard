@@ -60,19 +60,16 @@ body {
   color: var(--text-primary);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
-  padding-bottom: 88px;
+  padding-bottom: 40px;
 }
 
 .app {
-  max-width: 720px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 16px;
 }
 
 header.top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   margin-bottom: 16px;
   padding-top: 8px;
 }
@@ -88,35 +85,14 @@ header.top .sub {
   color: var(--text-muted);
 }
 
-.controls-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-select, input, textarea {
-  font-family: inherit;
-  font-size: 15px;
-  background: var(--surface-1);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 10px;
-}
-
-select:focus, input:focus, textarea:focus {
-  outline: 2px solid var(--series-ellie);
-  outline-offset: 1px;
-}
-
 .player-tabs {
-  display: flex;
+  display: inline-flex;
   gap: 4px;
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 3px;
+  margin-bottom: 16px;
 }
 
 .player-tabs button {
@@ -172,7 +148,7 @@ select:focus, input:focus, textarea:focus {
 }
 
 .metric .value {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   font-variant-numeric: proportional-nums;
   line-height: 1.1;
@@ -194,6 +170,8 @@ select:focus, input:focus, textarea:focus {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .section-header h2 {
@@ -215,19 +193,70 @@ select:focus, input:focus, textarea:focus {
   cursor: pointer;
 }
 
-.btn.primary {
-  background: var(--series-ellie);
-  border-color: var(--series-ellie);
-  color: #fff;
-}
-
 .btn.small {
   padding: 4px 9px;
   font-size: 12px;
 }
 
-.btn.danger {
-  color: var(--status-critical);
+select {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.pivot-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.pivot-controls .control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pivot-controls label.group-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 420px;
+}
+
+.chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.chip.active {
+  background: var(--series-ellie);
+  border-color: var(--series-ellie);
+  color: #fff;
 }
 
 table.data-table {
@@ -237,13 +266,18 @@ table.data-table {
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 table.data-table th, table.data-table td {
   padding: 9px 10px;
-  text-align: left;
+  text-align: right;
   border-bottom: 1px solid var(--gridline);
+  white-space: nowrap;
+}
+
+table.data-table th:first-child, table.data-table td:first-child {
+  text-align: left;
 }
 
 table.data-table th {
@@ -255,6 +289,10 @@ table.data-table th {
 }
 
 table.data-table tr:last-child td { border-bottom: none; }
+
+table.data-table tbody tr:hover { background: var(--surface-2); }
+
+.table-scroll { overflow-x: auto; border-radius: 12px; }
 
 .game-card-list { display: flex; flex-direction: column; gap: 8px; }
 
@@ -270,19 +308,20 @@ table.data-table tr:last-child td { border-bottom: none; }
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 6px;
+  gap: 8px;
 }
 
 .game-card .opponent { font-weight: 700; }
-.game-card .date { color: var(--text-muted); font-size: 12px; }
+.game-card .score { color: var(--text-secondary); font-weight: 700; font-variant-numeric: tabular-nums; }
+.game-card .date { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
 .game-card .team-tag { color: var(--text-secondary); font-size: 12px; margin-bottom: 6px; }
 
-.game-card .entries { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; }
+.game-card .entries { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
 .game-card .entry { font-size: 13px; }
 .game-card .entry .name { font-weight: 700; }
 .game-card .entry.Ellie .name { color: var(--series-ellie); }
 .game-card .entry.Lilly .name { color: var(--series-lilly); }
-
-.game-card .actions { display: flex; gap: 6px; }
+.game-card .notes { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
 .empty-state {
   text-align: center;
@@ -294,103 +333,53 @@ table.data-table tr:last-child td { border-bottom: none; }
   font-size: 14px;
 }
 
-.fab-row {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, var(--surface-2) 70%, transparent);
+.sync-note {
+  font-size: 12px;
+  color: var(--text-muted);
 }
-
-.fab-row .btn { flex: 1; max-width: 340px; padding: 12px; font-size: 15px; }
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 50;
-}
-
-.modal-overlay.open { display: flex; }
-
-.modal {
-  background: var(--surface-1);
-  border-radius: 16px 16px 0 0;
-  width: 100%;
-  max-width: 480px;
-  max-height: 92vh;
-  overflow-y: auto;
-  padding: 20px;
-}
-
-@media (min-width: 560px) {
-  .modal-overlay { align-items: center; }
-  .modal { border-radius: 16px; }
-}
-
-.modal h3 { margin-top: 0; }
-
-.field { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
-.field label { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
-.field input, .field select, .field textarea { width: 100%; }
-
-.field-row { display: flex; gap: 10px; }
-.field-row .field { flex: 1; }
-
-.checkbox-row { display: flex; gap: 14px; }
-.checkbox-row label { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 400; color: var(--text-primary); }
-
-.player-entry-block {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.player-entry-block .player-entry-title { font-weight: 700; margin-bottom: 8px; }
-.player-entry-block.Ellie .player-entry-title { color: var(--series-ellie); }
-.player-entry-block.Lilly .player-entry-title { color: var(--series-lilly); }
-
-.modal-actions { display: flex; gap: 8px; margin-top: 16px; }
-.modal-actions .btn { flex: 1; }
-
-.small-note { font-size: 12px; color: var(--text-muted); margin-top: -2px; }
-
-.datalist-hint { font-size: 11px; color: var(--text-muted); }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="top">
-      <div>
-        <h1>Goal Tracker</h1>
-        <div class="sub">Ellie &amp; Lilly's soccer stats</div>
-      </div>
+      <h1>Goal Tracker</h1>
+      <div class="sub">Ellie &amp; Lilly's soccer stats &mdash; synced from the family stats spreadsheet</div>
     </header>
 
-    <div class="controls-row">
-      <div class="player-tabs">
-        <button data-player="Both" class="active">Both</button>
-        <button data-player="Ellie">Ellie</button>
-        <button data-player="Lilly">Lilly</button>
-      </div>
-      <select id="seasonFilter"></select>
+    <div class="player-tabs">
+      <button data-player="Both" class="active">Both</button>
+      <button data-player="Ellie">Ellie</button>
+      <button data-player="Lilly">Lilly</button>
     </div>
 
     <div class="stat-grid" id="statGrid"></div>
 
     <div class="section">
       <div class="section-header">
-        <h2>Teams</h2>
-        <button class="btn small" id="addTeamBtn">+ Add team</button>
+        <h2>Summary</h2>
       </div>
-      <div id="teamsList"></div>
+      <div class="pivot-controls">
+        <div class="control-group">
+          <label class="group-label">Group rows by</label>
+          <select id="groupBySelect">
+            <option value="team">Team</option>
+            <option value="teamSeason">Team + Season</option>
+            <option value="season">Season</option>
+            <option value="seasonYear">Full year</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="group-label">Season(s)</label>
+          <div class="chip-row" id="seasonYearChips"></div>
+        </div>
+        <div class="control-group">
+          <label class="group-label">Team(s)</label>
+          <div class="chip-row" id="teamChips"></div>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table" id="pivotTable"></table>
+      </div>
     </div>
 
     <div class="section">
@@ -402,255 +391,20 @@ table.data-table tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
-  <div class="fab-row">
-    <button class="btn primary" id="addGameBtn">+ Log a game</button>
-  </div>
-
-  <!-- Game modal -->
-  <div class="modal-overlay" id="gameModalOverlay">
-    <div class="modal">
-      <h3 id="gameModalTitle">Add game</h3>
-      <div class="field">
-        <label>Team</label>
-        <select id="gameTeam"></select>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Date</label>
-          <input type="date" id="gameDate">
-        </div>
-        <div class="field">
-          <label>Opponent</label>
-          <input type="text" id="gameOpponent" placeholder="e.g. Riverside FC">
-        </div>
-      </div>
-      <div id="gamePlayerBlocks"></div>
-      <div class="field">
-        <label>Notes (optional)</label>
-        <textarea id="gameNotes" rows="2"></textarea>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" id="cancelGameBtn">Cancel</button>
-        <button class="btn primary" id="saveGameBtn">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Team modal -->
-  <div class="modal-overlay" id="teamModalOverlay">
-    <div class="modal">
-      <h3 id="teamModalTitle">Add team</h3>
-      <div class="field">
-        <label>Team name</label>
-        <input type="text" id="teamName" placeholder="e.g. Sharks U10">
-      </div>
-      <div class="field">
-        <label>Season</label>
-        <input type="text" id="teamSeason" list="seasonSuggestions" placeholder="e.g. 2026-27">
-        <datalist id="seasonSuggestions"></datalist>
-        <div class="datalist-hint">Type a new season name or pick an existing one.</div>
-      </div>
-      <div class="field">
-        <label>Players on this team</label>
-        <div class="checkbox-row">
-          <label><input type="checkbox" id="teamPlayer_Ellie"> Ellie</label>
-          <label><input type="checkbox" id="teamPlayer_Lilly"> Lilly</label>
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" id="cancelTeamBtn">Cancel</button>
-        <button class="btn primary" id="saveTeamBtn">Save</button>
-      </div>
-    </div>
-  </div>
-
   <script>
 const PLAYERS = ["Ellie", "Lilly"];
-const STORAGE_KEY = "soccerStats:v1";
 
-const store = {
-  load() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { teams: [], games: [] };
-    try {
-      const data = JSON.parse(raw);
-      return { teams: data.teams || [], games: data.games || [] };
-    } catch {
-      return { teams: [], games: [] };
-    }
-  },
-  save(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  },
+let allGames = [];
+let filters = {
+  player: "Both",
+  seasonYears: new Set(),
+  teams: new Set(),
+  groupBy: "team",
 };
-
-let state = store.load();
-let filters = { player: "Both", season: "All" };
-let editingGameId = null;
-let editingTeamId = null;
-
-function uid() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
-
-function persist() {
-  store.save(state);
-  onDataChanged(state);
-  render();
-}
-
-// Hook point for a future backup sync (e.g. writing new entries to the
-// OneDrive Excel file via Microsoft Graph). No-op today.
-function onDataChanged(_data) {}
-
-function getSeasons() {
-  const seasons = new Set(state.teams.map((t) => t.season));
-  return Array.from(seasons).sort().reverse();
-}
-
-function getTeam(id) {
-  return state.teams.find((t) => t.id === id);
-}
-
-function teamsForFilters() {
-  return state.teams.filter((t) => {
-    if (filters.season !== "All" && t.season !== filters.season) return false;
-    if (filters.player !== "Both" && !t.players.includes(filters.player)) return false;
-    return true;
-  });
-}
-
-function gamesForFilters() {
-  const teamIds = new Set(teamsForFilters().map((t) => t.id));
-  return state.games
-    .filter((g) => teamIds.has(g.teamId))
-    .filter((g) => {
-      if (filters.player === "Both") return true;
-      return g.entries.some((e) => e.player === filters.player);
-    })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
-}
-
-function statsFor(player) {
-  const teamIds = new Set(
-    state.teams
-      .filter((t) => (filters.season === "All" || t.season === filters.season) && t.players.includes(player))
-      .map((t) => t.id)
-  );
-  let goals = 0, assists = 0, gamesPlayed = 0;
-  for (const g of state.games) {
-    if (!teamIds.has(g.teamId)) continue;
-    const entry = g.entries.find((e) => e.player === player);
-    if (!entry) continue;
-    gamesPlayed += 1;
-    goals += Number(entry.goals) || 0;
-    assists += Number(entry.assists) || 0;
-  }
-  return { goals, assists, gamesPlayed, perGame: gamesPlayed ? (goals / gamesPlayed).toFixed(1) : "0.0" };
-}
 
 function fmtDate(iso) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
-}
-
-function render() {
-  renderSeasonOptions();
-  renderStatCards();
-  renderTeams();
-  renderGames();
-}
-
-function renderSeasonOptions() {
-  const sel = document.getElementById("seasonFilter");
-  const seasons = getSeasons();
-  const current = filters.season;
-  sel.innerHTML = ["All", ...seasons]
-    .map((s) => `<option value="${s}" ${s === current ? "selected" : ""}>${s === "All" ? "All seasons" : s}</option>`)
-    .join("");
-
-  const seasonList = document.getElementById("seasonSuggestions");
-  seasonList.innerHTML = seasons.map((s) => `<option value="${s}">`).join("");
-}
-
-function renderStatCards() {
-  const grid = document.getElementById("statGrid");
-  const players = filters.player === "Both" ? PLAYERS : [filters.player];
-  grid.innerHTML = players
-    .map((p) => {
-      const s = statsFor(p);
-      const accentVar = p === "Ellie" ? "var(--series-ellie)" : "var(--series-lilly)";
-      return `
-        <div class="stat-card" style="--accent:${accentVar}">
-          <div class="player-name">${p}</div>
-          <div class="metrics">
-            <div class="metric"><div class="value">${s.goals}</div><div class="label">Goals</div></div>
-            <div class="metric"><div class="value">${s.assists}</div><div class="label">Assists</div></div>
-            <div class="metric"><div class="value">${s.gamesPlayed}</div><div class="label">Games</div></div>
-            <div class="metric"><div class="value">${s.perGame}</div><div class="label">Goals / game</div></div>
-          </div>
-        </div>`;
-    })
-    .join("");
-}
-
-function renderTeams() {
-  const container = document.getElementById("teamsList");
-  const teams = teamsForFilters().sort((a, b) => (a.season < b.season ? 1 : -1));
-  if (teams.length === 0) {
-    container.innerHTML = `<div class="empty-state">No teams yet. Add a team to get started.</div>`;
-    return;
-  }
-  container.innerHTML = `
-    <table class="data-table">
-      <thead><tr><th>Team</th><th>Season</th><th>Players</th><th></th></tr></thead>
-      <tbody>
-        ${teams
-          .map(
-            (t) => `
-          <tr>
-            <td>${escapeHtml(t.name)}</td>
-            <td>${escapeHtml(t.season)}</td>
-            <td>${t.players.join(", ")}</td>
-            <td><button class="btn small" data-action="edit-team" data-id="${t.id}">Edit</button></td>
-          </tr>`
-          )
-          .join("")}
-      </tbody>
-    </table>`;
-}
-
-function renderGames() {
-  const container = document.getElementById("gamesList");
-  const games = gamesForFilters();
-  if (games.length === 0) {
-    container.innerHTML = `<div class="empty-state">No games logged yet for this filter.</div>`;
-    return;
-  }
-  container.innerHTML = games
-    .map((g) => {
-      const team = getTeam(g.teamId);
-      const entries = g.entries
-        .filter((e) => filters.player === "Both" || e.player === filters.player)
-        .map(
-          (e) => `<div class="entry ${e.player}"><span class="name">${e.player}</span> — ${e.goals}G ${e.assists}A</div>`
-        )
-        .join("");
-      return `
-        <div class="game-card">
-          <div class="row1">
-            <span class="opponent">vs ${escapeHtml(g.opponent)}</span>
-            <span class="date">${fmtDate(g.date)}</span>
-          </div>
-          <div class="team-tag">${team ? escapeHtml(team.name) + " · " + escapeHtml(team.season) : "Unknown team"}</div>
-          <div class="entries">${entries}</div>
-          <div class="actions">
-            <button class="btn small" data-action="edit-game" data-id="${g.id}">Edit</button>
-            <button class="btn small danger" data-action="delete-game" data-id="${g.id}">Delete</button>
-          </div>
-        </div>`;
-    })
-    .join("");
 }
 
 function escapeHtml(str) {
@@ -659,149 +413,249 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// ---- Team modal ----
-
-function openTeamModal(teamId) {
-  editingTeamId = teamId || null;
-  const team = teamId ? getTeam(teamId) : null;
-  document.getElementById("teamModalTitle").textContent = team ? "Edit team" : "Add team";
-  document.getElementById("teamName").value = team ? team.name : "";
-  document.getElementById("teamSeason").value = team ? team.season : "";
-  PLAYERS.forEach((p) => {
-    document.getElementById("teamPlayer_" + p).checked = team ? team.players.includes(p) : true;
-  });
-  document.getElementById("teamModalOverlay").classList.add("open");
+// Maps a raw season label (e.g. "Fall 2025", "Winter 25-26", "Spring 2026")
+// to the full soccer-year bucket it belongs to (e.g. "2025-26"). Winter spans
+// a calendar-year boundary and Spring/Summer follow the Fall that started the
+// same soccer year, so both anchor to the Fall's year.
+function seasonYearOf(season) {
+  if (!season) return "Unknown";
+  const years = (season.match(/\d{2,4}/g) || []).map((y) =>
+    y.length === 2 ? 2000 + parseInt(y, 10) : parseInt(y, 10)
+  );
+  if (years.length === 0) return season;
+  const lower = season.toLowerCase();
+  let anchor;
+  if (lower.includes("winter")) anchor = Math.min(...years);
+  else if (lower.includes("spring") || lower.includes("summer")) anchor = years[0] - 1;
+  else anchor = years[0]; // Fall, or anything unrecognized
+  return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
 }
 
-function closeTeamModal() {
-  document.getElementById("teamModalOverlay").classList.remove("open");
-  editingTeamId = null;
+function uniqueGameKey(g) {
+  return `${g.date}|${g.team}|${g.opponent}`;
 }
 
-function saveTeam() {
-  const name = document.getElementById("teamName").value.trim();
-  const season = document.getElementById("teamSeason").value.trim();
-  const players = PLAYERS.filter((p) => document.getElementById("teamPlayer_" + p).checked);
-  if (!name || !season || players.length === 0) {
-    alert("Please fill in team name, season, and at least one player.");
-    return;
+// Sums goals/assists directly (each row belongs to one player), but dedupes
+// by the underlying game for match-count and team goals for/against so a
+// shared game (both girls played) isn't double-counted when combined.
+function computeStats(entries) {
+  const G = entries.reduce((s, e) => s + e.goals, 0);
+  const A = entries.reduce((s, e) => s + e.assists, 0);
+  const seen = new Map();
+  for (const e of entries) {
+    const k = uniqueGameKey(e);
+    if (!seen.has(k)) seen.set(k, e);
   }
-  if (editingTeamId) {
-    const team = getTeam(editingTeamId);
-    team.name = name;
-    team.season = season;
-    team.players = players;
-  } else {
-    state.teams.push({ id: uid(), name, season, players });
-  }
-  closeTeamModal();
-  persist();
+  const uniqueGames = [...seen.values()];
+  const MP = uniqueGames.length;
+  const GF = uniqueGames.reduce((s, e) => s + e.teamGoalsFor, 0);
+  const GA = uniqueGames.reduce((s, e) => s + e.teamGoalsAgainst, 0);
+  return {
+    MP,
+    G,
+    A,
+    GF,
+    GA,
+    goalsPerGame: MP ? G / MP : 0,
+    assistsPerGame: MP ? A / MP : 0,
+    pctOfGF: GF ? G / GF : 0,
+  };
 }
 
-// ---- Game modal ----
-
-function openGameModal(gameId) {
-  editingGameId = gameId || null;
-  const game = gameId ? state.games.find((g) => g.id === gameId) : null;
-  document.getElementById("gameModalTitle").textContent = game ? "Edit game" : "Add game";
-
-  const teamSelect = document.getElementById("gameTeam");
-  const teams = state.teams.slice().sort((a, b) => (a.season < b.season ? 1 : -1));
-  teamSelect.innerHTML = teams
-    .map((t) => `<option value="${t.id}">${escapeHtml(t.name)} (${escapeHtml(t.season)})</option>`)
-    .join("");
-
-  if (teams.length === 0) {
-    alert("Add a team first before logging a game.");
-    return;
-  }
-
-  teamSelect.value = game ? game.teamId : teams[0].id;
-  document.getElementById("gameDate").value = game ? game.date : new Date().toISOString().slice(0, 10);
-  document.getElementById("gameOpponent").value = game ? game.opponent : "";
-  document.getElementById("gameNotes").value = game ? game.notes || "" : "";
-
-  renderGamePlayerBlocks(game);
-  document.getElementById("gameModalOverlay").classList.add("open");
+function gamesForPlayer(player) {
+  return allGames.filter((g) => g.player === player);
 }
 
-function renderGamePlayerBlocks(game) {
-  const teamId = document.getElementById("gameTeam").value;
-  const team = getTeam(teamId);
-  const container = document.getElementById("gamePlayerBlocks");
-  const players = team ? team.players : [];
-  container.innerHTML = players
+function seasonYearFilteredGames(entries) {
+  if (filters.seasonYears.size === 0) return entries;
+  return entries.filter((g) => filters.seasonYears.has(seasonYearOf(g.season)));
+}
+
+function teamFilteredGames(entries) {
+  if (filters.teams.size === 0) return entries;
+  return entries.filter((g) => filters.teams.has(g.team));
+}
+
+function applyPivotFilters(entries) {
+  return teamFilteredGames(seasonYearFilteredGames(entries));
+}
+
+function render() {
+  renderStatCards();
+  renderPivotControls();
+  renderPivotTable();
+  renderGames();
+}
+
+function renderStatCards() {
+  const grid = document.getElementById("statGrid");
+  const players = filters.player === "Both" ? PLAYERS : [filters.player];
+  grid.innerHTML = players
     .map((p) => {
-      const existing = game ? game.entries.find((e) => e.player === p) : null;
+      const stats = computeStats(applyPivotFilters(gamesForPlayer(p)));
+      const accentVar = p === "Ellie" ? "var(--series-ellie)" : "var(--series-lilly)";
       return `
-        <div class="player-entry-block ${p}">
-          <div class="player-entry-title">${p}</div>
-          <div class="field-row">
-            <div class="field">
-              <label>Goals</label>
-              <input type="number" min="0" step="1" id="entryGoals_${p}" value="${existing ? existing.goals : 0}">
-            </div>
-            <div class="field">
-              <label>Assists</label>
-              <input type="number" min="0" step="1" id="entryAssists_${p}" value="${existing ? existing.assists : 0}">
-            </div>
+        <div class="stat-card" style="--accent:${accentVar}">
+          <div class="player-name">${p}</div>
+          <div class="metrics">
+            <div class="metric"><div class="value">${stats.G}</div><div class="label">Goals</div></div>
+            <div class="metric"><div class="value">${stats.A}</div><div class="label">Assists</div></div>
+            <div class="metric"><div class="value">${stats.MP}</div><div class="label">Games</div></div>
+            <div class="metric"><div class="value">${stats.goalsPerGame.toFixed(2)}</div><div class="label">Goals / game</div></div>
+            <div class="metric"><div class="value">${(stats.pctOfGF * 100).toFixed(0)}%</div><div class="label">% of team GF</div></div>
+            <div class="metric"><div class="value">${stats.GF}-${stats.GA}</div><div class="label">Team GF-GA</div></div>
           </div>
         </div>`;
     })
     .join("");
 }
 
-function closeGameModal() {
-  document.getElementById("gameModalOverlay").classList.remove("open");
-  editingGameId = null;
+function allSeasonYears() {
+  return Array.from(new Set(allGames.map((g) => seasonYearOf(g.season)))).sort().reverse();
 }
 
-function saveGame() {
-  const teamId = document.getElementById("gameTeam").value;
-  const team = getTeam(teamId);
-  const date = document.getElementById("gameDate").value;
-  const opponent = document.getElementById("gameOpponent").value.trim();
-  const notes = document.getElementById("gameNotes").value.trim();
+function teamsInSelectedSeasonYears() {
+  const games = seasonYearFilteredGames(allGames);
+  return Array.from(new Set(games.map((g) => g.team))).sort();
+}
 
-  if (!date || !opponent) {
-    alert("Please fill in the date and opponent.");
+function renderPivotControls() {
+  document.getElementById("groupBySelect").value = filters.groupBy;
+
+  const seasonYearContainer = document.getElementById("seasonYearChips");
+  seasonYearContainer.innerHTML = allSeasonYears()
+    .map(
+      (sy) =>
+        `<span class="chip ${filters.seasonYears.has(sy) ? "active" : ""}" data-season-year="${escapeHtml(sy)}">${escapeHtml(sy)}</span>`
+    )
+    .join("");
+
+  const teamContainer = document.getElementById("teamChips");
+  teamContainer.innerHTML = teamsInSelectedSeasonYears()
+    .map(
+      (t) =>
+        `<span class="chip ${filters.teams.has(t) ? "active" : ""}" data-team="${escapeHtml(t)}">${escapeHtml(t)}</span>`
+    )
+    .join("");
+}
+
+function groupKeyFns() {
+  switch (filters.groupBy) {
+    case "teamSeason":
+      return { key: (g) => `${g.team}|${g.season}`, cols: (g) => [g.team, g.season] , headers: ["Team", "Season"] };
+    case "season":
+      return { key: (g) => g.season, cols: (g) => [g.season], headers: ["Season"] };
+    case "seasonYear":
+      return { key: (g) => seasonYearOf(g.season), cols: (g) => [seasonYearOf(g.season)], headers: ["Season"] };
+    default:
+      return { key: (g) => g.team, cols: (g) => [g.team], headers: ["Team"] };
+  }
+}
+
+function renderPivotTable() {
+  const table = document.getElementById("pivotTable");
+  const players = filters.player === "Both" ? PLAYERS : [filters.player];
+  const entries = applyPivotFilters(allGames.filter((g) => players.includes(g.player)));
+
+  const { key, cols, headers } = groupKeyFns();
+  const groups = new Map();
+  for (const g of entries) {
+    const k = key(g);
+    if (!groups.has(k)) groups.set(k, { cols: cols(g), rows: [] });
+    groups.get(k).rows.push(g);
+  }
+
+  const rows = Array.from(groups.values())
+    .map((group) => ({ cols: group.cols, stats: computeStats(group.rows) }))
+    .sort((a, b) => b.stats.MP - a.stats.MP);
+
+  if (rows.length === 0) {
+    table.innerHTML = "";
+    table.insertAdjacentHTML(
+      "afterend",
+      ""
+    );
+    document.getElementById("pivotTable").outerHTML =
+      '<div class="empty-state" id="pivotTable">No games match the current filters.</div>';
     return;
   }
 
-  const entries = team.players.map((p) => ({
-    player: p,
-    goals: Number(document.getElementById("entryGoals_" + p).value) || 0,
-    assists: Number(document.getElementById("entryAssists_" + p).value) || 0,
-  }));
+  table.innerHTML = `
+    <thead>
+      <tr>
+        ${headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}
+        <th>MP</th><th>G</th><th>G/MP</th><th>% of GF</th><th>A</th><th>A/MP</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows
+        .map(
+          (r) => `
+        <tr>
+          ${r.cols.map((c) => `<td>${escapeHtml(c)}</td>`).join("")}
+          <td>${r.stats.MP}</td>
+          <td>${r.stats.G}</td>
+          <td>${r.stats.goalsPerGame.toFixed(2)}</td>
+          <td>${(r.stats.pctOfGF * 100).toFixed(0)}%</td>
+          <td>${r.stats.A}</td>
+          <td>${r.stats.assistsPerGame.toFixed(2)}</td>
+        </tr>`
+        )
+        .join("")}
+    </tbody>`;
+}
 
-  if (editingGameId) {
-    const game = state.games.find((g) => g.id === editingGameId);
-    Object.assign(game, { teamId, date, opponent, notes, entries });
-  } else {
-    state.games.push({ id: uid(), teamId, date, opponent, notes, entries });
+function renderGames() {
+  const container = document.getElementById("gamesList");
+  const players = filters.player === "Both" ? PLAYERS : [filters.player];
+  const entries = applyPivotFilters(allGames.filter((g) => players.includes(g.player)));
+
+  const byGame = new Map();
+  for (const e of entries) {
+    const k = uniqueGameKey(e);
+    if (!byGame.has(k)) byGame.set(k, []);
+    byGame.get(k).push(e);
   }
-  closeGameModal();
-  persist();
-}
 
-function deleteGame(id) {
-  if (!confirm("Delete this game entry?")) return;
-  state.games = state.games.filter((g) => g.id !== id);
-  persist();
-}
+  const games = Array.from(byGame.values()).sort((a, b) => (a[0].date < b[0].date ? 1 : -1));
 
-// ---- CSV export (manual backup bridge until OneDrive sync is wired up) ----
+  if (games.length === 0) {
+    container.innerHTML = `<div class="empty-state">No games logged yet for this filter.</div>`;
+    return;
+  }
+
+  container.innerHTML = games
+    .map((rows) => {
+      const first = rows[0];
+      const entryHtml = rows
+        .map(
+          (e) =>
+            `<div class="entry ${e.player}"><span class="name">${e.player}</span> &mdash; ${e.goals}G ${e.assists}A</div>`
+        )
+        .join("");
+      return `
+        <div class="game-card">
+          <div class="row1">
+            <span class="opponent">vs ${escapeHtml(first.opponent)}</span>
+            <span class="score">${first.teamGoalsFor}-${first.teamGoalsAgainst}</span>
+            <span class="date">${fmtDate(first.date)}</span>
+          </div>
+          <div class="team-tag">${escapeHtml(first.team)} &middot; ${escapeHtml(first.season)}</div>
+          <div class="entries">${entryHtml}</div>
+        </div>`;
+    })
+    .join("");
+}
 
 function exportCsv() {
-  const rows = [["Date", "Season", "Team", "Player", "Opponent", "Goals", "Assists", "Notes"]];
-  state.games
+  const rows = [
+    ["Date", "Season", "Team", "Opponent", "Player", "Goals", "Assists", "Team GF", "Team GA", "Notes"],
+  ];
+  allGames
     .slice()
     .sort((a, b) => (a.date < b.date ? -1 : 1))
     .forEach((g) => {
-      const team = getTeam(g.teamId);
-      g.entries.forEach((e) => {
-        rows.push([g.date, team ? team.season : "", team ? team.name : "", e.player, g.opponent, e.goals, e.assists, g.notes || ""]);
-      });
+      rows.push([g.date, g.season, g.team, g.opponent, g.player, g.goals, g.assists, g.teamGoalsFor, g.teamGoalsAgainst, g.notes || ""]);
     });
   const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
@@ -813,14 +667,17 @@ function exportCsv() {
   URL.revokeObjectURL(url);
 }
 
-// ---- Wire up ----
+async function loadData() {
+  const res = await fetch("data/games.json", { cache: "no-store" });
+  const data = await res.json();
+  allGames = data.games || [];
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("seasonFilter").addEventListener("change", (e) => {
-    filters.season = e.target.value;
-    render();
-  });
+  // Default the season filter to the most recent full soccer year.
+  const seasonYears = allSeasonYears();
+  if (seasonYears.length > 0) filters.seasonYears.add(seasonYears[0]);
+}
 
+document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll(".player-tabs button").forEach((btn) => {
     btn.addEventListener("click", () => {
       filters.player = btn.dataset.player;
@@ -829,34 +686,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  document.getElementById("addGameBtn").addEventListener("click", () => openGameModal(null));
-  document.getElementById("addTeamBtn").addEventListener("click", () => openTeamModal(null));
+  document.getElementById("groupBySelect").addEventListener("change", (e) => {
+    filters.groupBy = e.target.value;
+    renderPivotTable();
+  });
+
+  document.getElementById("seasonYearChips").addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    const sy = chip.dataset.seasonYear;
+    if (filters.seasonYears.has(sy)) filters.seasonYears.delete(sy);
+    else filters.seasonYears.add(sy);
+    filters.teams.clear(); // team filter is scoped to season-year selection; reset it
+    render();
+  });
+
+  document.getElementById("teamChips").addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    const t = chip.dataset.team;
+    if (filters.teams.has(t)) filters.teams.delete(t);
+    else filters.teams.add(t);
+    render();
+  });
+
   document.getElementById("exportCsvBtn").addEventListener("click", exportCsv);
 
-  document.getElementById("gameTeam").addEventListener("change", () => renderGamePlayerBlocks(null));
-  document.getElementById("saveGameBtn").addEventListener("click", saveGame);
-  document.getElementById("cancelGameBtn").addEventListener("click", closeGameModal);
-
-  document.getElementById("saveTeamBtn").addEventListener("click", saveTeam);
-  document.getElementById("cancelTeamBtn").addEventListener("click", closeTeamModal);
-
-  document.getElementById("gamesList").addEventListener("click", (e) => {
-    const btn = e.target.closest("button[data-action]");
-    if (!btn) return;
-    const id = btn.dataset.id;
-    if (btn.dataset.action === "edit-game") openGameModal(id);
-    if (btn.dataset.action === "delete-game") deleteGame(id);
-  });
-
-  document.getElementById("teamsList").addEventListener("click", (e) => {
-    const btn = e.target.closest("button[data-action]");
-    if (!btn) return;
-    if (btn.dataset.action === "edit-team") openTeamModal(btn.dataset.id);
-  });
-
+  await loadData();
   render();
 });
   </script>
 </body>
 </html>
-
