@@ -275,7 +275,7 @@ table.data-table td.empty-cell {
       </div>
       <div class="games-filters">
         <select id="playerFilter">
-          <option value="Both">Both</option>
+          <option value="Both">Both Players</option>
           <option value="Ellie">Ellie</option>
           <option value="Lilly">Lilly</option>
         </select>
@@ -478,7 +478,7 @@ function populateGameFilters() {
     .sort()
     .reverse();
   seasonSelect.innerHTML =
-    `<option value="">All</option>` +
+    `<option value="">All Seasons</option>` +
     seasonYears.map((sy) => `<option value="${escapeHtml(sy)}">${escapeHtml(sy)}</option>`).join("");
 
   const teams = Array.from(new Set(allGames.map((g) => g.team))).sort();
