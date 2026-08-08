@@ -199,16 +199,12 @@ table.summary-table tr.player-section.player-Ellie td { color: var(--series-elli
 table.summary-table tr.player-section.player-Lilly td { color: var(--series-lilly); border-left-color: var(--series-lilly); background: color-mix(in srgb, var(--series-lilly) 8%, var(--surface-1)); }
 table.summary-table tr.player-section.player-Both td { color: var(--series-both); border-left-color: var(--series-both); background: color-mix(in srgb, var(--series-both) 10%, var(--surface-1)); }
 
-table.summary-table tr.season-section td {
-  text-align: left;
-  color: var(--text-secondary);
-  font-weight: 600;
-  background: var(--surface-2);
-  padding-left: 24px;
-}
-
 table.summary-table td.team-cell, table.summary-table th.team-cell {
   text-align: left;
+}
+
+table.summary-table td.team-cell.team-indent {
+  padding-left: 24px;
 }
 
 table.summary-table tr.all-row td {
@@ -428,20 +424,20 @@ function renderSummaryTable() {
     .map((r, i) => {
       const prev = rows[i - 1];
       const isNewPlayer = !prev || prev.player !== r.player;
-      const isNewSeason = isNewPlayer || prev.seasonYear !== r.seasonYear;
 
       const playerSectionRow = isNewPlayer
         ? `<tr class="player-section player-${r.player}"><td colspan="${SUMMARY_COLUMN_COUNT}">${escapeHtml(r.player)}</td></tr>`
         : "";
-      const seasonSectionRow = isNewSeason
-        ? `<tr class="season-section"><td colspan="${SUMMARY_COLUMN_COUNT}">${escapeHtml(r.seasonYear)}</td></tr>`
-        : "";
+
+      // The season's own row doubles as its "all teams" total (bold values
+      // next to the season year); team rows beneath it are indented.
+      const teamLabel = r.isAllRow ? r.seasonYear : r.team;
+      const teamCellClass = r.isAllRow ? "team-cell" : "team-cell team-indent";
 
       return `
         ${playerSectionRow}
-        ${seasonSectionRow}
         <tr class="player-${r.player} ${r.isAllRow ? "all-row" : ""}">
-          <td class="team-cell">${escapeHtml(r.team)}</td>
+          <td class="${teamCellClass}">${escapeHtml(teamLabel)}</td>
           <td>${r.stats.MP}</td>
           <td>${r.stats.GF}-${r.stats.GA}</td>
           <td>${r.stats.G}</td>
@@ -456,7 +452,7 @@ function renderSummaryTable() {
   table.innerHTML = `
     <thead>
       <tr>
-        <th class="team-cell">Team</th>
+        <th class="team-cell"></th>
         <th title="Matches">M</th>
         <th title="Team goals for - goals against">GF-GA</th>
         <th title="Goals">G</th>
