@@ -413,7 +413,7 @@ function buildSummaryRows() {
   return rows;
 }
 
-// Team, M, GF-GA, G, G/M, %GF, A, A/M
+// Team, M, GF-GA, G, G/M, GF%, A, A/M
 const SUMMARY_COLUMN_COUNT = 8;
 
 function renderSummaryTable() {
@@ -457,7 +457,7 @@ function renderSummaryTable() {
         <th title="Team goals for - goals against">GF-GA</th>
         <th title="Goals">G</th>
         <th title="Goals per match">G/M</th>
-        <th title="Percent of team's total goals for">%GF</th>
+        <th title="Percent of team's total goals for">GF%</th>
         <th title="Assists">A</th>
         <th title="Assists per match">A/M</th>
       </tr>
