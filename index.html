@@ -507,7 +507,7 @@ function renderGames() {
 
   const bodyHtml =
     rows.length === 0
-      ? `<tr><td class="empty-cell" colspan="2">No games logged yet for this filter.</td></tr>`
+      ? `<tr><td class="empty-cell" colspan="3">No games logged yet for this filter.</td></tr>`
       : rows
           .map(
             (g) => `
@@ -515,12 +515,14 @@ function renderGames() {
           <td>
             <div class="player-name player-${g.player}">${escapeHtml(g.player)}</div>
             <div>${fmtDate(g.date)}</div>
-            <div>${formatGoalsAssists(g.goals, g.assists)}</div>
           </td>
           <td>
             <div>${escapeHtml(g.team)}</div>
             <div>v. ${escapeHtml(g.opponent)}</div>
+          </td>
+          <td>
             <div>${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</div>
+            <div>${formatGoalsAssists(g.goals, g.assists)}</div>
           </td>
         </tr>`
           )
@@ -529,8 +531,9 @@ function renderGames() {
   table.innerHTML = `
     <thead>
       <tr>
-        <th><div>Player</div><div>Date</div><div>Goals, Assists</div></th>
-        <th><div>Team</div><div>Opponent</div><div>Team GF-GA</div></th>
+        <th><div>Player</div><div>Date</div></th>
+        <th><div>Team</div><div>Opponent</div></th>
+        <th><div>Team GF-GA</div><div>Goals, Assists</div></th>
       </tr>
     </thead>
     <tbody>${bodyHtml}</tbody>`;
