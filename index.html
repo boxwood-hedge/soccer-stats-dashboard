@@ -297,7 +297,7 @@ table.data-table td.empty-cell {
           <option value="Lilly">Lilly</option>
         </select>
         <select id="seasonFilter"><option value="">All seasons</option></select>
-        <select id="teamFilter"><option value="">All teams</option></select>
+        <select id="teamFilter"><option value="">All Teams</option></select>
       </div>
       <div class="table-scroll">
         <table class="data-table stacked-table" id="gamesTable"></table>
@@ -505,7 +505,7 @@ function populateGameFilters() {
 
   const teams = Array.from(new Set(allGames.map((g) => g.team))).sort();
   teamSelect.innerHTML =
-    `<option value="">All teams</option>` +
+    `<option value="">All Teams</option>` +
     teams.map((t) => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
 }
 
