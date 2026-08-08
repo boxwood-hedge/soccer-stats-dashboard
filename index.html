@@ -236,8 +236,36 @@ table.summary-table tr.all-row.player-Ellie td:not(.player-cell):not(.season-cel
 table.summary-table tr.all-row.player-Lilly td:not(.player-cell):not(.season-cell) { background: color-mix(in srgb, var(--series-lilly) 8%, var(--surface-1)); }
 table.summary-table tr.all-row.player-Both td:not(.player-cell):not(.season-cell) { background: color-mix(in srgb, var(--series-both) 10%, var(--surface-1)); }
 
-table.data-table td.player-name.player-Ellie { color: var(--series-ellie); font-weight: 700; }
-table.data-table td.player-name.player-Lilly { color: var(--series-lilly); font-weight: 700; }
+.player-name.player-Ellie { color: var(--series-ellie); }
+.player-name.player-Lilly { color: var(--series-lilly); }
+
+table.stacked-table th, table.stacked-table td {
+  text-align: left;
+  white-space: normal;
+  vertical-align: top;
+}
+
+table.stacked-table th div {
+  display: block;
+}
+table.stacked-table th div:not(:first-child) {
+  margin-top: 2px;
+}
+
+table.stacked-table td .line-primary,
+table.stacked-table td .player-name {
+  font-weight: 700;
+}
+table.stacked-table td .line-secondary {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 2px;
+}
+table.stacked-table td .line-muted {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
 
 .empty-state {
   text-align: center;
@@ -291,7 +319,7 @@ table.data-table td.empty-cell {
         <select id="teamFilter"><option value="">All teams</option></select>
       </div>
       <div class="table-scroll">
-        <table class="data-table" id="gamesTable"></table>
+        <table class="data-table stacked-table" id="gamesTable"></table>
       </div>
     </div>
   </div>
@@ -497,19 +525,25 @@ function renderGames() {
 
   const bodyHtml =
     rows.length === 0
-      ? `<tr><td class="empty-cell" colspan="8">No games logged yet for this filter.</td></tr>`
+      ? `<tr><td class="empty-cell" colspan="3">No games logged yet for this filter.</td></tr>`
       : rows
           .map(
             (g) => `
         <tr>
-          <td class="player-name player-${g.player}">${escapeHtml(g.player)}</td>
-          <td>${escapeHtml(g.season)}</td>
-          <td>${fmtDate(g.date)}</td>
-          <td>${escapeHtml(g.team)}</td>
-          <td>${escapeHtml(g.opponent)}</td>
-          <td>${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</td>
-          <td>${g.goals}</td>
-          <td>${g.assists}</td>
+          <td>
+            <div class="player-name player-${g.player}">${escapeHtml(g.player)}</div>
+            <div class="line-secondary">${escapeHtml(g.season)}</div>
+            <div class="line-muted">${fmtDate(g.date)}</div>
+          </td>
+          <td>
+            <div class="line-primary">${escapeHtml(g.team)}</div>
+            <div class="line-secondary">v. ${escapeHtml(g.opponent)}</div>
+            <div class="line-muted">${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</div>
+          </td>
+          <td>
+            <div class="line-primary">${g.goals} G</div>
+            <div class="line-secondary">${g.assists} A</div>
+          </td>
         </tr>`
           )
           .join("");
@@ -517,8 +551,9 @@ function renderGames() {
   table.innerHTML = `
     <thead>
       <tr>
-        <th>Player</th><th>Season</th><th>Date</th><th>Team</th><th>Opponent</th>
-        <th>Team GF-GA</th><th>Goals</th><th>Assists</th>
+        <th><div>Player</div><div>Season</div><div>Date</div></th>
+        <th><div>Team</div><div>Opponent</div><div>Team GF-GA</div></th>
+        <th><div>Goals</div><div>Assists</div></th>
       </tr>
     </thead>
     <tbody>${bodyHtml}</tbody>`;
