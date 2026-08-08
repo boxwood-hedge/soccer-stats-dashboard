@@ -191,20 +191,20 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 table.summary-table tr.player-section td {
   text-align: left;
   font-weight: 700;
-  background: var(--surface-2);
   border-left: 4px solid transparent;
   padding-top: 10px;
   padding-bottom: 10px;
 }
-table.summary-table tr.player-section.player-Ellie td { color: var(--series-ellie); border-left-color: var(--series-ellie); }
-table.summary-table tr.player-section.player-Lilly td { color: var(--series-lilly); border-left-color: var(--series-lilly); }
-table.summary-table tr.player-section.player-Both td { color: var(--series-both); border-left-color: var(--series-both); }
+table.summary-table tr.player-section.player-Ellie td { color: var(--series-ellie); border-left-color: var(--series-ellie); background: color-mix(in srgb, var(--series-ellie) 8%, var(--surface-1)); }
+table.summary-table tr.player-section.player-Lilly td { color: var(--series-lilly); border-left-color: var(--series-lilly); background: color-mix(in srgb, var(--series-lilly) 8%, var(--surface-1)); }
+table.summary-table tr.player-section.player-Both td { color: var(--series-both); border-left-color: var(--series-both); background: color-mix(in srgb, var(--series-both) 10%, var(--surface-1)); }
 
-table.summary-table td.season-cell {
-  text-align: center;
+table.summary-table tr.season-section td {
+  text-align: left;
   color: var(--text-secondary);
   font-weight: 600;
   background: var(--surface-2);
+  padding-left: 24px;
 }
 
 table.summary-table td.team-cell, table.summary-table th.team-cell {
@@ -214,9 +214,6 @@ table.summary-table td.team-cell, table.summary-table th.team-cell {
 table.summary-table tr.all-row td {
   font-weight: 700;
 }
-table.summary-table tr.all-row.player-Ellie td:not(.season-cell) { background: color-mix(in srgb, var(--series-ellie) 8%, var(--surface-1)); }
-table.summary-table tr.all-row.player-Lilly td:not(.season-cell) { background: color-mix(in srgb, var(--series-lilly) 8%, var(--surface-1)); }
-table.summary-table tr.all-row.player-Both td:not(.season-cell) { background: color-mix(in srgb, var(--series-both) 10%, var(--surface-1)); }
 
 .player-name.player-Ellie { color: var(--series-ellie); }
 .player-name.player-Lilly { color: var(--series-lilly); }
@@ -420,8 +417,8 @@ function buildSummaryRows() {
   return rows;
 }
 
-// Season, Team, M, GF-GA, G, G/M, %GF, A, A/M
-const SUMMARY_COLUMN_COUNT = 9;
+// Team, M, GF-GA, G, G/M, %GF, A, A/M
+const SUMMARY_COLUMN_COUNT = 8;
 
 function renderSummaryTable() {
   const table = document.getElementById("summaryTable");
@@ -431,22 +428,19 @@ function renderSummaryTable() {
     .map((r, i) => {
       const prev = rows[i - 1];
       const isNewPlayer = !prev || prev.player !== r.player;
-      const seasonSpan = isNewPlayer || prev.seasonYear !== r.seasonYear
-        ? rows.filter((x) => x.player === r.player && x.seasonYear === r.seasonYear).length
-        : 0;
+      const isNewSeason = isNewPlayer || prev.seasonYear !== r.seasonYear;
 
-      const sectionRow = isNewPlayer
+      const playerSectionRow = isNewPlayer
         ? `<tr class="player-section player-${r.player}"><td colspan="${SUMMARY_COLUMN_COUNT}">${escapeHtml(r.player)}</td></tr>`
         : "";
-
-      const seasonCell = seasonSpan
-        ? `<td class="season-cell" rowspan="${seasonSpan}">${escapeHtml(r.seasonYear)}</td>`
+      const seasonSectionRow = isNewSeason
+        ? `<tr class="season-section"><td colspan="${SUMMARY_COLUMN_COUNT}">${escapeHtml(r.seasonYear)}</td></tr>`
         : "";
 
       return `
-        ${sectionRow}
+        ${playerSectionRow}
+        ${seasonSectionRow}
         <tr class="player-${r.player} ${r.isAllRow ? "all-row" : ""}">
-          ${seasonCell}
           <td class="team-cell">${escapeHtml(r.team)}</td>
           <td>${r.stats.MP}</td>
           <td>${r.stats.GF}-${r.stats.GA}</td>
@@ -462,7 +456,7 @@ function renderSummaryTable() {
   table.innerHTML = `
     <thead>
       <tr>
-        <th>Season</th><th class="team-cell">Team</th>
+        <th class="team-cell">Team</th>
         <th title="Matches">M</th>
         <th title="Team goals for - goals against">GF-GA</th>
         <th title="Goals">G</th>
