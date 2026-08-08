@@ -96,6 +96,14 @@ header.top .sub {
   color: var(--text-muted);
 }
 
+.summary-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .games-filters {
   display: flex;
   align-items: center;
@@ -281,6 +289,16 @@ table.data-table td.empty-cell {
       <div class="section-header">
         <h2>Summary</h2>
       </div>
+      <div class="summary-controls">
+        <select id="summarySeasonMode">
+          <option value="current">Season: Current</option>
+          <option value="all">Season: All</option>
+        </select>
+        <select id="summaryTeamDetail">
+          <option value="show">Team Detail: Show</option>
+          <option value="hide">Team Detail: Hide</option>
+        </select>
+      </div>
       <div class="table-scroll">
         <table class="data-table summary-table" id="summaryTable"></table>
       </div>
@@ -309,7 +327,8 @@ table.data-table td.empty-cell {
 const PLAYERS = ["Ellie", "Lilly"];
 
 let allGames = [];
-let filters = { player: "Both", season: "", team: "" }; // Games list only; the Summary table is fixed.
+let filters = { player: "Both", season: "", team: "" }; // Games list filters.
+let summaryFilters = { seasonMode: "current", teamDetail: "show" };
 
 function fmtDate(iso) {
   const [y, m, d] = iso.split("-");
@@ -397,12 +416,17 @@ function render() {
 // each team they played on that year (A-Z). "Both" only gets "All" rows,
 // combining the girls without double-counting shared games (see computeStats).
 function buildSummaryRows() {
-  const dataSeasonYears = allSeasonYears().filter(
-    (sy) => parseInt(sy, 10) >= EARLIEST_SUMMARY_YEAR
-  );
-  const seasonYears = Array.from(new Set([currentSeasonYear(), ...dataSeasonYears]))
-    .sort()
-    .reverse();
+  let seasonYears;
+  if (summaryFilters.seasonMode === "current") {
+    seasonYears = [currentSeasonYear()];
+  } else {
+    const dataSeasonYears = allSeasonYears().filter(
+      (sy) => parseInt(sy, 10) >= EARLIEST_SUMMARY_YEAR
+    );
+    seasonYears = Array.from(new Set([currentSeasonYear(), ...dataSeasonYears]))
+      .sort()
+      .reverse();
+  }
 
   const rows = [];
   for (const player of ["Ellie", "Lilly", "Both"]) {
@@ -414,7 +438,7 @@ function buildSummaryRows() {
 
       rows.push({ player, seasonYear: sy, team: "All", stats: computeStats(syGames), isAllRow: true });
 
-      if (player === "Both") continue; // no per-team breakdown for the combined view
+      if (player === "Both" || summaryFilters.teamDetail === "hide") continue;
 
       const teams = Array.from(new Set(syGames.map((g) => g.team))).sort();
       for (const team of teams) {
@@ -560,6 +584,16 @@ async function loadData() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  document.getElementById("summarySeasonMode").addEventListener("change", (e) => {
+    summaryFilters.seasonMode = e.target.value;
+    renderSummaryTable();
+  });
+
+  document.getElementById("summaryTeamDetail").addEventListener("change", (e) => {
+    summaryFilters.teamDetail = e.target.value;
+    renderSummaryTable();
+  });
+
   document.getElementById("playerFilter").addEventListener("change", (e) => {
     filters.player = e.target.value;
     renderGames();
