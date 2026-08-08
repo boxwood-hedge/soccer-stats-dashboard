@@ -96,34 +96,6 @@ header.top .sub {
   margin-bottom: 12px;
 }
 
-.player-tabs {
-  display: inline-flex;
-  gap: 4px;
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 3px;
-}
-
-.player-tabs button {
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.player-tabs button.active {
-  background: var(--surface-2);
-  color: var(--text-primary);
-  box-shadow: 0 0 0 1px var(--border);
-}
-
-.player-tabs button[data-player="Ellie"].active { color: var(--series-ellie); }
-.player-tabs button[data-player="Lilly"].active { color: var(--series-lilly); }
 
 .section {
   margin-bottom: 24px;
@@ -302,11 +274,11 @@ table.data-table td.empty-cell {
         <h2>Games</h2>
       </div>
       <div class="games-filters">
-        <div class="player-tabs">
-          <button data-player="Both" class="active">Both</button>
-          <button data-player="Ellie">Ellie</button>
-          <button data-player="Lilly">Lilly</button>
-        </div>
+        <select id="playerFilter">
+          <option value="Both">Both</option>
+          <option value="Ellie">Ellie</option>
+          <option value="Lilly">Lilly</option>
+        </select>
         <select id="seasonFilter"><option value="">All seasons</option></select>
         <select id="teamFilter"><option value="">All teams</option></select>
       </div>
@@ -494,7 +466,17 @@ function populateGameFilters() {
   const seasonSelect = document.getElementById("seasonFilter");
   const teamSelect = document.getElementById("teamFilter");
 
-  const seasons = Array.from(new Set(allGames.map((g) => g.season))).sort().reverse();
+  // Sort seasons by chronological recency (each season's earliest game date),
+  // not alphabetically - "Fall"/"Spring"/"Winter" don't sort correctly as text.
+  const seasonStartDate = new Map();
+  for (const g of allGames) {
+    if (!seasonStartDate.has(g.season) || g.date < seasonStartDate.get(g.season)) {
+      seasonStartDate.set(g.season, g.date);
+    }
+  }
+  const seasons = Array.from(seasonStartDate.keys()).sort((a, b) =>
+    seasonStartDate.get(a) < seasonStartDate.get(b) ? 1 : -1
+  );
   seasonSelect.innerHTML =
     `<option value="">All seasons</option>` +
     seasons.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
@@ -558,12 +540,9 @@ async function loadData() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  document.querySelectorAll(".player-tabs button").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      filters.player = btn.dataset.player;
-      document.querySelectorAll(".player-tabs button").forEach((b) => b.classList.toggle("active", b === btn));
-      renderGames();
-    });
+  document.getElementById("playerFilter").addEventListener("change", (e) => {
+    filters.player = e.target.value;
+    renderGames();
   });
 
   document.getElementById("seasonFilter").addEventListener("change", (e) => {
