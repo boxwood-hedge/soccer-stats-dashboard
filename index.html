@@ -462,24 +462,24 @@ function outcomeLetter(gf, ga) {
   return "T";
 }
 
+// "1 G, 2 A" - omits either part when it's zero, and is blank when both are zero.
+function formatGoalsAssists(goals, assists) {
+  const parts = [];
+  if (goals > 0) parts.push(`${goals} G`);
+  if (assists > 0) parts.push(`${assists} A`);
+  return parts.join(", ");
+}
+
 function populateGameFilters() {
   const seasonSelect = document.getElementById("seasonFilter");
   const teamSelect = document.getElementById("teamFilter");
 
-  // Sort seasons by chronological recency (each season's earliest game date),
-  // not alphabetically - "Fall"/"Spring"/"Winter" don't sort correctly as text.
-  const seasonStartDate = new Map();
-  for (const g of allGames) {
-    if (!seasonStartDate.has(g.season) || g.date < seasonStartDate.get(g.season)) {
-      seasonStartDate.set(g.season, g.date);
-    }
-  }
-  const seasons = Array.from(seasonStartDate.keys()).sort((a, b) =>
-    seasonStartDate.get(a) < seasonStartDate.get(b) ? 1 : -1
-  );
+  const seasonYears = Array.from(new Set([currentSeasonYear(), ...allGames.map((g) => seasonYearOf(g.season))]))
+    .sort()
+    .reverse();
   seasonSelect.innerHTML =
-    `<option value="">All seasons</option>` +
-    seasons.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
+    `<option value="">All</option>` +
+    seasonYears.map((sy) => `<option value="${escapeHtml(sy)}">${escapeHtml(sy)}</option>`).join("");
 
   const teams = Array.from(new Set(allGames.map((g) => g.team))).sort();
   teamSelect.innerHTML =
@@ -493,30 +493,26 @@ function renderGames() {
 
   const rows = allGames
     .filter((g) => players.includes(g.player))
-    .filter((g) => !filters.season || g.season === filters.season)
+    .filter((g) => !filters.season || seasonYearOf(g.season) === filters.season)
     .filter((g) => !filters.team || g.team === filters.team)
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 
   const bodyHtml =
     rows.length === 0
-      ? `<tr><td class="empty-cell" colspan="3">No games logged yet for this filter.</td></tr>`
+      ? `<tr><td class="empty-cell" colspan="2">No games logged yet for this filter.</td></tr>`
       : rows
           .map(
             (g) => `
         <tr>
           <td>
             <div class="player-name player-${g.player}">${escapeHtml(g.player)}</div>
-            <div>${escapeHtml(g.season)}</div>
             <div>${fmtDate(g.date)}</div>
+            <div>${formatGoalsAssists(g.goals, g.assists)}</div>
           </td>
           <td>
             <div>${escapeHtml(g.team)}</div>
             <div>v. ${escapeHtml(g.opponent)}</div>
             <div>${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</div>
-          </td>
-          <td>
-            <div>${g.goals} G</div>
-            <div>${g.assists} A</div>
           </td>
         </tr>`
           )
@@ -525,9 +521,8 @@ function renderGames() {
   table.innerHTML = `
     <thead>
       <tr>
-        <th><div>Player</div><div>Season</div><div>Date</div></th>
+        <th><div>Player</div><div>Date</div><div>Goals &amp; Assists</div></th>
         <th><div>Team</div><div>Opponent</div><div>Team GF-GA</div></th>
-        <th><div>Goals</div><div>Assists</div></th>
       </tr>
     </thead>
     <tbody>${bodyHtml}</tbody>`;
