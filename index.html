@@ -57,6 +57,14 @@
 
 * { box-sizing: border-box; }
 
+html {
+  /* Disable iOS Safari's automatic text-size inflation in table columns,
+     which recalculates on rotation and can balloon one column's font size
+     independently of the rest of the page. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   background: var(--surface-2);
