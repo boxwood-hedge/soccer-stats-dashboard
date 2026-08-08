@@ -252,18 +252,10 @@ table.stacked-table th div:not(:first-child) {
   margin-top: 2px;
 }
 
-table.stacked-table td .line-primary,
 table.stacked-table td .player-name {
   font-weight: 700;
 }
-table.stacked-table td .line-secondary {
-  color: var(--text-secondary);
-  font-size: 12px;
-  margin-top: 2px;
-}
-table.stacked-table td .line-muted {
-  color: var(--text-muted);
-  font-size: 12px;
+table.stacked-table td div:not(:first-child) {
   margin-top: 2px;
 }
 
@@ -532,17 +524,17 @@ function renderGames() {
         <tr>
           <td>
             <div class="player-name player-${g.player}">${escapeHtml(g.player)}</div>
-            <div class="line-secondary">${escapeHtml(g.season)}</div>
-            <div class="line-muted">${fmtDate(g.date)}</div>
+            <div>${escapeHtml(g.season)}</div>
+            <div>${fmtDate(g.date)}</div>
           </td>
           <td>
-            <div class="line-primary">${escapeHtml(g.team)}</div>
-            <div class="line-secondary">v. ${escapeHtml(g.opponent)}</div>
-            <div class="line-muted">${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</div>
+            <div>${escapeHtml(g.team)}</div>
+            <div>v. ${escapeHtml(g.opponent)}</div>
+            <div>${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</div>
           </td>
           <td>
-            <div class="line-primary">${g.goals} G</div>
-            <div class="line-secondary">${g.assists} A</div>
+            <div>${g.goals} G</div>
+            <div>${g.assists} A</div>
           </td>
         </tr>`
           )
