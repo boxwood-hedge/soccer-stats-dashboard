@@ -948,21 +948,27 @@ function suppressFocusScroll(e) {
 
 // iOS can pan which part of the (unchanged-size) layout viewport is
 // currently visible when a keyboard opens, and position:fixed elements are
-// anchored to that layout viewport - not to whatever's actually visible -
-// so the modal can end up partly panned off-screen. Matching the overlay's
-// box to the Visual Viewport corrects that. Debounced so it only applies
-// once the keyboard's own slide animation has settled, rather than on every
-// intermediate resize event mid-animation, which was previously fighting
-// that animation and looked like a bounce.
+// anchored to that layout viewport - not to whatever's actually visible.
+// Moving/resizing the overlay itself to chase that (an earlier version of
+// this fix) leaves gaps that expose the real page, because the overlay's
+// own backdrop stops covering the area it moved away from. Instead, leave
+// the overlay covering the entire layout viewport at all times (its CSS
+// inset: 0 never changes) and only adjust the BOX inside it: push it down
+// by however far the visible area's top has shifted, and cap its height to
+// the visible area so it can never poke out past the bottom of the
+// backdrop - its own overflow-y: auto handles anything that doesn't fit.
+// Debounced so it only applies once the keyboard's own slide/resize
+// animation has settled, rather than on every intermediate event, which
+// was previously fighting that animation and looked like a bounce.
 let viewportSyncTimer = null;
 
 function syncAddGameOverlayToViewport() {
   const overlay = document.getElementById("addGameModalOverlay");
   if (!overlay.classList.contains("open") || !window.visualViewport) return;
   const vv = window.visualViewport;
-  overlay.style.height = `${vv.height}px`;
-  overlay.style.top = `${vv.offsetTop}px`;
-  overlay.style.left = `${vv.offsetLeft}px`;
+  const box = overlay.querySelector(".add-game-box");
+  overlay.style.paddingTop = `${vv.offsetTop + 24}px`;
+  box.style.maxHeight = `${vv.height - 48}px`;
 }
 
 function scheduleViewportSync() {
@@ -995,11 +1001,13 @@ function openAddGameModal() {
 }
 
 function closeAddGameModal() {
-  document.getElementById("addGameModalOverlay").classList.remove("open");
-  document.getElementById("addGameModalOverlay").style.cssText = "";
+  const overlay = document.getElementById("addGameModalOverlay");
+  overlay.classList.remove("open");
+  overlay.style.cssText = "";
+  overlay.querySelector(".add-game-box").style.maxHeight = "";
   if (viewportSyncTimer) clearTimeout(viewportSyncTimer);
   unlockBodyScroll();
-  document.getElementById("addGameModalOverlay").removeEventListener("focusin", suppressFocusScroll);
+  overlay.removeEventListener("focusin", suppressFocusScroll);
 }
 
 // Blank means "no score entered yet" and is preserved as null rather than
