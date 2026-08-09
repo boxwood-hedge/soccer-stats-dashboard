@@ -119,6 +119,8 @@ header.top h1 {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 .btn.small { padding: 4px 9px; font-size: 12px; }
 .btn.primary {
@@ -126,6 +128,12 @@ header.top h1 {
   border-color: var(--series-lilly);
   color: #ffffff;
 }
+.btn.accent {
+  background: color-mix(in srgb, var(--series-lilly) 14%, var(--surface-1));
+  border-color: color-mix(in srgb, var(--series-lilly) 40%, transparent);
+  color: var(--series-lilly);
+}
+.btn.accent:hover { background: color-mix(in srgb, var(--series-lilly) 22%, var(--surface-1)); }
 .btn.danger { color: var(--status-critical); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
@@ -353,7 +361,7 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
 
     <div class="section-header">
       <h2>Games</h2>
-      <button class="btn small" id="addGameBtn">+ Add game</button>
+      <button class="btn small accent" id="addGameBtn">+ Add game</button>
     </div>
 
     <div class="table-scroll">

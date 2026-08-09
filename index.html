@@ -156,6 +156,8 @@ header.top .sub {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .btn.small {
@@ -168,26 +170,18 @@ header.top .sub {
   border-color: var(--series-lilly);
   color: #ffffff;
 }
+.btn.accent {
+  background: color-mix(in srgb, var(--series-lilly) 14%, var(--surface-1));
+  border-color: color-mix(in srgb, var(--series-lilly) 40%, transparent);
+  color: var(--series-lilly);
+}
+.btn.accent:hover { background: color-mix(in srgb, var(--series-lilly) 22%, var(--surface-1)); }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
-
-.text-link {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font-family: inherit;
-}
-.text-link:hover { color: var(--text-primary); }
 
 .modal-overlay {
   position: fixed;
@@ -380,8 +374,8 @@ table.data-table td.empty-cell {
       <div class="section-header">
         <h2>Games</h2>
         <div class="header-actions">
-          <a href="#" class="text-link" id="exportExcelBtn">Export to Excel</a>
-          <a href="edit.html" class="text-link" id="editGamesLink">Edit games</a>
+          <a href="#" class="btn accent small" id="exportExcelBtn">Export to Excel</a>
+          <a href="edit.html" class="btn accent small" id="editGamesLink">Edit games</a>
         </div>
       </div>
       <div class="games-filters">
