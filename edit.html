@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Edit Games - Corman Soccer Stats</title>
+  <style>
+:root {
+  color-scheme: light;
+  --surface-1:      #fcfcfb;
+  --surface-2:      #f9f9f7;
+  --text-primary:   #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted:     #898781;
+  --gridline:       #e1e0d9;
+  --border:         rgba(11, 11, 11, 0.10);
+  --series-ellie:   #1f8f5f;
+  --series-lilly:   #2a78d6;
+  --status-critical:#d03b3b;
+  --status-good:    #0ca30c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --surface-2:      #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --border:         rgba(255, 255, 255, 0.10);
+    --series-ellie:   #3ecf94;
+    --series-lilly:   #3987e5;
+    --status-critical:#e66767;
+    --status-good:    #0ca30c;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1:      #1a1a19;
+  --surface-2:      #0d0d0d;
+  --text-primary:   #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted:     #898781;
+  --gridline:       #2c2c2a;
+  --border:         rgba(255, 255, 255, 0.10);
+  --series-ellie:   #3ecf94;
+  --series-lilly:   #3987e5;
+  --status-critical:#e66767;
+  --status-good:    #0ca30c;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 60px;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+header.top {
+  margin-bottom: 16px;
+  padding-top: 8px;
+}
+
+header.top h1 {
+  font-size: 20px;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  padding: 10px 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--gridline);
+}
+
+.status-msg {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.status-msg.error { color: var(--status-critical); }
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn.small { padding: 4px 9px; font-size: 12px; }
+.btn.primary {
+  background: var(--text-primary);
+  color: var(--surface-1);
+  border-color: var(--text-primary);
+}
+.btn.danger { color: var(--status-critical); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.section-header h2 {
+  font-size: 15px;
+  margin: 0;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.table-scroll { overflow-x: auto; border-radius: 12px; }
+
+table.edit-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+table.edit-table th, table.edit-table td {
+  padding: 6px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--gridline);
+  vertical-align: middle;
+}
+
+table.edit-table th {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+table.edit-table tr:last-child td { border-bottom: none; }
+
+table.edit-table input[type="date"],
+table.edit-table input[type="text"],
+table.edit-table input[type="number"] {
+  width: 100%;
+  min-width: 84px;
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 6px;
+}
+
+table.edit-table input[type="number"] { min-width: 56px; }
+table.edit-table td.notes-cell input { min-width: 140px; }
+table.edit-table td.team-cell input,
+table.edit-table td.opponent-cell input { min-width: 130px; }
+
+.player-radios {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+.player-radios label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.player-radios label.Ellie { color: var(--series-ellie); }
+.player-radios label.Lilly { color: var(--series-lilly); }
+
+.row-delete-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+.row-delete-btn:hover { color: var(--status-critical); }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 32px 16px;
+  background: var(--surface-1);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* -- password gate -- */
+.gate-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+.gate-box {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 320px;
+  width: 100%;
+}
+.gate-box h2 { margin: 0 0 12px; font-size: 17px; }
+.gate-box input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.gate-error {
+  color: var(--status-critical);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+  </style>
+</head>
+<body>
+  <div class="gate-overlay" id="gateOverlay">
+    <div class="gate-box">
+      <h2>Enter password</h2>
+      <input type="password" id="gatePassword" autocomplete="off">
+      <div class="gate-error" id="gateError" hidden>Incorrect password.</div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <a href="index.html" class="btn small">Cancel</a>
+        <button class="btn primary small" id="gateUnlockBtn">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app" id="editApp" hidden>
+    <header class="top">
+      <h1>Edit Games</h1>
+    </header>
+
+    <div class="toolbar">
+      <button class="btn" id="cancelBtn">Cancel</button>
+      <button class="btn primary" id="submitBtn">Submit</button>
+      <span class="status-msg" id="statusMsg"></span>
+    </div>
+
+    <div class="section-header">
+      <h2>Games</h2>
+      <button class="btn small" id="addGameBtn">+ Add game</button>
+    </div>
+
+    <div class="table-scroll">
+      <table class="edit-table" id="editTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Season</th>
+            <th>Team</th>
+            <th>Opponent</th>
+            <th>Player</th>
+            <th>Goals</th>
+            <th>Assists</th>
+            <th>Team GF</th>
+            <th>Team GA</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="editTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <datalist id="teamSuggestions"></datalist>
+
+  <script>
+// Vercel serverless function that holds the GitHub token server-side and
+// proxies the save. See api/README.md for setup.
+const SAVE_ENDPOINT = "https://soccer-stats-dashboard.vercel.app/api/save-games";
+
+// Not real security - just keeps casual visitors from poking at this page.
+const EDIT_PASSWORD = "soccer118";
+const EDIT_UNLOCK_KEY = "soccerEditUnlocked";
+
+let allGames = [];
+let nextRowId = 1;
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str ?? "";
+  return div.innerHTML;
+}
+
+function seasonYearOf(season) {
+  if (!season) return "Unknown";
+  const years = (season.match(/\d{2,4}/g) || []).map((y) =>
+    y.length === 2 ? 2000 + parseInt(y, 10) : parseInt(y, 10)
+  );
+  if (years.length === 0) return season;
+  const lower = season.toLowerCase();
+  let anchor;
+  if (lower.includes("winter")) anchor = Math.min(...years);
+  else if (lower.includes("spring") || lower.includes("summer")) anchor = years[0] - 1;
+  else anchor = years[0];
+  return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
+}
+
+function currentSeasonYear() {
+  const now = new Date();
+  const anchor = now.getMonth() + 1 >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+  return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
+}
+
+// -- password gate --
+
+function unlock() {
+  document.getElementById("gateOverlay").style.display = "none";
+  document.getElementById("editApp").hidden = false;
+  init();
+}
+
+function tryUnlockGate() {
+  if (document.getElementById("gatePassword").value === EDIT_PASSWORD) {
+    sessionStorage.setItem(EDIT_UNLOCK_KEY, "true");
+    unlock();
+  } else {
+    document.getElementById("gateError").hidden = false;
+  }
+}
+
+// -- row rendering --
+
+function blankGame() {
+  return {
+    date: new Date().toISOString().slice(0, 10),
+    season: "",
+    team: "",
+    opponent: "",
+    player: "Ellie",
+    goals: 0,
+    assists: 0,
+    teamGoalsFor: 0,
+    teamGoalsAgainst: 0,
+    notes: "",
+  };
+}
+
+function rowHtml(game, rowId) {
+  return `
+    <tr data-row-id="${rowId}">
+      <td><input type="date" class="cell-date" value="${escapeHtml(game.date)}"></td>
+      <td><input type="text" class="cell-season" value="${escapeHtml(game.season)}" placeholder="e.g. Fall 2026"></td>
+      <td class="team-cell"><input type="text" class="cell-team" value="${escapeHtml(game.team)}" list="teamSuggestions"></td>
+      <td class="opponent-cell"><input type="text" class="cell-opponent" value="${escapeHtml(game.opponent)}"></td>
+      <td>
+        <div class="player-radios">
+          <label class="Ellie"><input type="radio" name="player-${rowId}" value="Ellie" ${game.player === "Ellie" ? "checked" : ""}> Ellie</label>
+          <label class="Lilly"><input type="radio" name="player-${rowId}" value="Lilly" ${game.player === "Lilly" ? "checked" : ""}> Lilly</label>
+        </div>
+      </td>
+      <td><input type="number" min="0" class="cell-goals" value="${game.goals}"></td>
+      <td><input type="number" min="0" class="cell-assists" value="${game.assists}"></td>
+      <td><input type="number" min="0" class="cell-gf" value="${game.teamGoalsFor}"></td>
+      <td><input type="number" min="0" class="cell-ga" value="${game.teamGoalsAgainst}"></td>
+      <td class="notes-cell"><input type="text" class="cell-notes" value="${escapeHtml(game.notes || "")}"></td>
+      <td><button type="button" class="row-delete-btn" title="Delete this game">&times;</button></td>
+    </tr>`;
+}
+
+function renderRows(games) {
+  const tbody = document.getElementById("editTableBody");
+  tbody.innerHTML = games.map((g) => rowHtml(g, nextRowId++)).join("");
+}
+
+function addBlankRowAtTop() {
+  const tbody = document.getElementById("editTableBody");
+  tbody.insertAdjacentHTML("afterbegin", rowHtml(blankGame(), nextRowId++));
+  const firstInput = tbody.querySelector("tr:first-child .cell-date");
+  firstInput?.focus();
+  refreshTeamSuggestions();
+}
+
+function refreshTeamSuggestions() {
+  const cur = currentSeasonYear();
+  const teams = new Set();
+  allGames.forEach((g) => {
+    if (seasonYearOf(g.season) === cur) teams.add(g.team);
+  });
+  document.querySelectorAll("#editTableBody .cell-team").forEach((input) => {
+    const v = input.value.trim();
+    if (v) teams.add(v);
+  });
+  const datalist = document.getElementById("teamSuggestions");
+  datalist.innerHTML = Array.from(teams)
+    .sort()
+    .map((t) => `<option value="${escapeHtml(t)}">`)
+    .join("");
+}
+
+// -- collect + validate --
+
+function collectGames() {
+  const rows = Array.from(document.querySelectorAll("#editTableBody tr"));
+  const games = [];
+  for (let i = 0; i < rows.length; i++) {
+    const tr = rows[i];
+    const date = tr.querySelector(".cell-date").value;
+    const season = tr.querySelector(".cell-season").value.trim();
+    const team = tr.querySelector(".cell-team").value.trim();
+    const opponent = tr.querySelector(".cell-opponent").value.trim();
+    const playerInput = tr.querySelector("input[type=radio]:checked");
+    const player = playerInput ? playerInput.value : "";
+
+    if (!date || !season || !team || !opponent || !player) {
+      return { error: `Row ${i + 1} is missing a required field (date, season, team, opponent, or player).` };
+    }
+
+    games.push({
+      date,
+      season,
+      team,
+      opponent,
+      player,
+      goals: Number(tr.querySelector(".cell-goals").value) || 0,
+      assists: Number(tr.querySelector(".cell-assists").value) || 0,
+      teamGoalsFor: Number(tr.querySelector(".cell-gf").value) || 0,
+      teamGoalsAgainst: Number(tr.querySelector(".cell-ga").value) || 0,
+      notes: tr.querySelector(".cell-notes").value.trim(),
+    });
+  }
+  return { games };
+}
+
+// -- save via the Worker (holds the GitHub token server-side) --
+
+async function submitChanges() {
+  const statusEl = document.getElementById("statusMsg");
+  statusEl.classList.remove("error");
+
+  const { games, error } = collectGames();
+  if (error) {
+    statusEl.textContent = error;
+    statusEl.classList.add("error");
+    return;
+  }
+
+  document.getElementById("submitBtn").disabled = true;
+  statusEl.textContent = "Saving…";
+
+  try {
+    const resp = await fetch(SAVE_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: EDIT_PASSWORD, games }),
+    });
+    const result = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(result.error || `Save failed (${resp.status}).`);
+
+    statusEl.textContent = "Saved. Returning to dashboard…";
+    window.location.href = "index.html";
+  } catch (err) {
+    statusEl.textContent = "Couldn't save: " + err.message + ". Your edits are still here - try again.";
+    statusEl.classList.add("error");
+    document.getElementById("submitBtn").disabled = false;
+  }
+}
+
+// -- init --
+
+async function init() {
+  const res = await fetch("data/games.json", { cache: "no-store" });
+  const data = await res.json();
+  allGames = data.games || [];
+
+  const sorted = allGames.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+  renderRows(sorted);
+  refreshTeamSuggestions();
+
+  document.getElementById("editTableBody").addEventListener("click", (e) => {
+    const btn = e.target.closest(".row-delete-btn");
+    if (!btn) return;
+    if (confirm("Delete this game entry?")) {
+      btn.closest("tr").remove();
+    }
+  });
+
+  document.getElementById("editTableBody").addEventListener("input", (e) => {
+    if (e.target.classList.contains("cell-team")) refreshTeamSuggestions();
+  });
+
+  document.getElementById("addGameBtn").addEventListener("click", addBlankRowAtTop);
+  document.getElementById("submitBtn").addEventListener("click", submitChanges);
+  document.getElementById("cancelBtn").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (sessionStorage.getItem(EDIT_UNLOCK_KEY) === "true") {
+    unlock();
+  } else {
+    document.getElementById("gateUnlockBtn").addEventListener("click", tryUnlockGate);
+    document.getElementById("gatePassword").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") tryUnlockGate();
+    });
+    document.getElementById("gatePassword").focus();
+  }
+});
+  </script>
+</body>
+</html>
