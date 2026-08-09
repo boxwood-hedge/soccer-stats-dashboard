@@ -1098,6 +1098,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   populateGameFilters();
   render();
 });
+
+// Using the browser's own back button to get here (rather than a fresh
+// navigation) can restore this page from the back-forward cache instead of
+// loading it fresh - a frozen snapshot of the DOM from before an edit was
+// made, with none of this script re-running, so it can show stale data.
+// Forcing a real reload when that happens makes loadData() run again.
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) window.location.reload();
+});
   </script>
 </body>
 </html>
