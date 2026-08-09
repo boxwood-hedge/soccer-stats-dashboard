@@ -430,21 +430,11 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// Maps a raw season label (e.g. "Fall 2025", "Winter 25-26", "Spring 2026")
-// to the full soccer-year bucket it belongs to (e.g. "2025-26"). Winter spans
-// a calendar-year boundary and Spring/Summer follow the Fall that started the
-// same soccer year, so both anchor to the Fall's year.
-function seasonYearOf(season) {
-  if (!season) return "Unknown";
-  const years = (season.match(/\d{2,4}/g) || []).map((y) =>
-    y.length === 2 ? 2000 + parseInt(y, 10) : parseInt(y, 10)
-  );
-  if (years.length === 0) return season;
-  const lower = season.toLowerCase();
-  let anchor;
-  if (lower.includes("winter")) anchor = Math.min(...years);
-  else if (lower.includes("spring") || lower.includes("summer")) anchor = years[0] - 1;
-  else anchor = years[0]; // Fall, or anything unrecognized
+// Seasons run August through July, so a game's season-year bucket (e.g.
+// "2025-26") is inferred straight from its date.
+function seasonYearOf(dateInput) {
+  const d = new Date(dateInput);
+  const anchor = d.getMonth() + 1 >= 8 ? d.getFullYear() : d.getFullYear() - 1;
   return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
 }
 
@@ -480,7 +470,7 @@ function computeStats(entries) {
 }
 
 function allSeasonYears() {
-  return Array.from(new Set(allGames.map((g) => seasonYearOf(g.season)))).sort().reverse();
+  return Array.from(new Set(allGames.map((g) => seasonYearOf(g.date)))).sort().reverse();
 }
 
 // The Summary table only ever shows this full soccer-year and later (older
@@ -490,9 +480,7 @@ function allSeasonYears() {
 const EARLIEST_SUMMARY_YEAR = 2025;
 
 function currentSeasonYear() {
-  const now = new Date();
-  const anchor = now.getMonth() + 1 >= 8 ? now.getFullYear() : now.getFullYear() - 1;
-  return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
+  return seasonYearOf(new Date());
 }
 
 function render() {
@@ -522,7 +510,7 @@ function buildSummaryRows() {
     const playerGames = player === "Both" ? allGames : allGames.filter((g) => g.player === player);
 
     for (const sy of seasonYears) {
-      const syGames = playerGames.filter((g) => seasonYearOf(g.season) === sy);
+      const syGames = playerGames.filter((g) => seasonYearOf(g.date) === sy);
       if (syGames.length === 0 && sy !== currentSeasonYear()) continue;
 
       rows.push({ player, seasonYear: sy, team: "All", stats: computeStats(syGames), isAllRow: true });
@@ -609,7 +597,7 @@ function populateGameFilters() {
   const seasonSelect = document.getElementById("seasonFilter");
   const teamSelect = document.getElementById("teamFilter");
 
-  const seasonYears = Array.from(new Set([currentSeasonYear(), ...allGames.map((g) => seasonYearOf(g.season))]))
+  const seasonYears = Array.from(new Set([currentSeasonYear(), ...allGames.map((g) => seasonYearOf(g.date))]))
     .sort()
     .reverse();
   seasonSelect.innerHTML =
@@ -628,7 +616,7 @@ function renderGames() {
 
   const rows = allGames
     .filter((g) => players.includes(g.player))
-    .filter((g) => !filters.season || seasonYearOf(g.season) === filters.season)
+    .filter((g) => !filters.season || seasonYearOf(g.date) === filters.season)
     .filter((g) => !filters.team || g.team === filters.team)
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 
@@ -703,7 +691,7 @@ function exportToExcel() {
     .sort((a, b) => (a.date < b.date ? -1 : 1))
     .map((g) => ({
       Date: g.date,
-      Season: g.season,
+      Season: seasonYearOf(g.date),
       Team: g.team,
       Opponent: g.opponent,
       Player: g.player,
