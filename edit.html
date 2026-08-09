@@ -91,11 +91,17 @@ header.top h1 {
   z-index: 10;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   background: var(--surface-2);
   padding: 10px 0;
   margin-bottom: 12px;
   border-bottom: 1px solid var(--gridline);
+}
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .status-msg {
@@ -122,6 +128,12 @@ header.top h1 {
 }
 .btn.danger { color: var(--status-critical); }
 .btn:disabled { opacity: 0.5; cursor: default; }
+
+#submitBtn {
+  background: var(--series-lilly);
+  border-color: var(--series-lilly);
+  color: #ffffff;
+}
 
 .section-header {
   display: flex;
@@ -338,9 +350,11 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
     </header>
 
     <div class="toolbar">
-      <button class="btn" id="cancelBtn">Cancel</button>
-      <button class="btn primary" id="submitBtn">Submit</button>
       <span class="status-msg" id="statusMsg"></span>
+      <div class="toolbar-actions">
+        <button class="btn" id="cancelBtn">Cancel</button>
+        <button class="btn primary" id="submitBtn">Submit</button>
+      </div>
     </div>
 
     <div class="section-header">
@@ -397,18 +411,6 @@ function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str ?? "";
   return div.innerHTML;
-}
-
-// Seasons run August through July, so a game's season-year is inferred
-// straight from its date - no separate Fall/Winter/Spring label needed.
-function seasonYearOf(dateInput) {
-  const d = new Date(dateInput);
-  const anchor = d.getMonth() + 1 >= 8 ? d.getFullYear() : d.getFullYear() - 1;
-  return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
-}
-
-function currentSeasonYear() {
-  return seasonYearOf(new Date());
 }
 
 // -- date display (MM/DD/YY) <-> storage (ISO YYYY-MM-DD) --
@@ -524,15 +526,14 @@ function addBlankRowAtTop() {
   refreshTeamSuggestions();
 }
 
+const TEAM_SUGGESTION_WINDOW_DAYS = 30;
+
 function refreshTeamSuggestions() {
-  const cur = currentSeasonYear();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - TEAM_SUGGESTION_WINDOW_DAYS);
   const teams = new Set();
   allGames.forEach((g) => {
-    if (seasonYearOf(g.date) === cur) teams.add(g.team);
-  });
-  document.querySelectorAll("#editTableBody .cell-team").forEach((input) => {
-    const v = input.value.trim();
-    if (v) teams.add(v);
+    if (new Date(g.date) >= cutoff) teams.add(g.team);
   });
   const datalist = document.getElementById("teamSuggestions");
   datalist.innerHTML = Array.from(teams)
@@ -656,7 +657,6 @@ async function init() {
   });
 
   document.getElementById("editTableBody").addEventListener("input", (e) => {
-    if (e.target.classList.contains("cell-team")) refreshTeamSuggestions();
     if (e.target.classList.contains("cell-date")) {
       const cursorWasAtEnd = e.target.selectionStart === e.target.value.length;
       e.target.value = formatDateAsTyped(e.target.value);
