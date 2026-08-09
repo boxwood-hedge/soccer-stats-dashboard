@@ -216,7 +216,11 @@ header.top .sub {
   width: 100%;
   max-height: calc(100vh - 32px);
   overflow-y: auto;
-  overscroll-behavior: contain;
+  /* "contain" (the usual choice for a scrollable panel) still permits the
+     box's own rubber-band bounce, only stopping it from chaining to the
+     page behind it - "none" suppresses that local bounce entirely, which
+     is what we want since this box rarely needs to scroll at all. */
+  overscroll-behavior: none;
 }
 .modal-box h3 { margin: 0 0 10px; font-size: 16px; }
 .modal-box.add-game-box { max-width: 360px; }
@@ -925,7 +929,16 @@ function unlockBodyScroll() {
 // the modal box entirely while it's open, but let the box's own content
 // still scroll normally if it's taller than the viewport.
 function blockBackgroundTouchMove(e) {
-  if (!e.target.closest(".modal-box")) e.preventDefault();
+  const box = e.target.closest(".modal-box");
+  if (!box) {
+    e.preventDefault();
+    return;
+  }
+  // Only let the box's own touch-scroll through if it actually has
+  // overflow content to scroll - otherwise there's nothing legitimate to
+  // preserve, and blocking it too avoids any residual local bounce beyond
+  // what overscroll-behavior alone might suppress.
+  if (box.scrollHeight <= box.clientHeight) e.preventDefault();
 }
 
 // Belt-and-suspenders alongside the scroll lock: keep the overlay's own
