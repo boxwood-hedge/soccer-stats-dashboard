@@ -163,6 +163,73 @@ header.top .sub {
   font-size: 12px;
 }
 
+.btn.primary {
+  background: var(--text-primary);
+  color: var(--surface-1);
+  border-color: var(--text-primary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.edit-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.edit-link:hover { color: var(--text-primary); }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 320px;
+  width: 100%;
+}
+.modal-box h3 { margin: 0 0 12px; font-size: 16px; }
+
+.modal-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.modal-error {
+  color: var(--status-critical);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 select {
   font-family: inherit;
   font-size: 13px;
@@ -307,6 +374,10 @@ table.data-table td.empty-cell {
     <div class="section">
       <div class="section-header">
         <h2>Games</h2>
+        <div class="header-actions">
+          <button class="btn small" id="exportExcelBtn">Export to Excel</button>
+          <a href="edit.html" class="edit-link" id="editGamesLink">Edit games</a>
+        </div>
       </div>
       <div class="games-filters">
         <select id="playerFilter">
@@ -323,6 +394,19 @@ table.data-table td.empty-cell {
     </div>
   </div>
 
+  <div class="modal-overlay" id="passwordModalOverlay">
+    <div class="modal-box">
+      <h3>Enter password</h3>
+      <input type="password" class="modal-input" id="editPassword" autocomplete="off">
+      <div class="modal-error" id="editPasswordError" hidden>Incorrect password.</div>
+      <div class="modal-actions">
+        <button class="btn" id="passwordCancelBtn">Cancel</button>
+        <button class="btn primary" id="passwordUnlockBtn">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
 const PLAYERS = ["Ellie", "Lilly"];
 
@@ -583,6 +667,53 @@ async function loadData() {
   allGames = data.games || [];
 }
 
+// Not real security - just keeps casual visitors from poking at edit.html.
+// See edit.html for the same check (it must also gate direct visits there).
+const EDIT_PASSWORD = "soccer118";
+const EDIT_UNLOCK_KEY = "soccerEditUnlocked";
+
+function openPasswordModal() {
+  document.getElementById("editPassword").value = "";
+  document.getElementById("editPasswordError").hidden = true;
+  document.getElementById("passwordModalOverlay").classList.add("open");
+  document.getElementById("editPassword").focus();
+}
+
+function closePasswordModal() {
+  document.getElementById("passwordModalOverlay").classList.remove("open");
+}
+
+function tryUnlockEdit() {
+  if (document.getElementById("editPassword").value === EDIT_PASSWORD) {
+    sessionStorage.setItem(EDIT_UNLOCK_KEY, "true");
+    window.location.href = "edit.html";
+  } else {
+    document.getElementById("editPasswordError").hidden = false;
+  }
+}
+
+function exportToExcel() {
+  const rows = allGames
+    .slice()
+    .sort((a, b) => (a.date < b.date ? -1 : 1))
+    .map((g) => ({
+      Date: g.date,
+      Season: g.season,
+      Team: g.team,
+      Opponent: g.opponent,
+      Player: g.player,
+      Goals: g.goals,
+      Assists: g.assists,
+      "Team GF": g.teamGoalsFor,
+      "Team GA": g.teamGoalsAgainst,
+      Notes: g.notes || "",
+    }));
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Games");
+  XLSX.writeFile(workbook, "soccer-stats-export.xlsx");
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("summarySeasonMode").addEventListener("change", (e) => {
     summaryFilters.seasonMode = e.target.value;
@@ -608,6 +739,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     filters.team = e.target.value;
     renderGames();
   });
+
+  document.getElementById("editGamesLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (sessionStorage.getItem(EDIT_UNLOCK_KEY) === "true") {
+      window.location.href = "edit.html";
+      return;
+    }
+    openPasswordModal();
+  });
+
+  document.getElementById("passwordCancelBtn").addEventListener("click", closePasswordModal);
+  document.getElementById("passwordUnlockBtn").addEventListener("click", tryUnlockEdit);
+  document.getElementById("editPassword").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") tryUnlockEdit();
+  });
+
+  document.getElementById("exportExcelBtn").addEventListener("click", exportToExcel);
 
   await loadData();
   populateGameFilters();
