@@ -405,20 +405,18 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
   <datalist id="teamSuggestions"></datalist>
 
   <script>
-// Vercel serverless function that holds the GitHub token server-side and
-// proxies the save. See api/README.md for setup.
+// Vercel serverless functions that hold the GitHub token server-side and
+// proxy reads/saves through the live GitHub API. See api/README.md.
 const SAVE_ENDPOINT = "https://soccer-stats-dashboard.vercel.app/api/save-games";
-const GAMES_DATA_REPO = "boxwood-hedge/soccer-stats-dashboard";
+const GET_GAMES_ENDPOINT = "https://soccer-stats-dashboard.vercel.app/api/get-games";
 
-// Even raw.githubusercontent.com isn't guaranteed to reflect a commit the
-// instant it lands - there's a backend propagation window (separate from,
-// and not fixed by, cache-busting the CDN edge) that a save-then-immediately
-// -reload can race and lose. Since a successful save already hands us the
-// exact resulting array, stash it here and prefer it over a network fetch
-// for a little while, so an editor's own save is reflected with no race at
-// all instead of hoping the read wins the race. A stale tab left open falls
-// back to a real fetch once the stash expires, so it still picks up changes
-// made elsewhere.
+// Even the live GitHub API read is still an extra network round trip a
+// save-then-immediately-reload has to wait on. Since a successful save
+// already hands us the exact resulting array, stash it here and prefer it
+// over a fetch for a little while, so an editor's own save is reflected
+// with zero extra latency. A stale tab left open falls back to a real
+// fetch once the stash expires, so it still picks up changes made
+// elsewhere.
 const RECENT_SAVE_KEY = "soccerRecentSaveV1";
 const RECENT_SAVE_TTL_MS = 10 * 60 * 1000;
 
@@ -710,19 +708,17 @@ async function submitChanges() {
 
 // -- init --
 
-// Fetching the relative path would go through GitHub Pages, which can take
-// up to a minute to rebuild and serve a new deployment after a commit, on
-// top of its own CDN cache - editors expect to see their save reflected on
-// the read-only page right away. raw.githubusercontent.com serves straight
-// from the git repository with no separate deploy step, so a save is
-// visible here within a couple seconds; the cache-busting query param
-// avoids the CDN caching that URL too.
+// Both the relative path (via GitHub Pages) and raw.githubusercontent.com
+// sit behind caching/propagation layers that don't reliably line up with
+// when a save actually lands - GET_GAMES_ENDPOINT instead asks the GitHub
+// API directly for the file's current content, the same live call
+// save-games.js already uses to check the file's sha before every save.
 async function init() {
   const recent = readRecentSave();
   if (recent) {
     allGames = recent;
   } else {
-    const res = await fetch(`https://raw.githubusercontent.com/${GAMES_DATA_REPO}/main/data/games.json?_=${Date.now()}`, { cache: "no-store" });
+    const res = await fetch(`${GET_GAMES_ENDPOINT}?_=${Date.now()}`, { cache: "no-store" });
     const data = await res.json();
     allGames = data.games || [];
   }
