@@ -923,30 +923,12 @@ function unlockBodyScroll() {
   window.scrollTo(0, addGameScrollY);
 }
 
-// Older iOS versions can still show a rubber-band "bounce" flash of
-// whatever's behind a fixed-position element on a touch drag, even with
-// the body frozen and overscroll-behavior set - block touchmove outside
-// the modal box entirely while it's open, but let the box's own content
-// still scroll normally if it's taller than the viewport.
-function blockBackgroundTouchMove(e) {
-  const box = e.target.closest(".modal-box");
-  if (!box) {
-    e.preventDefault();
-    return;
-  }
-  // Only let the box's own touch-scroll through if it actually has
-  // overflow content to scroll - otherwise there's nothing legitimate to
-  // preserve, and blocking it too avoids any residual local bounce beyond
-  // what overscroll-behavior alone might suppress.
-  if (box.scrollHeight <= box.clientHeight) e.preventDefault();
-}
-
 // The actual trigger for the bounce/shift reported so far isn't scroll
 // physics at all - it's iOS Safari's own "scroll the focused input into
 // view" behavior, which fires the instant a field gains focus, independent
-// of whether the page can otherwise scroll. Overscroll-behavior and the
-// touchmove guard can't stop that. Immediately re-focusing with
-// {preventScroll: true} tells Safari not to scroll for this focus at all.
+// of whether the page can otherwise scroll. Overscroll-behavior alone can't
+// stop that. Immediately re-focusing with {preventScroll: true} tells
+// Safari not to scroll for this focus at all.
 let suppressingFocusScroll = false;
 
 function suppressFocusScroll(e) {
@@ -1009,7 +991,6 @@ function openAddGameModal() {
   lockBodyScroll();
   document.getElementById("addGameModalOverlay").classList.add("open");
   syncAddGameOverlayToViewport();
-  document.addEventListener("touchmove", blockBackgroundTouchMove, { passive: false });
   document.getElementById("addGameModalOverlay").addEventListener("focusin", suppressFocusScroll);
 }
 
@@ -1018,7 +999,6 @@ function closeAddGameModal() {
   document.getElementById("addGameModalOverlay").style.cssText = "";
   if (viewportSyncTimer) clearTimeout(viewportSyncTimer);
   unlockBodyScroll();
-  document.removeEventListener("touchmove", blockBackgroundTouchMove);
   document.getElementById("addGameModalOverlay").removeEventListener("focusin", suppressFocusScroll);
 }
 
