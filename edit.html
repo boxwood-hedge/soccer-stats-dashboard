@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <title>Edit Games - Corman Soccer Stats</title>
   <style>
 :root {
@@ -154,7 +154,7 @@ table.edit-table {
 table.edit-table th, table.edit-table td {
   padding: 8px;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
   border-bottom: 1px solid var(--gridline);
   white-space: normal;
 }
@@ -165,15 +165,16 @@ table.edit-table th {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   font-weight: 600;
+  vertical-align: top;
 }
 table.edit-table th div { display: block; white-space: nowrap; }
 table.edit-table th div:not(:first-child) { margin-top: 2px; }
 
-table.edit-table td.delete-cell { width: 1%; }
+table.edit-table td.delete-cell { width: 1%; padding-left: 2px; padding-right: 4px; text-align: center; }
 
-table.edit-table tr:last-child td { border-bottom: none; }
-
-table.edit-table td > * + * { margin-top: 6px; }
+table.edit-table tr.row-top td { border-bottom: none; padding-bottom: 3px; }
+table.edit-table tr.row-bottom td { padding-top: 3px; }
+table.edit-table tbody tr.row-bottom:last-child td { border-bottom: none; }
 
 table.edit-table input[type="date"],
 table.edit-table input[type="text"],
@@ -190,21 +191,21 @@ table.edit-table input[type="number"] {
 
 .player-radios {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   white-space: nowrap;
 }
 .player-radios label {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-size: 11px;
+  gap: 1px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
 .player-radios input[type="radio"] {
   margin: 0;
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
 }
 .player-radios label.Ellie { color: var(--series-ellie); }
 .player-radios label.Lilly { color: var(--series-lilly); }
@@ -242,6 +243,33 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
   padding: 4px 6px;
 }
 .row-delete-btn:hover { color: var(--status-critical); }
+
+/* -- delete confirmation modal -- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 320px;
+  width: 100%;
+}
+.modal-box p { margin: 0 0 16px; font-size: 14px; }
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
 
 .empty-state {
   text-align: center;
@@ -323,10 +351,10 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
     <div class="table-scroll">
       <table class="edit-table" id="editTable">
         <colgroup>
-          <col style="width: 27%">
-          <col style="width: 38%">
-          <col style="width: 25%">
-          <col style="width: 10%">
+          <col style="width: 30%">
+          <col style="width: 42%">
+          <col style="width: 20%">
+          <col style="width: 8%">
         </colgroup>
         <thead>
           <tr>
@@ -338,6 +366,16 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
         </thead>
         <tbody id="editTableBody"></tbody>
       </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="deleteModalOverlay">
+    <div class="modal-box">
+      <p>Are you sure you want to delete this game?</p>
+      <div class="modal-actions">
+        <button class="btn" id="deleteCancelBtn">Cancel</button>
+        <button class="btn primary" id="deleteConfirmBtn">Confirm</button>
+      </div>
     </div>
   </div>
 
@@ -373,6 +411,29 @@ function currentSeasonYear() {
   return seasonYearOf(new Date());
 }
 
+// -- date display (MM/DD/YY) <-> storage (ISO YYYY-MM-DD) --
+
+function toMMDDYY(isoDate) {
+  const [y, m, d] = isoDate.split("-");
+  return `${m}/${d}/${y.slice(2)}`;
+}
+
+function fromMMDDYY(str) {
+  const match = str.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
+  if (!match) return null;
+  let [, m, d, y] = match;
+  if (y.length === 2) y = "20" + y;
+  m = m.padStart(2, "0");
+  d = d.padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Auto-inserts slashes as the user types digits, e.g. "081326" -> "08/13/26".
+function formatDateAsTyped(raw) {
+  const digits = raw.replace(/\D/g, "").slice(0, 6);
+  return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)].filter(Boolean).join("/");
+}
+
 // -- password gate --
 
 function unlock() {
@@ -405,19 +466,24 @@ function blankGame() {
   };
 }
 
+// Each game renders as two real <tr>s sharing one data-row-id, so the
+// browser's native table layout vertically centers row 1's cells (player,
+// team, score) against each other, and row 2's cells (date, opponent,
+// stats) against each other - matching the read-only table's field
+// positions can't be done with divs stacked independently per column,
+// since nothing then ties e.g. the (short) player radios to the (taller)
+// team input's height.
 function rowHtml(game, rowId) {
   return `
-    <tr data-row-id="${rowId}">
+    <tr class="row-top" data-row-id="${rowId}">
       <td>
         <div class="player-radios">
           <label class="Ellie"><input type="radio" name="player-${rowId}" value="Ellie" ${game.player === "Ellie" ? "checked" : ""}> Ellie</label>
           <label class="Lilly"><input type="radio" name="player-${rowId}" value="Lilly" ${game.player === "Lilly" ? "checked" : ""}> Lilly</label>
         </div>
-        <input type="date" class="cell-date" value="${escapeHtml(game.date)}">
       </td>
-      <td class="team-cell">
+      <td>
         <input type="text" class="cell-team" value="${escapeHtml(game.team)}" list="teamSuggestions" placeholder="Team">
-        <input type="text" class="cell-opponent" value="${escapeHtml(game.opponent)}" placeholder="Opponent">
       </td>
       <td>
         <div class="score-pair">
@@ -425,13 +491,23 @@ function rowHtml(game, rowId) {
           <span>-</span>
           <input type="number" min="0" class="cell-ga" value="${game.teamGoalsAgainst}">
         </div>
+      </td>
+      <td class="delete-cell" rowspan="2"><button type="button" class="row-delete-btn" title="Delete this game">&times;</button></td>
+    </tr>
+    <tr class="row-bottom" data-row-id="${rowId}">
+      <td>
+        <input type="text" inputmode="numeric" class="cell-date" placeholder="MM/DD/YY" value="${escapeHtml(toMMDDYY(game.date))}">
+      </td>
+      <td>
+        <input type="text" class="cell-opponent" value="${escapeHtml(game.opponent)}" placeholder="Opponent">
+      </td>
+      <td>
         <div class="stat-pair">
           <input type="number" min="0" class="cell-goals" value="${game.goals}">
           <span>,</span>
           <input type="number" min="0" class="cell-assists" value="${game.assists}">
         </div>
       </td>
-      <td class="delete-cell"><button type="button" class="row-delete-btn" title="Delete this game">&times;</button></td>
     </tr>`;
 }
 
@@ -442,9 +518,9 @@ function renderRows(games) {
 
 function addBlankRowAtTop() {
   const tbody = document.getElementById("editTableBody");
-  tbody.insertAdjacentHTML("afterbegin", rowHtml(blankGame(), nextRowId++));
-  const firstInput = tbody.querySelector("tr:first-child .cell-date");
-  firstInput?.focus();
+  const rowId = nextRowId++;
+  tbody.insertAdjacentHTML("afterbegin", rowHtml(blankGame(), rowId));
+  tbody.querySelector(`tr[data-row-id="${rowId}"] .cell-date`)?.focus();
   refreshTeamSuggestions();
 }
 
@@ -468,18 +544,32 @@ function refreshTeamSuggestions() {
 // -- collect + validate --
 
 function collectGames() {
-  const rows = Array.from(document.querySelectorAll("#editTableBody tr"));
+  const rowIds = [];
+  const seen = new Set();
+  document.querySelectorAll("#editTableBody tr[data-row-id]").forEach((tr) => {
+    const id = tr.dataset.rowId;
+    if (!seen.has(id)) {
+      seen.add(id);
+      rowIds.push(id);
+    }
+  });
+
   const games = [];
-  for (let i = 0; i < rows.length; i++) {
-    const tr = rows[i];
-    const date = tr.querySelector(".cell-date").value;
-    const team = tr.querySelector(".cell-team").value.trim();
-    const opponent = tr.querySelector(".cell-opponent").value.trim();
-    const playerInput = tr.querySelector("input[type=radio]:checked");
+  for (let i = 0; i < rowIds.length; i++) {
+    const id = rowIds[i];
+    const [topTr, bottomTr] = document.querySelectorAll(`#editTableBody tr[data-row-id="${id}"]`);
+    const dateRaw = bottomTr.querySelector(".cell-date").value;
+    const date = fromMMDDYY(dateRaw);
+    const team = topTr.querySelector(".cell-team").value.trim();
+    const opponent = bottomTr.querySelector(".cell-opponent").value.trim();
+    const playerInput = topTr.querySelector("input[type=radio]:checked");
     const player = playerInput ? playerInput.value : "";
 
-    if (!date || !team || !opponent || !player) {
+    if (!team || !opponent || !player || !dateRaw) {
       return { error: `Row ${i + 1} is missing a required field (date, team, opponent, or player).` };
+    }
+    if (!date) {
+      return { error: `Row ${i + 1} has an invalid date - use MM/DD/YY.` };
     }
 
     games.push({
@@ -487,10 +577,10 @@ function collectGames() {
       team,
       opponent,
       player,
-      goals: Number(tr.querySelector(".cell-goals").value) || 0,
-      assists: Number(tr.querySelector(".cell-assists").value) || 0,
-      teamGoalsFor: Number(tr.querySelector(".cell-gf").value) || 0,
-      teamGoalsAgainst: Number(tr.querySelector(".cell-ga").value) || 0,
+      goals: Number(bottomTr.querySelector(".cell-goals").value) || 0,
+      assists: Number(bottomTr.querySelector(".cell-assists").value) || 0,
+      teamGoalsFor: Number(topTr.querySelector(".cell-gf").value) || 0,
+      teamGoalsAgainst: Number(topTr.querySelector(".cell-ga").value) || 0,
     });
   }
   return { games };
@@ -541,16 +631,37 @@ async function init() {
   renderRows(sorted);
   refreshTeamSuggestions();
 
+  let pendingDeleteRowId = null;
+
   document.getElementById("editTableBody").addEventListener("click", (e) => {
     const btn = e.target.closest(".row-delete-btn");
     if (!btn) return;
-    if (confirm("Delete this game entry?")) {
-      btn.closest("tr").remove();
+    pendingDeleteRowId = btn.closest("tr").dataset.rowId;
+    document.getElementById("deleteModalOverlay").classList.add("open");
+  });
+
+  document.getElementById("deleteCancelBtn").addEventListener("click", () => {
+    pendingDeleteRowId = null;
+    document.getElementById("deleteModalOverlay").classList.remove("open");
+  });
+
+  document.getElementById("deleteConfirmBtn").addEventListener("click", () => {
+    if (pendingDeleteRowId !== null) {
+      document
+        .querySelectorAll(`#editTableBody tr[data-row-id="${pendingDeleteRowId}"]`)
+        .forEach((tr) => tr.remove());
     }
+    pendingDeleteRowId = null;
+    document.getElementById("deleteModalOverlay").classList.remove("open");
   });
 
   document.getElementById("editTableBody").addEventListener("input", (e) => {
     if (e.target.classList.contains("cell-team")) refreshTeamSuggestions();
+    if (e.target.classList.contains("cell-date")) {
+      const cursorWasAtEnd = e.target.selectionStart === e.target.value.length;
+      e.target.value = formatDateAsTyped(e.target.value);
+      if (cursorWasAtEnd) e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+    }
   });
 
   document.getElementById("addGameBtn").addEventListener("click", addBlankRowAtTop);
