@@ -65,10 +65,6 @@ html {
   text-size-adjust: 100%;
 }
 
-html, body {
-  overscroll-behavior: none;
-}
-
 body {
   margin: 0;
   background: var(--surface-2);
@@ -199,14 +195,6 @@ header.top .sub {
 }
 .modal-overlay.open { display: flex; }
 
-/* Anchored to the top instead of vertically centered, so the box doesn't
-   shift position as the viewport height changes while different fields
-   are focused (e.g. the iOS keyboard opening/closing). */
-.modal-overlay.align-top {
-  align-items: flex-start;
-  padding-top: 24px;
-}
-
 .modal-box {
   background: var(--surface-1);
   border: 1px solid var(--border);
@@ -216,11 +204,6 @@ header.top .sub {
   width: 100%;
   max-height: calc(100vh - 32px);
   overflow-y: auto;
-  /* "contain" (the usual choice for a scrollable panel) still permits the
-     box's own rubber-band bounce, only stopping it from chaining to the
-     page behind it - "none" suppresses that local bounce entirely, which
-     is what we want since this box rarely needs to scroll at all. */
-  overscroll-behavior: none;
 }
 .modal-box h3 { margin: 0 0 10px; font-size: 16px; }
 .modal-box.add-game-box { max-width: 360px; }
@@ -494,7 +477,7 @@ table.data-table td.empty-cell {
     </div>
   </div>
 
-  <div class="modal-overlay align-top" id="addGameModalOverlay">
+  <div class="modal-overlay" id="addGameModalOverlay">
     <div class="modal-box add-game-box">
       <h3>Add Game</h3>
       <div class="modal-error" id="addGameError" hidden></div>
@@ -901,86 +884,6 @@ function updateAddGameDateDisplay() {
   document.getElementById("addGameDateDisplay").textContent = date ? fmtDate(date) : "";
 }
 
-// iOS Safari auto-scrolls the page to keep a focused input visible above the
-// keyboard, which shifts position:fixed elements even though they shouldn't
-// move - the fix is to freeze the background page (nothing left to scroll)
-// for as long as the modal is open.
-let addGameScrollY = 0;
-
-function lockBodyScroll() {
-  addGameScrollY = window.scrollY;
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${addGameScrollY}px`;
-  document.body.style.left = "0";
-  document.body.style.right = "0";
-}
-
-function unlockBodyScroll() {
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.left = "";
-  document.body.style.right = "";
-  window.scrollTo(0, addGameScrollY);
-}
-
-// The actual trigger for the bounce/shift reported so far isn't scroll
-// physics at all - it's iOS Safari's own "scroll the focused input into
-// view" behavior, which fires the instant a field gains focus, independent
-// of whether the page can otherwise scroll. Overscroll-behavior alone can't
-// stop that. Immediately re-focusing with {preventScroll: true} tells
-// Safari not to scroll for this focus at all.
-let suppressingFocusScroll = false;
-
-function suppressFocusScroll(e) {
-  if (suppressingFocusScroll) return;
-  const el = e.target;
-  if (!el || typeof el.focus !== "function" || typeof el.blur !== "function") return;
-  // Never do this to the native date input: focusing it is what triggers
-  // its calendar picker to open, and synchronously blurring it right after
-  // can cancel that before the picker finishes appearing - which is exactly
-  // the "calendar doesn't pop up" glitch reported.
-  if (el.id === "addGameDate") return;
-  suppressingFocusScroll = true;
-  el.blur();
-  el.focus({ preventScroll: true });
-  suppressingFocusScroll = false;
-}
-
-// iOS can pan which part of the (unchanged-size) layout viewport is
-// currently visible when a keyboard opens, and position:fixed elements are
-// anchored to that layout viewport - not to whatever's actually visible.
-// Moving/resizing the overlay itself to chase that (an earlier version of
-// this fix) leaves gaps that expose the real page, because the overlay's
-// own backdrop stops covering the area it moved away from. Instead, leave
-// the overlay covering the entire layout viewport at all times (its CSS
-// inset: 0 never changes) and only adjust the BOX inside it: push it down
-// by however far the visible area's top has shifted, and cap its height to
-// the visible area so it can never poke out past the bottom of the
-// backdrop - its own overflow-y: auto handles anything that doesn't fit.
-// Debounced so it only applies once the keyboard's own slide/resize
-// animation has settled, rather than on every intermediate event, which
-// was previously fighting that animation and looked like a bounce.
-let viewportSyncTimer = null;
-
-function syncAddGameOverlayToViewport() {
-  const overlay = document.getElementById("addGameModalOverlay");
-  if (!overlay.classList.contains("open") || !window.visualViewport) return;
-  const vv = window.visualViewport;
-  const box = overlay.querySelector(".add-game-box");
-  overlay.style.paddingTop = `${vv.offsetTop + 24}px`;
-  box.style.maxHeight = `${vv.height - 48}px`;
-}
-
-function scheduleViewportSync() {
-  if (viewportSyncTimer) clearTimeout(viewportSyncTimer);
-  viewportSyncTimer = setTimeout(syncAddGameOverlayToViewport, 150);
-}
-
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", scheduleViewportSync);
-  window.visualViewport.addEventListener("scroll", scheduleViewportSync);
-}
-
 function openAddGameModal() {
   document.getElementById("addGameError").hidden = true;
   document.getElementById("addGameDate").value = todayEasternISO();
@@ -994,20 +897,11 @@ function openAddGameModal() {
   document.querySelectorAll('input[name="addGamePlayer"]').forEach((r) => { r.checked = false; });
   updateAddGameScoreFieldsDisabled();
   refreshAddGameTeamSuggestions();
-  lockBodyScroll();
   document.getElementById("addGameModalOverlay").classList.add("open");
-  syncAddGameOverlayToViewport();
-  document.getElementById("addGameModalOverlay").addEventListener("focusin", suppressFocusScroll);
 }
 
 function closeAddGameModal() {
-  const overlay = document.getElementById("addGameModalOverlay");
-  overlay.classList.remove("open");
-  overlay.style.cssText = "";
-  overlay.querySelector(".add-game-box").style.maxHeight = "";
-  if (viewportSyncTimer) clearTimeout(viewportSyncTimer);
-  unlockBodyScroll();
-  overlay.removeEventListener("focusin", suppressFocusScroll);
+  document.getElementById("addGameModalOverlay").classList.remove("open");
 }
 
 // Blank means "no score entered yet" and is preserved as null rather than
