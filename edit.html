@@ -316,9 +316,9 @@ table.edit-table td.opponent-cell input { min-width: 130px; }
   <datalist id="teamSuggestions"></datalist>
 
   <script>
-// Cloudflare Worker that holds the GitHub token server-side and proxies the
-// save. See worker/README.md for setup.
-const WORKER_URL = "https://soccer-stats-editor.PLACEHOLDER.workers.dev";
+// Vercel serverless function that holds the GitHub token server-side and
+// proxies the save. See api/README.md for setup.
+const SAVE_ENDPOINT = "https://PLACEHOLDER.vercel.app/api/save-games";
 
 // Not real security - just keeps casual visitors from poking at this page.
 const EDIT_PASSWORD = "soccer118";
@@ -490,7 +490,7 @@ async function submitChanges() {
   statusEl.textContent = "Saving…";
 
   try {
-    const resp = await fetch(WORKER_URL, {
+    const resp = await fetch(SAVE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: EDIT_PASSWORD, games }),
