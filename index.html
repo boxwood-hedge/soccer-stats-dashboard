@@ -959,25 +959,6 @@ function suppressFocusScroll(e) {
   suppressingFocusScroll = false;
 }
 
-// Belt-and-suspenders alongside the scroll lock: keep the overlay's own
-// box matched to the actual visible area (which shrinks when the iOS
-// keyboard opens) rather than trusting position:fixed + inset:0 alone to
-// track it, since that combination is known to be inconsistent across iOS
-// versions once a keyboard is involved.
-function syncAddGameOverlayToViewport() {
-  const overlay = document.getElementById("addGameModalOverlay");
-  if (!overlay.classList.contains("open") || !window.visualViewport) return;
-  const vv = window.visualViewport;
-  overlay.style.height = `${vv.height}px`;
-  overlay.style.top = `${vv.offsetTop}px`;
-  overlay.style.left = `${vv.offsetLeft}px`;
-}
-
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", syncAddGameOverlayToViewport);
-  window.visualViewport.addEventListener("scroll", syncAddGameOverlayToViewport);
-}
-
 function openAddGameModal() {
   document.getElementById("addGameError").hidden = true;
   document.getElementById("addGameDate").value = todayEasternISO();
@@ -993,14 +974,12 @@ function openAddGameModal() {
   refreshAddGameTeamSuggestions();
   lockBodyScroll();
   document.getElementById("addGameModalOverlay").classList.add("open");
-  syncAddGameOverlayToViewport();
   document.addEventListener("touchmove", blockBackgroundTouchMove, { passive: false });
   document.getElementById("addGameModalOverlay").addEventListener("focusin", suppressFocusScroll);
 }
 
 function closeAddGameModal() {
   document.getElementById("addGameModalOverlay").classList.remove("open");
-  document.getElementById("addGameModalOverlay").style.cssText = "";
   unlockBodyScroll();
   document.removeEventListener("touchmove", blockBackgroundTouchMove);
   document.getElementById("addGameModalOverlay").removeEventListener("focusin", suppressFocusScroll);
