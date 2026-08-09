@@ -65,6 +65,10 @@ html {
   text-size-adjust: 100%;
 }
 
+html, body {
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   background: var(--surface-2);
@@ -212,6 +216,7 @@ header.top .sub {
   width: 100%;
   max-height: calc(100vh - 32px);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .modal-box h3 { margin: 0 0 10px; font-size: 16px; }
 .modal-box.add-game-box { max-width: 360px; }
@@ -914,6 +919,15 @@ function unlockBodyScroll() {
   window.scrollTo(0, addGameScrollY);
 }
 
+// Older iOS versions can still show a rubber-band "bounce" flash of
+// whatever's behind a fixed-position element on a touch drag, even with
+// the body frozen and overscroll-behavior set - block touchmove outside
+// the modal box entirely while it's open, but let the box's own content
+// still scroll normally if it's taller than the viewport.
+function blockBackgroundTouchMove(e) {
+  if (!e.target.closest(".modal-box")) e.preventDefault();
+}
+
 // Belt-and-suspenders alongside the scroll lock: keep the overlay's own
 // box matched to the actual visible area (which shrinks when the iOS
 // keyboard opens) rather than trusting position:fixed + inset:0 alone to
@@ -949,13 +963,14 @@ function openAddGameModal() {
   lockBodyScroll();
   document.getElementById("addGameModalOverlay").classList.add("open");
   syncAddGameOverlayToViewport();
-  document.getElementById("addGameTeam").focus();
+  document.addEventListener("touchmove", blockBackgroundTouchMove, { passive: false });
 }
 
 function closeAddGameModal() {
   document.getElementById("addGameModalOverlay").classList.remove("open");
   document.getElementById("addGameModalOverlay").style.cssText = "";
   unlockBodyScroll();
+  document.removeEventListener("touchmove", blockBackgroundTouchMove);
 }
 
 // Blank means "no score entered yet" and is preserved as null rather than
