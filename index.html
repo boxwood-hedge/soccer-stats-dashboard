@@ -227,6 +227,12 @@ header.top .sub {
   color: var(--text-primary);
   margin-bottom: 8px;
 }
+.modal-input:disabled {
+  background: var(--gridline);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 
 .player-radios {
   display: flex;
@@ -500,6 +506,18 @@ function seasonYearOf(dateInput) {
   return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
 }
 
+function isFutureDate(isoDateStr) {
+  return isoDateStr > new Date().toISOString().slice(0, 10);
+}
+
+// A game only counts toward summary stats once it's actually been played:
+// its date has arrived and a score was entered (team GF/GA aren't null).
+// Lets a future game be logged as a placeholder - it still shows up as a
+// team row - without affecting matches/goals/etc. until it's really played.
+function isPlayedGame(g) {
+  return !isFutureDate(g.date) && g.teamGoalsFor !== null && g.teamGoalsAgainst !== null;
+}
+
 function uniqueGameKey(g) {
   return `${g.date}|${g.team}|${g.opponent}`;
 }
@@ -575,13 +593,17 @@ function buildSummaryRows() {
       const syGames = playerGames.filter((g) => seasonYearOf(g.date) === sy);
       if (syGames.length === 0 && sy !== currentSeasonYear()) continue;
 
-      rows.push({ player, seasonYear: sy, team: "All", stats: computeStats(syGames), isAllRow: true });
+      const syPlayedGames = syGames.filter(isPlayedGame);
+      rows.push({ player, seasonYear: sy, team: "All", stats: computeStats(syPlayedGames), isAllRow: true });
 
       if (player === "Both" || summaryFilters.teamDetail === "hide") continue;
 
+      // Teams come from every game logged this season (including future
+      // placeholders), so a team shows up even before its first played game -
+      // but its stats only ever come from games that actually count.
       const teams = Array.from(new Set(syGames.map((g) => g.team))).sort();
       for (const team of teams) {
-        const teamGames = syGames.filter((g) => g.team === team);
+        const teamGames = syPlayedGames.filter((g) => g.team === team);
         rows.push({ player, seasonYear: sy, team, stats: computeStats(teamGames), isAllRow: false });
       }
     }
@@ -698,7 +720,7 @@ function renderGames() {
             <div>v. ${escapeHtml(g.opponent)}</div>
           </td>
           <td>
-            <div>${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})</div>
+            <div>${g.teamGoalsFor !== null && g.teamGoalsAgainst !== null ? `${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})` : "Upcoming"}</div>
             <div>${formatGoalsAssists(g.goals, g.assists)}</div>
           </td>
         </tr>`
@@ -766,16 +788,34 @@ function tryUnlockEdit() {
 const ADD_GAME_TEAM_WINDOW_DAYS = 30;
 
 function refreshAddGameTeamSuggestions() {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - ADD_GAME_TEAM_WINDOW_DAYS);
+  // Normalize "today" to a date-only value first so the window is a clean
+  // +/-30 whole-day range, unaffected by what time of day it happens to be
+  // (game dates always parse as midnight UTC, so comparing against "now"
+  // directly would skew the boundary by up to a day).
+  const todayOnly = new Date(new Date().toISOString().slice(0, 10));
+  const lowerCutoff = new Date(todayOnly);
+  lowerCutoff.setDate(lowerCutoff.getDate() - ADD_GAME_TEAM_WINDOW_DAYS);
+  const upperCutoff = new Date(todayOnly);
+  upperCutoff.setDate(upperCutoff.getDate() + ADD_GAME_TEAM_WINDOW_DAYS);
   const teams = new Set();
   allGames.forEach((g) => {
-    if (new Date(g.date) >= cutoff) teams.add(g.team);
+    const d = new Date(g.date);
+    if (d >= lowerCutoff && d <= upperCutoff) teams.add(g.team);
   });
   document.getElementById("addGameTeamSuggestions").innerHTML = Array.from(teams)
     .sort()
     .map((t) => `<option value="${escapeHtml(t)}">`)
     .join("");
+}
+
+// Future games haven't been played yet, so their score fields are greyed
+// out and blocked from entry until the date arrives.
+function updateAddGameScoreFieldsDisabled() {
+  const date = document.getElementById("addGameDate").value;
+  const future = date ? isFutureDate(date) : false;
+  ["addGameGF", "addGameGA", "addGameGoals", "addGameAssists"].forEach((id) => {
+    document.getElementById(id).disabled = future;
+  });
 }
 
 function openAddGameModal() {
@@ -788,6 +828,7 @@ function openAddGameModal() {
   document.getElementById("addGameGoals").value = "";
   document.getElementById("addGameAssists").value = "";
   document.querySelector('input[name="addGamePlayer"][value="Ellie"]').checked = true;
+  updateAddGameScoreFieldsDisabled();
   refreshAddGameTeamSuggestions();
   document.getElementById("addGameModalOverlay").classList.add("open");
   document.getElementById("addGameTeam").focus();
@@ -795,6 +836,14 @@ function openAddGameModal() {
 
 function closeAddGameModal() {
   document.getElementById("addGameModalOverlay").classList.remove("open");
+}
+
+// Blank means "no score entered yet" and is preserved as null rather than
+// coerced to 0, so it can be excluded from summary stats - distinct from an
+// actual 0-0 result.
+function parseOptionalScore(input) {
+  const raw = input.value.trim();
+  return raw === "" ? null : Number(raw) || 0;
 }
 
 async function saveNewGame() {
@@ -820,8 +869,8 @@ async function saveNewGame() {
     player,
     goals: Number(document.getElementById("addGameGoals").value) || 0,
     assists: Number(document.getElementById("addGameAssists").value) || 0,
-    teamGoalsFor: Number(document.getElementById("addGameGF").value) || 0,
-    teamGoalsAgainst: Number(document.getElementById("addGameGA").value) || 0,
+    teamGoalsFor: parseOptionalScore(document.getElementById("addGameGF")),
+    teamGoalsAgainst: parseOptionalScore(document.getElementById("addGameGA")),
   };
 
   const saveBtn = document.getElementById("addGameSaveBtn");
@@ -926,6 +975,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("addGameCancelBtn").addEventListener("click", closeAddGameModal);
   document.getElementById("addGameSaveBtn").addEventListener("click", saveNewGame);
+  document.getElementById("addGameDate").addEventListener("input", updateAddGameScoreFieldsDisabled);
 
   document.getElementById("exportExcelBtn").addEventListener("click", (e) => {
     e.preventDefault();
