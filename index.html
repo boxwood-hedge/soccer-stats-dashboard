@@ -941,6 +941,24 @@ function blockBackgroundTouchMove(e) {
   if (box.scrollHeight <= box.clientHeight) e.preventDefault();
 }
 
+// The actual trigger for the bounce/shift reported so far isn't scroll
+// physics at all - it's iOS Safari's own "scroll the focused input into
+// view" behavior, which fires the instant a field gains focus, independent
+// of whether the page can otherwise scroll. Overscroll-behavior and the
+// touchmove guard can't stop that. Immediately re-focusing with
+// {preventScroll: true} tells Safari not to scroll for this focus at all.
+let suppressingFocusScroll = false;
+
+function suppressFocusScroll(e) {
+  if (suppressingFocusScroll) return;
+  const el = e.target;
+  if (!el || typeof el.focus !== "function" || typeof el.blur !== "function") return;
+  suppressingFocusScroll = true;
+  el.blur();
+  el.focus({ preventScroll: true });
+  suppressingFocusScroll = false;
+}
+
 // Belt-and-suspenders alongside the scroll lock: keep the overlay's own
 // box matched to the actual visible area (which shrinks when the iOS
 // keyboard opens) rather than trusting position:fixed + inset:0 alone to
@@ -977,6 +995,7 @@ function openAddGameModal() {
   document.getElementById("addGameModalOverlay").classList.add("open");
   syncAddGameOverlayToViewport();
   document.addEventListener("touchmove", blockBackgroundTouchMove, { passive: false });
+  document.getElementById("addGameModalOverlay").addEventListener("focusin", suppressFocusScroll);
 }
 
 function closeAddGameModal() {
@@ -984,6 +1003,7 @@ function closeAddGameModal() {
   document.getElementById("addGameModalOverlay").style.cssText = "";
   unlockBodyScroll();
   document.removeEventListener("touchmove", blockBackgroundTouchMove);
+  document.getElementById("addGameModalOverlay").removeEventListener("focusin", suppressFocusScroll);
 }
 
 // Blank means "no score entered yet" and is preserved as null rather than
