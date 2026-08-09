@@ -892,6 +892,47 @@ function updateAddGameDateDisplay() {
   document.getElementById("addGameDateDisplay").textContent = date ? fmtDate(date) : "";
 }
 
+// iOS Safari auto-scrolls the page to keep a focused input visible above the
+// keyboard, which shifts position:fixed elements even though they shouldn't
+// move - the fix is to freeze the background page (nothing left to scroll)
+// for as long as the modal is open.
+let addGameScrollY = 0;
+
+function lockBodyScroll() {
+  addGameScrollY = window.scrollY;
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${addGameScrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+}
+
+function unlockBodyScroll() {
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  window.scrollTo(0, addGameScrollY);
+}
+
+// Belt-and-suspenders alongside the scroll lock: keep the overlay's own
+// box matched to the actual visible area (which shrinks when the iOS
+// keyboard opens) rather than trusting position:fixed + inset:0 alone to
+// track it, since that combination is known to be inconsistent across iOS
+// versions once a keyboard is involved.
+function syncAddGameOverlayToViewport() {
+  const overlay = document.getElementById("addGameModalOverlay");
+  if (!overlay.classList.contains("open") || !window.visualViewport) return;
+  const vv = window.visualViewport;
+  overlay.style.height = `${vv.height}px`;
+  overlay.style.top = `${vv.offsetTop}px`;
+  overlay.style.left = `${vv.offsetLeft}px`;
+}
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", syncAddGameOverlayToViewport);
+  window.visualViewport.addEventListener("scroll", syncAddGameOverlayToViewport);
+}
+
 function openAddGameModal() {
   document.getElementById("addGameError").hidden = true;
   document.getElementById("addGameDate").value = todayEasternISO();
@@ -905,12 +946,16 @@ function openAddGameModal() {
   document.querySelectorAll('input[name="addGamePlayer"]').forEach((r) => { r.checked = false; });
   updateAddGameScoreFieldsDisabled();
   refreshAddGameTeamSuggestions();
+  lockBodyScroll();
   document.getElementById("addGameModalOverlay").classList.add("open");
+  syncAddGameOverlayToViewport();
   document.getElementById("addGameTeam").focus();
 }
 
 function closeAddGameModal() {
   document.getElementById("addGameModalOverlay").classList.remove("open");
+  document.getElementById("addGameModalOverlay").style.cssText = "";
+  unlockBodyScroll();
 }
 
 // Blank means "no score entered yet" and is preserved as null rather than
