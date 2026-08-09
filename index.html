@@ -202,8 +202,19 @@ header.top .sub {
   padding: 20px;
   max-width: 320px;
   width: 100%;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
 .modal-box h3 { margin: 0 0 12px; font-size: 16px; }
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 10px 0 4px;
+}
+.field-label:first-of-type { margin-top: 0; }
 
 .modal-input {
   width: 100%;
@@ -216,6 +227,22 @@ header.top .sub {
   color: var(--text-primary);
   margin-bottom: 8px;
 }
+
+.player-radios {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.player-radios label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.player-radios label.Ellie { color: var(--series-ellie); }
+.player-radios label.Lilly { color: var(--series-lilly); }
 
 .modal-error {
   color: var(--status-critical);
@@ -374,8 +401,9 @@ table.data-table td.empty-cell {
       <div class="section-header">
         <h2>Games</h2>
         <div class="header-actions">
-          <a href="#" class="btn accent small" id="exportExcelBtn">Export to Excel</a>
-          <a href="edit.html" class="btn accent small" id="editGamesLink">Edit games</a>
+          <a href="#" class="btn accent small" id="addGameLink">+ Add game</a>
+          <a href="edit.html" class="btn accent small" id="editGamesLink">Edit</a>
+          <a href="#" class="btn accent small" id="exportExcelBtn">Export</a>
         </div>
       </div>
       <div class="games-filters">
@@ -401,6 +429,46 @@ table.data-table td.empty-cell {
       <div class="modal-actions">
         <button class="btn" id="passwordCancelBtn">Cancel</button>
         <button class="btn primary" id="passwordUnlockBtn">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addGameModalOverlay">
+    <div class="modal-box">
+      <h3>Add Game</h3>
+      <div class="modal-error" id="addGameError" hidden></div>
+
+      <label class="field-label">Player</label>
+      <div class="player-radios">
+        <label class="Ellie"><input type="radio" name="addGamePlayer" value="Ellie" checked> Ellie</label>
+        <label class="Lilly"><input type="radio" name="addGamePlayer" value="Lilly"> Lilly</label>
+      </div>
+
+      <label class="field-label" for="addGameDate">Date</label>
+      <input type="date" class="modal-input" id="addGameDate">
+
+      <label class="field-label" for="addGameTeam">Team</label>
+      <input type="text" class="modal-input" id="addGameTeam" list="addGameTeamSuggestions" placeholder="Team" autocomplete="off">
+      <datalist id="addGameTeamSuggestions"></datalist>
+
+      <label class="field-label" for="addGameOpponent">Opponent</label>
+      <input type="text" class="modal-input" id="addGameOpponent" placeholder="Opponent" autocomplete="off">
+
+      <label class="field-label" for="addGameGF">Team GF</label>
+      <input type="number" min="0" class="modal-input" id="addGameGF" placeholder="0">
+
+      <label class="field-label" for="addGameGA">Team GA</label>
+      <input type="number" min="0" class="modal-input" id="addGameGA" placeholder="0">
+
+      <label class="field-label" for="addGameGoals">Goals</label>
+      <input type="number" min="0" class="modal-input" id="addGameGoals" placeholder="0">
+
+      <label class="field-label" for="addGameAssists">Assists</label>
+      <input type="number" min="0" class="modal-input" id="addGameAssists" placeholder="0">
+
+      <div class="modal-actions">
+        <button class="btn" id="addGameCancelBtn">Cancel</button>
+        <button class="btn primary" id="addGameSaveBtn">Add game</button>
       </div>
     </div>
   </div>
@@ -659,6 +727,15 @@ async function loadData() {
 const EDIT_PASSWORD = "soccer118";
 const EDIT_UNLOCK_KEY = "soccerEditUnlocked";
 
+// Vercel serverless function that holds the GitHub token server-side and
+// proxies the save. See api/README.md for setup.
+const SAVE_ENDPOINT = "https://soccer-stats-dashboard.vercel.app/api/save-games";
+
+// Tracks which action the password gate should resume once unlocked, since
+// both "Edit" (navigate away) and "+ Add game" (open a modal in place)
+// share the same gate.
+let pendingUnlockAction = null;
+
 function openPasswordModal() {
   document.getElementById("editPassword").value = "";
   document.getElementById("editPasswordError").hidden = true;
@@ -673,9 +750,103 @@ function closePasswordModal() {
 function tryUnlockEdit() {
   if (document.getElementById("editPassword").value === EDIT_PASSWORD) {
     sessionStorage.setItem(EDIT_UNLOCK_KEY, "true");
-    window.location.href = "edit.html";
+    closePasswordModal();
+    if (pendingUnlockAction === "addGame") {
+      openAddGameModal();
+    } else {
+      window.location.href = "edit.html";
+    }
   } else {
     document.getElementById("editPasswordError").hidden = false;
+  }
+}
+
+// -- add game modal --
+
+const ADD_GAME_TEAM_WINDOW_DAYS = 30;
+
+function refreshAddGameTeamSuggestions() {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - ADD_GAME_TEAM_WINDOW_DAYS);
+  const teams = new Set();
+  allGames.forEach((g) => {
+    if (new Date(g.date) >= cutoff) teams.add(g.team);
+  });
+  document.getElementById("addGameTeamSuggestions").innerHTML = Array.from(teams)
+    .sort()
+    .map((t) => `<option value="${escapeHtml(t)}">`)
+    .join("");
+}
+
+function openAddGameModal() {
+  document.getElementById("addGameError").hidden = true;
+  document.getElementById("addGameDate").value = new Date().toISOString().slice(0, 10);
+  document.getElementById("addGameTeam").value = "";
+  document.getElementById("addGameOpponent").value = "";
+  document.getElementById("addGameGF").value = "";
+  document.getElementById("addGameGA").value = "";
+  document.getElementById("addGameGoals").value = "";
+  document.getElementById("addGameAssists").value = "";
+  document.querySelector('input[name="addGamePlayer"][value="Ellie"]').checked = true;
+  refreshAddGameTeamSuggestions();
+  document.getElementById("addGameModalOverlay").classList.add("open");
+  document.getElementById("addGameTeam").focus();
+}
+
+function closeAddGameModal() {
+  document.getElementById("addGameModalOverlay").classList.remove("open");
+}
+
+async function saveNewGame() {
+  const errorEl = document.getElementById("addGameError");
+  errorEl.hidden = true;
+
+  const date = document.getElementById("addGameDate").value;
+  const team = document.getElementById("addGameTeam").value.trim();
+  const opponent = document.getElementById("addGameOpponent").value.trim();
+  const playerInput = document.querySelector('input[name="addGamePlayer"]:checked');
+  const player = playerInput ? playerInput.value : "";
+
+  if (!date || !team || !opponent || !player) {
+    errorEl.textContent = "Date, Team, Opponent, and Player are required.";
+    errorEl.hidden = false;
+    return;
+  }
+
+  const newGame = {
+    date,
+    team,
+    opponent,
+    player,
+    goals: Number(document.getElementById("addGameGoals").value) || 0,
+    assists: Number(document.getElementById("addGameAssists").value) || 0,
+    teamGoalsFor: Number(document.getElementById("addGameGF").value) || 0,
+    teamGoalsAgainst: Number(document.getElementById("addGameGA").value) || 0,
+  };
+
+  const saveBtn = document.getElementById("addGameSaveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving…";
+
+  try {
+    const resp = await fetch(SAVE_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: EDIT_PASSWORD, games: [...allGames, newGame] }),
+    });
+    const result = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(result.error || `Save failed (${resp.status}).`);
+
+    allGames.push(newGame);
+    populateGameFilters();
+    render();
+    closeAddGameModal();
+  } catch (err) {
+    errorEl.textContent = "Couldn't save: " + err.message;
+    errorEl.hidden = false;
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Add game";
   }
 }
 
@@ -729,8 +900,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("editGamesLink").addEventListener("click", (e) => {
     e.preventDefault();
+    pendingUnlockAction = "edit";
     if (sessionStorage.getItem(EDIT_UNLOCK_KEY) === "true") {
       window.location.href = "edit.html";
+      return;
+    }
+    openPasswordModal();
+  });
+
+  document.getElementById("addGameLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    pendingUnlockAction = "addGame";
+    if (sessionStorage.getItem(EDIT_UNLOCK_KEY) === "true") {
+      openAddGameModal();
       return;
     }
     openPasswordModal();
@@ -741,6 +923,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("editPassword").addEventListener("keydown", (e) => {
     if (e.key === "Enter") tryUnlockEdit();
   });
+
+  document.getElementById("addGameCancelBtn").addEventListener("click", closeAddGameModal);
+  document.getElementById("addGameSaveBtn").addEventListener("click", saveNewGame);
 
   document.getElementById("exportExcelBtn").addEventListener("click", (e) => {
     e.preventDefault();
