@@ -195,6 +195,14 @@ header.top .sub {
 }
 .modal-overlay.open { display: flex; }
 
+/* Anchored to the top instead of vertically centered, so the box doesn't
+   shift position as the viewport height changes while different fields
+   are focused (e.g. the iOS keyboard opening/closing). */
+.modal-overlay.align-top {
+  align-items: flex-start;
+  padding-top: 24px;
+}
+
 .modal-box {
   background: var(--surface-1);
   border: 1px solid var(--border);
@@ -232,6 +240,35 @@ header.top .sub {
   color: var(--text-muted);
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+/* A native date input (for its calendar picker) sits invisibly on top of a
+   plain text display showing the MM/DD/YY value - tapping anywhere in the
+   box opens the native picker, but the visible text is always our own
+   controlled format rather than whatever the OS locale would show. */
+.modal-input.date-picker-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+}
+.date-picker-field span {
+  padding: 8px 10px;
+  width: 100%;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.date-picker-field input[type="date"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .form-grid {
@@ -448,7 +485,7 @@ table.data-table td.empty-cell {
     </div>
   </div>
 
-  <div class="modal-overlay" id="addGameModalOverlay">
+  <div class="modal-overlay align-top" id="addGameModalOverlay">
     <div class="modal-box add-game-box">
       <h3>Add Game</h3>
       <div class="modal-error" id="addGameError" hidden></div>
@@ -463,7 +500,10 @@ table.data-table td.empty-cell {
         </div>
         <div>
           <label class="field-label" for="addGameDate">Date</label>
-          <input type="text" inputmode="numeric" class="modal-input" id="addGameDate" placeholder="MM/DD/YY">
+          <div class="date-picker-field modal-input">
+            <span id="addGameDateDisplay"></span>
+            <input type="date" id="addGameDate" aria-label="Date">
+          </div>
         </div>
 
         <div>
@@ -513,22 +553,6 @@ let summaryFilters = { seasonMode: "current", teamDetail: "show" };
 function fmtDate(iso) {
   const [y, m, d] = iso.split("-");
   return `${m}/${d}/${y.slice(2)}`;
-}
-
-function fromMMDDYY(str) {
-  const match = str.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
-  if (!match) return null;
-  let [, m, d, y] = match;
-  if (y.length === 2) y = "20" + y;
-  m = m.padStart(2, "0");
-  d = d.padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-// Auto-inserts slashes as the user types digits, e.g. "081326" -> "08/13/26".
-function formatDateAsTyped(raw) {
-  const digits = raw.replace(/\D/g, "").slice(0, 6);
-  return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)].filter(Boolean).join("/");
 }
 
 function escapeHtml(str) {
@@ -856,16 +880,22 @@ function refreshAddGameTeamSuggestions() {
 // Future games haven't been played yet, so their score fields are greyed
 // out and blocked from entry until the date arrives.
 function updateAddGameScoreFieldsDisabled() {
-  const date = fromMMDDYY(document.getElementById("addGameDate").value);
+  const date = document.getElementById("addGameDate").value; // native date input - always ISO
   const future = date ? isFutureDate(date) : false;
   ["addGameGF", "addGameGA", "addGameGoals", "addGameAssists"].forEach((id) => {
     document.getElementById(id).disabled = future;
   });
 }
 
+function updateAddGameDateDisplay() {
+  const date = document.getElementById("addGameDate").value;
+  document.getElementById("addGameDateDisplay").textContent = date ? fmtDate(date) : "";
+}
+
 function openAddGameModal() {
   document.getElementById("addGameError").hidden = true;
-  document.getElementById("addGameDate").value = fmtDate(todayEasternISO());
+  document.getElementById("addGameDate").value = todayEasternISO();
+  updateAddGameDateDisplay();
   document.getElementById("addGameTeam").value = "";
   document.getElementById("addGameOpponent").value = "";
   document.getElementById("addGameGF").value = "";
@@ -895,20 +925,14 @@ async function saveNewGame() {
   const errorEl = document.getElementById("addGameError");
   errorEl.hidden = true;
 
-  const dateRaw = document.getElementById("addGameDate").value;
-  const date = fromMMDDYY(dateRaw);
+  const date = document.getElementById("addGameDate").value; // native date input - always ISO
   const team = document.getElementById("addGameTeam").value.trim();
   const opponent = document.getElementById("addGameOpponent").value.trim();
   const playerInput = document.querySelector('input[name="addGamePlayer"]:checked');
   const player = playerInput ? playerInput.value : "";
 
-  if (!dateRaw || !team || !opponent || !player) {
+  if (!date || !team || !opponent || !player) {
     errorEl.textContent = "Date, Team, Opponent, and Player are required.";
-    errorEl.hidden = false;
-    return;
-  }
-  if (!date) {
-    errorEl.textContent = "Date is invalid - use MM/DD/YY.";
     errorEl.hidden = false;
     return;
   }
@@ -1026,10 +1050,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("addGameCancelBtn").addEventListener("click", closeAddGameModal);
   document.getElementById("addGameSaveBtn").addEventListener("click", saveNewGame);
-  document.getElementById("addGameDate").addEventListener("input", (e) => {
-    const cursorWasAtEnd = e.target.selectionStart === e.target.value.length;
-    e.target.value = formatDateAsTyped(e.target.value);
-    if (cursorWasAtEnd) e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+  document.getElementById("addGameDate").addEventListener("input", () => {
+    updateAddGameDateDisplay();
     updateAddGameScoreFieldsDisabled();
   });
 
