@@ -953,10 +953,44 @@ function suppressFocusScroll(e) {
   if (suppressingFocusScroll) return;
   const el = e.target;
   if (!el || typeof el.focus !== "function" || typeof el.blur !== "function") return;
+  // Never do this to the native date input: focusing it is what triggers
+  // its calendar picker to open, and synchronously blurring it right after
+  // can cancel that before the picker finishes appearing - which is exactly
+  // the "calendar doesn't pop up" glitch reported.
+  if (el.id === "addGameDate") return;
   suppressingFocusScroll = true;
   el.blur();
   el.focus({ preventScroll: true });
   suppressingFocusScroll = false;
+}
+
+// iOS can pan which part of the (unchanged-size) layout viewport is
+// currently visible when a keyboard opens, and position:fixed elements are
+// anchored to that layout viewport - not to whatever's actually visible -
+// so the modal can end up partly panned off-screen. Matching the overlay's
+// box to the Visual Viewport corrects that. Debounced so it only applies
+// once the keyboard's own slide animation has settled, rather than on every
+// intermediate resize event mid-animation, which was previously fighting
+// that animation and looked like a bounce.
+let viewportSyncTimer = null;
+
+function syncAddGameOverlayToViewport() {
+  const overlay = document.getElementById("addGameModalOverlay");
+  if (!overlay.classList.contains("open") || !window.visualViewport) return;
+  const vv = window.visualViewport;
+  overlay.style.height = `${vv.height}px`;
+  overlay.style.top = `${vv.offsetTop}px`;
+  overlay.style.left = `${vv.offsetLeft}px`;
+}
+
+function scheduleViewportSync() {
+  if (viewportSyncTimer) clearTimeout(viewportSyncTimer);
+  viewportSyncTimer = setTimeout(syncAddGameOverlayToViewport, 150);
+}
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", scheduleViewportSync);
+  window.visualViewport.addEventListener("scroll", scheduleViewportSync);
 }
 
 function openAddGameModal() {
@@ -974,12 +1008,15 @@ function openAddGameModal() {
   refreshAddGameTeamSuggestions();
   lockBodyScroll();
   document.getElementById("addGameModalOverlay").classList.add("open");
+  syncAddGameOverlayToViewport();
   document.addEventListener("touchmove", blockBackgroundTouchMove, { passive: false });
   document.getElementById("addGameModalOverlay").addEventListener("focusin", suppressFocusScroll);
 }
 
 function closeAddGameModal() {
   document.getElementById("addGameModalOverlay").classList.remove("open");
+  document.getElementById("addGameModalOverlay").style.cssText = "";
+  if (viewportSyncTimer) clearTimeout(viewportSyncTimer);
   unlockBodyScroll();
   document.removeEventListener("touchmove", blockBackgroundTouchMove);
   document.getElementById("addGameModalOverlay").removeEventListener("focusin", suppressFocusScroll);
