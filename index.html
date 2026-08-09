@@ -799,8 +799,15 @@ function renderGames() {
     <tbody>${bodyHtml}</tbody>`;
 }
 
+// Fetching the relative path would go through GitHub Pages, which can take
+// up to a minute to rebuild and serve a new deployment after a commit, on
+// top of its own CDN cache - editors expect to see their save reflected on
+// the read-only page right away. raw.githubusercontent.com serves straight
+// from the git repository with no separate deploy step, so a save is
+// visible here within a couple seconds; the cache-busting query param
+// avoids the CDN caching that URL too.
 async function loadData() {
-  const res = await fetch("data/games.json", { cache: "no-store" });
+  const res = await fetch(`https://raw.githubusercontent.com/${GAMES_DATA_REPO}/main/data/games.json?_=${Date.now()}`, { cache: "no-store" });
   const data = await res.json();
   allGames = data.games || [];
 }
@@ -813,6 +820,7 @@ const EDIT_UNLOCK_KEY = "soccerEditUnlocked";
 // Vercel serverless function that holds the GitHub token server-side and
 // proxies the save. See api/README.md for setup.
 const SAVE_ENDPOINT = "https://soccer-stats-dashboard.vercel.app/api/save-games";
+const GAMES_DATA_REPO = "boxwood-hedge/soccer-stats-dashboard";
 
 // Tracks which action the password gate should resume once unlocked, since
 // both "Edit" (navigate away) and "+ Add game" (open a modal in place)
