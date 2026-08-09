@@ -778,6 +778,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("gatePassword").focus();
   }
 });
+
+// Using the browser's own back button to return here (rather than the
+// Cancel link) can restore this page from the back-forward cache instead
+// of loading it fresh - a frozen snapshot of the DOM exactly as it was
+// before submitting, with none of this script re-running, so the row
+// values shown are whatever they were pre-submit. Forcing a real reload
+// when that happens makes init() run again and pick up the just-saved data.
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) window.location.reload();
+});
   </script>
 </body>
 </html>
