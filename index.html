@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <title>Corman Soccer Stats</title>
   <style>
 :root {
@@ -199,22 +199,22 @@ header.top .sub {
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   max-width: 320px;
   width: 100%;
   max-height: calc(100vh - 32px);
   overflow-y: auto;
 }
-.modal-box h3 { margin: 0 0 12px; font-size: 16px; }
+.modal-box h3 { margin: 0 0 10px; font-size: 16px; }
+.modal-box.add-game-box { max-width: 360px; }
 
 .field-label {
   display: block;
   font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
-  margin: 10px 0 4px;
+  margin: 0 0 4px;
 }
-.field-label:first-of-type { margin-top: 0; }
 
 .modal-input {
   width: 100%;
@@ -233,6 +233,15 @@ header.top .sub {
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+  margin-bottom: 10px;
+}
+.form-grid .modal-input { margin-bottom: 0; }
+.form-grid .player-radios { margin-bottom: 0; }
 
 .player-radios {
   display: flex;
@@ -440,37 +449,51 @@ table.data-table td.empty-cell {
   </div>
 
   <div class="modal-overlay" id="addGameModalOverlay">
-    <div class="modal-box">
+    <div class="modal-box add-game-box">
       <h3>Add Game</h3>
       <div class="modal-error" id="addGameError" hidden></div>
 
-      <label class="field-label">Player</label>
-      <div class="player-radios">
-        <label class="Ellie"><input type="radio" name="addGamePlayer" value="Ellie" checked> Ellie</label>
-        <label class="Lilly"><input type="radio" name="addGamePlayer" value="Lilly"> Lilly</label>
+      <div class="form-grid">
+        <div>
+          <label class="field-label">Player</label>
+          <div class="player-radios">
+            <label class="Ellie"><input type="radio" name="addGamePlayer" value="Ellie" checked> Ellie</label>
+            <label class="Lilly"><input type="radio" name="addGamePlayer" value="Lilly"> Lilly</label>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="addGameDate">Date</label>
+          <input type="text" inputmode="numeric" class="modal-input" id="addGameDate" placeholder="MM/DD/YY">
+        </div>
+
+        <div>
+          <label class="field-label" for="addGameTeam">Team</label>
+          <input type="text" class="modal-input" id="addGameTeam" list="addGameTeamSuggestions" placeholder="Team" autocomplete="off">
+          <datalist id="addGameTeamSuggestions"></datalist>
+        </div>
+        <div>
+          <label class="field-label" for="addGameOpponent">Opponent</label>
+          <input type="text" class="modal-input" id="addGameOpponent" placeholder="Opponent" autocomplete="off">
+        </div>
+
+        <div>
+          <label class="field-label" for="addGameGF">Team GF</label>
+          <input type="number" min="0" class="modal-input" id="addGameGF" placeholder="0">
+        </div>
+        <div>
+          <label class="field-label" for="addGameGA">Team GA</label>
+          <input type="number" min="0" class="modal-input" id="addGameGA" placeholder="0">
+        </div>
+
+        <div>
+          <label class="field-label" for="addGameGoals">Goals</label>
+          <input type="number" min="0" class="modal-input" id="addGameGoals" placeholder="0">
+        </div>
+        <div>
+          <label class="field-label" for="addGameAssists">Assists</label>
+          <input type="number" min="0" class="modal-input" id="addGameAssists" placeholder="0">
+        </div>
       </div>
-
-      <label class="field-label" for="addGameDate">Date</label>
-      <input type="date" class="modal-input" id="addGameDate">
-
-      <label class="field-label" for="addGameTeam">Team</label>
-      <input type="text" class="modal-input" id="addGameTeam" list="addGameTeamSuggestions" placeholder="Team" autocomplete="off">
-      <datalist id="addGameTeamSuggestions"></datalist>
-
-      <label class="field-label" for="addGameOpponent">Opponent</label>
-      <input type="text" class="modal-input" id="addGameOpponent" placeholder="Opponent" autocomplete="off">
-
-      <label class="field-label" for="addGameGF">Team GF</label>
-      <input type="number" min="0" class="modal-input" id="addGameGF" placeholder="0">
-
-      <label class="field-label" for="addGameGA">Team GA</label>
-      <input type="number" min="0" class="modal-input" id="addGameGA" placeholder="0">
-
-      <label class="field-label" for="addGameGoals">Goals</label>
-      <input type="number" min="0" class="modal-input" id="addGameGoals" placeholder="0">
-
-      <label class="field-label" for="addGameAssists">Assists</label>
-      <input type="number" min="0" class="modal-input" id="addGameAssists" placeholder="0">
 
       <div class="modal-actions">
         <button class="btn" id="addGameCancelBtn">Cancel</button>
@@ -492,6 +515,22 @@ function fmtDate(iso) {
   return `${m}/${d}/${y.slice(2)}`;
 }
 
+function fromMMDDYY(str) {
+  const match = str.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
+  if (!match) return null;
+  let [, m, d, y] = match;
+  if (y.length === 2) y = "20" + y;
+  m = m.padStart(2, "0");
+  d = d.padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Auto-inserts slashes as the user types digits, e.g. "081326" -> "08/13/26".
+function formatDateAsTyped(raw) {
+  const digits = raw.replace(/\D/g, "").slice(0, 6);
+  return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)].filter(Boolean).join("/");
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str ?? "";
@@ -506,8 +545,14 @@ function seasonYearOf(dateInput) {
   return `${anchor}-${String((anchor + 1) % 100).padStart(2, "0")}`;
 }
 
+// "Today" is always the current calendar date in US Eastern time, regardless
+// of the device's own timezone - handles the EST/EDT switch automatically.
+function todayEasternISO() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+}
+
 function isFutureDate(isoDateStr) {
-  return isoDateStr > new Date().toISOString().slice(0, 10);
+  return isoDateStr > todayEasternISO();
 }
 
 // A game only counts toward summary stats once it's actually been played:
@@ -560,7 +605,7 @@ function allSeasonYears() {
 const EARLIEST_SUMMARY_YEAR = 2025;
 
 function currentSeasonYear() {
-  return seasonYearOf(new Date());
+  return seasonYearOf(todayEasternISO());
 }
 
 function render() {
@@ -720,7 +765,7 @@ function renderGames() {
             <div>v. ${escapeHtml(g.opponent)}</div>
           </td>
           <td>
-            <div>${g.teamGoalsFor !== null && g.teamGoalsAgainst !== null ? `${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})` : "Upcoming"}</div>
+            <div>${g.teamGoalsFor !== null && g.teamGoalsAgainst !== null ? `${g.teamGoalsFor}-${g.teamGoalsAgainst} (${outcomeLetter(g.teamGoalsFor, g.teamGoalsAgainst)})` : "Scheduled"}</div>
             <div>${formatGoalsAssists(g.goals, g.assists)}</div>
           </td>
         </tr>`
@@ -792,7 +837,7 @@ function refreshAddGameTeamSuggestions() {
   // +/-30 whole-day range, unaffected by what time of day it happens to be
   // (game dates always parse as midnight UTC, so comparing against "now"
   // directly would skew the boundary by up to a day).
-  const todayOnly = new Date(new Date().toISOString().slice(0, 10));
+  const todayOnly = new Date(todayEasternISO());
   const lowerCutoff = new Date(todayOnly);
   lowerCutoff.setDate(lowerCutoff.getDate() - ADD_GAME_TEAM_WINDOW_DAYS);
   const upperCutoff = new Date(todayOnly);
@@ -811,7 +856,7 @@ function refreshAddGameTeamSuggestions() {
 // Future games haven't been played yet, so their score fields are greyed
 // out and blocked from entry until the date arrives.
 function updateAddGameScoreFieldsDisabled() {
-  const date = document.getElementById("addGameDate").value;
+  const date = fromMMDDYY(document.getElementById("addGameDate").value);
   const future = date ? isFutureDate(date) : false;
   ["addGameGF", "addGameGA", "addGameGoals", "addGameAssists"].forEach((id) => {
     document.getElementById(id).disabled = future;
@@ -820,7 +865,7 @@ function updateAddGameScoreFieldsDisabled() {
 
 function openAddGameModal() {
   document.getElementById("addGameError").hidden = true;
-  document.getElementById("addGameDate").value = new Date().toISOString().slice(0, 10);
+  document.getElementById("addGameDate").value = fmtDate(todayEasternISO());
   document.getElementById("addGameTeam").value = "";
   document.getElementById("addGameOpponent").value = "";
   document.getElementById("addGameGF").value = "";
@@ -850,14 +895,20 @@ async function saveNewGame() {
   const errorEl = document.getElementById("addGameError");
   errorEl.hidden = true;
 
-  const date = document.getElementById("addGameDate").value;
+  const dateRaw = document.getElementById("addGameDate").value;
+  const date = fromMMDDYY(dateRaw);
   const team = document.getElementById("addGameTeam").value.trim();
   const opponent = document.getElementById("addGameOpponent").value.trim();
   const playerInput = document.querySelector('input[name="addGamePlayer"]:checked');
   const player = playerInput ? playerInput.value : "";
 
-  if (!date || !team || !opponent || !player) {
+  if (!dateRaw || !team || !opponent || !player) {
     errorEl.textContent = "Date, Team, Opponent, and Player are required.";
+    errorEl.hidden = false;
+    return;
+  }
+  if (!date) {
+    errorEl.textContent = "Date is invalid - use MM/DD/YY.";
     errorEl.hidden = false;
     return;
   }
@@ -975,7 +1026,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("addGameCancelBtn").addEventListener("click", closeAddGameModal);
   document.getElementById("addGameSaveBtn").addEventListener("click", saveNewGame);
-  document.getElementById("addGameDate").addEventListener("input", updateAddGameScoreFieldsDisabled);
+  document.getElementById("addGameDate").addEventListener("input", (e) => {
+    const cursorWasAtEnd = e.target.selectionStart === e.target.value.length;
+    e.target.value = formatDateAsTyped(e.target.value);
+    if (cursorWasAtEnd) e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+    updateAddGameScoreFieldsDisabled();
+  });
 
   document.getElementById("exportExcelBtn").addEventListener("click", (e) => {
     e.preventDefault();

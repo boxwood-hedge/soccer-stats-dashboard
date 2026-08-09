@@ -445,8 +445,14 @@ function formatDateAsTyped(raw) {
   return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)].filter(Boolean).join("/");
 }
 
+// "Today" is always the current calendar date in US Eastern time, regardless
+// of the device's own timezone - handles the EST/EDT switch automatically.
+function todayEasternISO() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+}
+
 function isFutureDate(isoDateStr) {
-  return isoDateStr > new Date().toISOString().slice(0, 10);
+  return isoDateStr > todayEasternISO();
 }
 
 // -- password gate --
@@ -470,7 +476,7 @@ function tryUnlockGate() {
 
 function blankGame() {
   return {
-    date: new Date().toISOString().slice(0, 10),
+    date: todayEasternISO(),
     team: "",
     opponent: "",
     player: "Ellie",
@@ -563,7 +569,7 @@ function refreshTeamSuggestions() {
   // +/-30 whole-day range, unaffected by what time of day it happens to be
   // (game dates always parse as midnight UTC, so comparing against "now"
   // directly would skew the boundary by up to a day).
-  const todayOnly = new Date(new Date().toISOString().slice(0, 10));
+  const todayOnly = new Date(todayEasternISO());
   const lowerCutoff = new Date(todayOnly);
   lowerCutoff.setDate(lowerCutoff.getDate() - TEAM_SUGGESTION_WINDOW_DAYS);
   const upperCutoff = new Date(todayOnly);
