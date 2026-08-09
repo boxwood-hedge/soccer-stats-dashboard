@@ -457,7 +457,7 @@ table.data-table td.empty-cell {
         <div>
           <label class="field-label">Player</label>
           <div class="player-radios">
-            <label class="Ellie"><input type="radio" name="addGamePlayer" value="Ellie" checked> Ellie</label>
+            <label class="Ellie"><input type="radio" name="addGamePlayer" value="Ellie"> Ellie</label>
             <label class="Lilly"><input type="radio" name="addGamePlayer" value="Lilly"> Lilly</label>
           </div>
         </div>
@@ -872,7 +872,7 @@ function openAddGameModal() {
   document.getElementById("addGameGA").value = "";
   document.getElementById("addGameGoals").value = "";
   document.getElementById("addGameAssists").value = "";
-  document.querySelector('input[name="addGamePlayer"][value="Ellie"]').checked = true;
+  document.querySelectorAll('input[name="addGamePlayer"]').forEach((r) => { r.checked = false; });
   updateAddGameScoreFieldsDisabled();
   refreshAddGameTeamSuggestions();
   document.getElementById("addGameModalOverlay").classList.add("open");
