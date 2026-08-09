@@ -410,6 +410,39 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
 const SAVE_ENDPOINT = "https://soccer-stats-dashboard.vercel.app/api/save-games";
 const GAMES_DATA_REPO = "boxwood-hedge/soccer-stats-dashboard";
 
+// Even raw.githubusercontent.com isn't guaranteed to reflect a commit the
+// instant it lands - there's a backend propagation window (separate from,
+// and not fixed by, cache-busting the CDN edge) that a save-then-immediately
+// -reload can race and lose. Since a successful save already hands us the
+// exact resulting array, stash it here and prefer it over a network fetch
+// for a little while, so an editor's own save is reflected with no race at
+// all instead of hoping the read wins the race. A stale tab left open falls
+// back to a real fetch once the stash expires, so it still picks up changes
+// made elsewhere.
+const RECENT_SAVE_KEY = "soccerRecentSaveV1";
+const RECENT_SAVE_TTL_MS = 10 * 60 * 1000;
+
+function readRecentSave() {
+  try {
+    const raw = sessionStorage.getItem(RECENT_SAVE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.games) || Date.now() - parsed.savedAt > RECENT_SAVE_TTL_MS) return null;
+    return parsed.games;
+  } catch {
+    return null;
+  }
+}
+
+function writeRecentSave(games) {
+  try {
+    sessionStorage.setItem(RECENT_SAVE_KEY, JSON.stringify({ games, savedAt: Date.now() }));
+  } catch {
+    // Best-effort only - sessionStorage can throw (private browsing, full
+    // storage); the network fetch is still the fallback source of truth.
+  }
+}
+
 // Not real security - just keeps casual visitors from poking at this page.
 const EDIT_PASSWORD = "soccer118";
 const EDIT_UNLOCK_KEY = "soccerEditUnlocked";
@@ -665,6 +698,7 @@ async function submitChanges() {
     const result = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(result.error || `Save failed (${resp.status}).`);
 
+    writeRecentSave(games);
     statusEl.textContent = "Saved. Returning to dashboard…";
     window.location.href = "index.html";
   } catch (err) {
@@ -684,9 +718,14 @@ async function submitChanges() {
 // visible here within a couple seconds; the cache-busting query param
 // avoids the CDN caching that URL too.
 async function init() {
-  const res = await fetch(`https://raw.githubusercontent.com/${GAMES_DATA_REPO}/main/data/games.json?_=${Date.now()}`, { cache: "no-store" });
-  const data = await res.json();
-  allGames = data.games || [];
+  const recent = readRecentSave();
+  if (recent) {
+    allGames = recent;
+  } else {
+    const res = await fetch(`https://raw.githubusercontent.com/${GAMES_DATA_REPO}/main/data/games.json?_=${Date.now()}`, { cache: "no-store" });
+    const data = await res.json();
+    allGames = data.games || [];
+  }
 
   const sorted = allGames.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
   renderRows(sorted);

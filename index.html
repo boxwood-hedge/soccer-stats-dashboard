@@ -807,6 +807,11 @@ function renderGames() {
 // visible here within a couple seconds; the cache-busting query param
 // avoids the CDN caching that URL too.
 async function loadData() {
+  const recent = readRecentSave();
+  if (recent) {
+    allGames = recent;
+    return;
+  }
   const res = await fetch(`https://raw.githubusercontent.com/${GAMES_DATA_REPO}/main/data/games.json?_=${Date.now()}`, { cache: "no-store" });
   const data = await res.json();
   allGames = data.games || [];
@@ -821,6 +826,39 @@ const EDIT_UNLOCK_KEY = "soccerEditUnlocked";
 // proxies the save. See api/README.md for setup.
 const SAVE_ENDPOINT = "https://soccer-stats-dashboard.vercel.app/api/save-games";
 const GAMES_DATA_REPO = "boxwood-hedge/soccer-stats-dashboard";
+
+// Even raw.githubusercontent.com isn't guaranteed to reflect a commit the
+// instant it lands - there's a backend propagation window (separate from,
+// and not fixed by, cache-busting the CDN edge) that a save-then-immediately
+// -reload can race and lose. Since a successful save already hands us the
+// exact resulting array, stash it here and prefer it over a network fetch
+// for a little while, so an editor's own save is reflected with no race at
+// all instead of hoping the read wins the race. A stale tab left open falls
+// back to a real fetch once the stash expires, so it still picks up changes
+// made elsewhere.
+const RECENT_SAVE_KEY = "soccerRecentSaveV1";
+const RECENT_SAVE_TTL_MS = 10 * 60 * 1000;
+
+function readRecentSave() {
+  try {
+    const raw = sessionStorage.getItem(RECENT_SAVE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.games) || Date.now() - parsed.savedAt > RECENT_SAVE_TTL_MS) return null;
+    return parsed.games;
+  } catch {
+    return null;
+  }
+}
+
+function writeRecentSave(games) {
+  try {
+    sessionStorage.setItem(RECENT_SAVE_KEY, JSON.stringify({ games, savedAt: Date.now() }));
+  } catch {
+    // Best-effort only - sessionStorage can throw (private browsing, full
+    // storage); the network fetch is still the fallback source of truth.
+  }
+}
 
 // Tracks which action the password gate should resume once unlocked, since
 // both "Edit" (navigate away) and "+ Add game" (open a modal in place)
@@ -961,6 +999,7 @@ async function saveNewGame() {
     if (!resp.ok) throw new Error(result.error || `Save failed (${resp.status}).`);
 
     allGames.push(newGame);
+    writeRecentSave(allGames);
     populateGameFilters();
     render();
     closeAddGameModal();
