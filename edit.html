@@ -203,6 +203,13 @@ table.edit-table input[type="number"] {
   padding: 5px 6px;
 }
 
+table.edit-table input:disabled {
+  background: var(--gridline);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .player-radios {
   display: flex;
   gap: 9px;
@@ -438,6 +445,10 @@ function formatDateAsTyped(raw) {
   return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)].filter(Boolean).join("/");
 }
 
+function isFutureDate(isoDateStr) {
+  return isoDateStr > new Date().toISOString().slice(0, 10);
+}
+
 // -- password gate --
 
 function unlock() {
@@ -465,8 +476,8 @@ function blankGame() {
     player: "Ellie",
     goals: 0,
     assists: 0,
-    teamGoalsFor: 0,
-    teamGoalsAgainst: 0,
+    teamGoalsFor: null,
+    teamGoalsAgainst: null,
   };
 }
 
@@ -491,9 +502,9 @@ function rowHtml(game, rowId) {
       </td>
       <td>
         <div class="score-pair">
-          <input type="number" min="0" class="cell-gf" value="${game.teamGoalsFor}">
+          <input type="number" min="0" class="cell-gf" value="${game.teamGoalsFor ?? ""}">
           <span>-</span>
-          <input type="number" min="0" class="cell-ga" value="${game.teamGoalsAgainst}">
+          <input type="number" min="0" class="cell-ga" value="${game.teamGoalsAgainst ?? ""}">
         </div>
       </td>
       <td class="delete-cell" rowspan="2"><button type="button" class="row-delete-btn" title="Delete this game">&times;</button></td>
@@ -515,15 +526,32 @@ function rowHtml(game, rowId) {
     </tr>`;
 }
 
+// Future games haven't been played yet, so their score fields are greyed
+// out and blocked from entry until the date arrives.
+function updateScoreFieldsDisabled(rowId) {
+  const topTr = document.querySelector(`#editTableBody tr[data-row-id="${rowId}"].row-top`);
+  const bottomTr = document.querySelector(`#editTableBody tr[data-row-id="${rowId}"].row-bottom`);
+  if (!topTr || !bottomTr) return;
+  const date = fromMMDDYY(bottomTr.querySelector(".cell-date").value);
+  const future = date ? isFutureDate(date) : false;
+  topTr.querySelector(".cell-gf").disabled = future;
+  topTr.querySelector(".cell-ga").disabled = future;
+  bottomTr.querySelector(".cell-goals").disabled = future;
+  bottomTr.querySelector(".cell-assists").disabled = future;
+}
+
 function renderRows(games) {
   const tbody = document.getElementById("editTableBody");
-  tbody.innerHTML = games.map((g) => rowHtml(g, nextRowId++)).join("");
+  const rowIds = games.map(() => nextRowId++);
+  tbody.innerHTML = games.map((g, i) => rowHtml(g, rowIds[i])).join("");
+  rowIds.forEach((id) => updateScoreFieldsDisabled(id));
 }
 
 function addBlankRowAtTop() {
   const tbody = document.getElementById("editTableBody");
   const rowId = nextRowId++;
   tbody.insertAdjacentHTML("afterbegin", rowHtml(blankGame(), rowId));
+  updateScoreFieldsDisabled(rowId);
   tbody.querySelector(`tr[data-row-id="${rowId}"] .cell-date`)?.focus();
   refreshTeamSuggestions();
 }
@@ -531,11 +559,19 @@ function addBlankRowAtTop() {
 const TEAM_SUGGESTION_WINDOW_DAYS = 30;
 
 function refreshTeamSuggestions() {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - TEAM_SUGGESTION_WINDOW_DAYS);
+  // Normalize "today" to a date-only value first so the window is a clean
+  // +/-30 whole-day range, unaffected by what time of day it happens to be
+  // (game dates always parse as midnight UTC, so comparing against "now"
+  // directly would skew the boundary by up to a day).
+  const todayOnly = new Date(new Date().toISOString().slice(0, 10));
+  const lowerCutoff = new Date(todayOnly);
+  lowerCutoff.setDate(lowerCutoff.getDate() - TEAM_SUGGESTION_WINDOW_DAYS);
+  const upperCutoff = new Date(todayOnly);
+  upperCutoff.setDate(upperCutoff.getDate() + TEAM_SUGGESTION_WINDOW_DAYS);
   const teams = new Set();
   allGames.forEach((g) => {
-    if (new Date(g.date) >= cutoff) teams.add(g.team);
+    const d = new Date(g.date);
+    if (d >= lowerCutoff && d <= upperCutoff) teams.add(g.team);
   });
   const datalist = document.getElementById("teamSuggestions");
   datalist.innerHTML = Array.from(teams)
@@ -545,6 +581,14 @@ function refreshTeamSuggestions() {
 }
 
 // -- collect + validate --
+
+// Blank means "no score entered yet" (e.g. a future game placeholder) and
+// is preserved as null rather than coerced to 0, so it can be excluded from
+// summary stats - distinct from an actual 0-0 result.
+function parseOptionalScore(input) {
+  const raw = input.value.trim();
+  return raw === "" ? null : Number(raw) || 0;
+}
 
 function collectGames() {
   const rowIds = [];
@@ -582,8 +626,8 @@ function collectGames() {
       player,
       goals: Number(bottomTr.querySelector(".cell-goals").value) || 0,
       assists: Number(bottomTr.querySelector(".cell-assists").value) || 0,
-      teamGoalsFor: Number(topTr.querySelector(".cell-gf").value) || 0,
-      teamGoalsAgainst: Number(topTr.querySelector(".cell-ga").value) || 0,
+      teamGoalsFor: parseOptionalScore(topTr.querySelector(".cell-gf")),
+      teamGoalsAgainst: parseOptionalScore(topTr.querySelector(".cell-ga")),
     });
   }
   return { games };
@@ -663,6 +707,7 @@ async function init() {
       const cursorWasAtEnd = e.target.selectionStart === e.target.value.length;
       e.target.value = formatDateAsTyped(e.target.value);
       if (cursorWasAtEnd) e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+      updateScoreFieldsDisabled(e.target.closest("tr").dataset.rowId);
     }
   });
 
