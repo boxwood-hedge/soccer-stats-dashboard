@@ -1,5 +1,4 @@
 {
-  "sheet": "Sheet1",
   "games": [
     {
       "rowNumber": 174,
@@ -2327,6 +2326,16 @@
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 0,
       "notes": "Great Lakes Spring Challenge HOF"
+    },
+    {
+      "date": "2026-08-16",
+      "team": "Revere U13 3",
+      "opponent": "Strongsville",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": null,
+      "teamGoalsAgainst": null
     }
   ]
 }
