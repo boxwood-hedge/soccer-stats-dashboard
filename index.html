@@ -346,6 +346,15 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 
 .table-scroll { overflow-x: auto; border-radius: 12px; }
 
+/* Every row needs its own explicit (even if transparent) border-left, not
+   just the colored player-section rows - otherwise, under border-collapse,
+   Chrome resolves the table's own ambient border into any row that doesn't
+   declare one of its own, showing as a stray grey sliver on the season/
+   team rows in between the colored section headers. */
+table.summary-table th:first-child, table.summary-table td:first-child {
+  border-left: 4px solid transparent;
+}
+
 table.summary-table tr.player-section td {
   text-align: left;
   font-weight: 700;
