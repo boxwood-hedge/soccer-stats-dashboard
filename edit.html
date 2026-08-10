@@ -77,6 +77,11 @@ body {
 header.top {
   margin-bottom: 16px;
   padding-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 header.top h1 {
@@ -137,22 +142,6 @@ header.top h1 {
 
 .section {
   margin-bottom: 24px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.section-header h2 {
-  font-size: 15px;
-  margin: 0;
-  color: var(--text-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
 .table-scroll { overflow-x: auto; border-radius: 12px; }
@@ -313,7 +302,7 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
   border: none;
   background: transparent;
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
   padding: 4px 6px;
@@ -410,7 +399,12 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
 
   <div class="app" id="editApp" hidden>
     <header class="top">
-      <h1>Edit Games</h1>
+      <h1>Edit</h1>
+      <div class="header-actions">
+        <button class="btn accent" id="addGameBtn">+ Add game</button>
+        <button class="btn" id="cancelBtn">Cancel</button>
+        <button class="btn primary" id="submitBtn">Submit</button>
+      </div>
     </header>
 
     <div class="toolbar">
@@ -418,15 +412,6 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
     </div>
 
     <div class="section">
-      <div class="section-header">
-        <h2>Games</h2>
-        <div class="header-actions">
-          <button class="btn accent" id="addGameBtn">+ Add game</button>
-          <button class="btn" id="cancelBtn">Cancel</button>
-          <button class="btn primary" id="submitBtn">Submit</button>
-        </div>
-      </div>
-
       <div class="table-scroll">
         <table class="edit-table" id="editTable">
           <colgroup>
