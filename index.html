@@ -231,7 +231,7 @@ header.top .sub {
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--surface-2);
+  background: var(--surface-1);
   color: var(--text-primary);
   margin-bottom: 8px;
 }
@@ -293,6 +293,7 @@ header.top .sub {
   font-weight: 600;
   cursor: pointer;
 }
+.player-radios input[type="radio"] { accent-color: var(--text-primary); }
 .player-radios label.Ellie { color: var(--series-ellie); }
 .player-radios label.Lilly { color: var(--series-lilly); }
 
@@ -517,30 +518,30 @@ table.data-table td.empty-cell {
 
         <div>
           <label class="field-label" for="addGameTeam">Team</label>
-          <input type="text" class="modal-input" id="addGameTeam" list="addGameTeamSuggestions" placeholder="Team" autocomplete="off">
+          <input type="text" class="modal-input" id="addGameTeam" list="addGameTeamSuggestions" autocomplete="off">
           <datalist id="addGameTeamSuggestions"></datalist>
         </div>
         <div>
           <label class="field-label" for="addGameOpponent">Opponent</label>
-          <input type="text" class="modal-input" id="addGameOpponent" placeholder="Opponent" autocomplete="off">
+          <input type="text" class="modal-input" id="addGameOpponent" autocomplete="off">
         </div>
 
         <div>
           <label class="field-label" for="addGameGF">Team GF</label>
-          <input type="number" min="0" class="modal-input" id="addGameGF" placeholder="0">
+          <input type="number" min="0" class="modal-input" id="addGameGF">
         </div>
         <div>
           <label class="field-label" for="addGameGA">Team GA</label>
-          <input type="number" min="0" class="modal-input" id="addGameGA" placeholder="0">
+          <input type="number" min="0" class="modal-input" id="addGameGA">
         </div>
 
         <div>
           <label class="field-label" for="addGameGoals">Goals</label>
-          <input type="number" min="0" class="modal-input" id="addGameGoals" placeholder="0">
+          <input type="number" min="0" class="modal-input" id="addGameGoals">
         </div>
         <div>
           <label class="field-label" for="addGameAssists">Assists</label>
-          <input type="number" min="0" class="modal-input" id="addGameAssists" placeholder="0">
+          <input type="number" min="0" class="modal-input" id="addGameAssists">
         </div>
       </div>
 

@@ -99,7 +99,6 @@ header.top h1 {
   background: var(--surface-2);
   padding: 10px 0;
   margin-bottom: 12px;
-  border-bottom: 1px solid var(--gridline);
 }
 .toolbar-actions {
   display: flex;
@@ -215,7 +214,7 @@ table.edit-table input[type="number"] {
   width: 100%;
   font-family: inherit;
   font-size: 13px;
-  background: var(--surface-2);
+  background: var(--surface-1);
   color: var(--text-primary);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -232,7 +231,7 @@ table.edit-table .date-picker-field {
   align-items: center;
   width: 100%;
   font-size: 13px;
-  background: var(--surface-2);
+  background: var(--surface-1);
   color: var(--text-primary);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -281,6 +280,7 @@ table.edit-table input:disabled {
   margin: 0;
   width: 12px;
   height: 12px;
+  accent-color: var(--text-primary);
 }
 .player-radios label.Ellie { color: var(--series-ellie); }
 .player-radios label.Lilly { color: var(--series-lilly); }
@@ -302,6 +302,15 @@ table.edit-table input:disabled {
   width: 8px;
   text-align: center;
 }
+/* Anchoring the second input to the right edge of the (fixed-width)
+   column - rather than relying on the first input/separator's width to
+   land it in the same spot - guarantees GA lines up with A regardless
+   of any small rendering difference on the left side of the pair. */
+table.edit-table .score-pair input:last-of-type,
+table.edit-table .stat-pair input:last-of-type {
+  margin-left: auto;
+}
+
 table.edit-table .score-pair input, table.edit-table .stat-pair input {
   width: 24px;
   flex: none;
@@ -585,7 +594,7 @@ function rowHtml(game, rowId) {
         </div>
       </td>
       <td>
-        <input type="text" class="cell-team" value="${escapeHtml(game.team)}" list="teamSuggestions" placeholder="Team">
+        <input type="text" class="cell-team" value="${escapeHtml(game.team)}" list="teamSuggestions">
       </td>
       <td>
         <div class="score-pair">
@@ -604,7 +613,7 @@ function rowHtml(game, rowId) {
         </div>
       </td>
       <td>
-        <input type="text" class="cell-opponent" value="${escapeHtml(game.opponent)}" placeholder="Opponent">
+        <input type="text" class="cell-opponent" value="${escapeHtml(game.opponent)}">
       </td>
       <td>
         <div class="stat-pair">
