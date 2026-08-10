@@ -178,6 +178,19 @@ header.top .sub {
 }
 .btn.accent:hover { filter: brightness(0.95); }
 
+.btn.ghost {
+  background: transparent;
+  border-color: transparent;
+}
+.btn.ghost:hover { background: var(--gridline); }
+
+.header-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-icon { flex-shrink: 0; }
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -454,9 +467,18 @@ table.data-table td.empty-cell {
       <div class="section-header">
         <h2>Games</h2>
         <div class="header-actions">
-          <a href="#" class="btn accent" id="addGameLink">+ Add game</a>
-          <a href="edit.html" class="btn accent" id="editGamesLink">Edit</a>
-          <a href="#" class="btn accent" id="exportExcelBtn">Export</a>
+          <a href="#" class="btn ghost" id="addGameLink">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add game
+          </a>
+          <a href="edit.html" class="btn ghost" id="editGamesLink">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            Edit
+          </a>
+          <a href="#" class="btn ghost" id="exportExcelBtn">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path><polyline points="8 8 12 4 16 8"></polyline><line x1="12" y1="4" x2="12" y2="15"></line></svg>
+            Export
+          </a>
         </div>
       </div>
       <div class="games-filters">
