@@ -132,13 +132,11 @@ header.top h1 {
   color: #ffffff;
 }
 .btn.accent {
-  background: color-mix(in srgb, var(--series-lilly) 14%, var(--surface-1));
-  border-color: color-mix(in srgb, var(--series-lilly) 40%, transparent);
-  color: var(--series-lilly);
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-primary);
 }
-.btn.accent:hover { background: color-mix(in srgb, var(--series-lilly) 22%, var(--surface-1)); }
-.btn.neutral { background: var(--surface-2); }
-.btn.neutral:hover { background: var(--gridline); }
+.btn.accent:hover { background: var(--gridline); }
 .btn.danger { color: var(--status-critical); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
@@ -416,7 +414,7 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
     <div class="section">
       <div class="section-header">
         <h2>Games</h2>
-        <button class="btn small neutral" id="addGameBtn">+ Add game</button>
+        <button class="btn small accent" id="addGameBtn">+ Add game</button>
       </div>
 
       <div class="table-scroll">
