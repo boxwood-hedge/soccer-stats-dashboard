@@ -137,6 +137,16 @@ header.top h1 {
   color: var(--text-primary);
 }
 .btn.accent:hover { filter: brightness(0.95); }
+.btn.ghost {
+  background: transparent;
+  border-color: transparent;
+}
+.btn.ghost:hover { background: var(--gridline); }
+.header-actions .btn.ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
 .btn.danger { color: var(--status-critical); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
@@ -401,7 +411,10 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
     <header class="top">
       <h1>Edit</h1>
       <div class="header-actions">
-        <button class="btn accent" id="addGameBtn">+ Add game</button>
+        <button class="btn ghost" id="addGameBtn">
+          <svg class="btn-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add game
+        </button>
         <button class="btn" id="cancelBtn">Cancel</button>
         <button class="btn primary" id="submitBtn">Submit</button>
       </div>
