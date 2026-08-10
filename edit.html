@@ -538,8 +538,8 @@ function blankGame() {
     team: "",
     opponent: "",
     player: "",
-    goals: 0,
-    assists: 0,
+    goals: null,
+    assists: null,
     teamGoalsFor: null,
     teamGoalsAgainst: null,
   };
@@ -590,9 +590,9 @@ function rowHtml(game, rowId) {
       </td>
       <td>
         <div class="stat-pair">
-          <input type="number" min="0" class="cell-goals" value="${gameIsFuture ? "" : game.goals}">
+          <input type="number" min="0" class="cell-goals" value="${gameIsFuture || game.goals == null ? "" : game.goals}">
           <span>,</span>
-          <input type="number" min="0" class="cell-assists" value="${gameIsFuture ? "" : game.assists}">
+          <input type="number" min="0" class="cell-assists" value="${gameIsFuture || game.assists == null ? "" : game.assists}">
         </div>
       </td>
     </tr>`;
