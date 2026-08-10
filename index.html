@@ -185,6 +185,9 @@ header.top .sub {
 }
 .btn.accent:hover { background: color-mix(in srgb, var(--series-lilly) 22%, var(--surface-1)); }
 
+.btn.neutral { background: var(--surface-2); }
+.btn.neutral:hover { background: var(--gridline); }
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -462,7 +465,7 @@ table.data-table td.empty-cell {
       <div class="section-header">
         <h2>Games</h2>
         <div class="header-actions">
-          <a href="#" class="btn accent small" id="addGameLink">+ Add game</a>
+          <a href="#" class="btn neutral small" id="addGameLink">+ Add game</a>
           <a href="edit.html" class="btn accent small" id="editGamesLink">Edit</a>
           <a href="#" class="btn accent small" id="exportExcelBtn">Export</a>
         </div>
