@@ -8,12 +8,13 @@
 :root {
   color-scheme: light;
   --surface-1:      #fcfcfb;
-  --surface-2:      #f9f9f7;
+  --surface-2:      #ececea;
   --text-primary:   #0b0b0b;
   --text-secondary: #52514e;
   --text-muted:     #898781;
   --gridline:       #e1e0d9;
   --border:         rgba(11, 11, 11, 0.10);
+  --shadow:         0 1px 2px rgba(11, 11, 11, 0.06), 0 8px 20px rgba(11, 11, 11, 0.07);
   --series-ellie:   #99000b;
   --series-lilly:   #2a78d6;
   --status-critical:#d03b3b;
@@ -30,6 +31,7 @@
     --text-muted:     #898781;
     --gridline:       #2c2c2a;
     --border:         rgba(255, 255, 255, 0.10);
+    --shadow:         0 1px 2px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
     --series-ellie:   #f87171;
     --series-lilly:   #3987e5;
     --status-critical:#e66767;
@@ -46,6 +48,7 @@
   --text-muted:     #898781;
   --gridline:       #2c2c2a;
   --border:         rgba(255, 255, 255, 0.10);
+  --shadow:         0 1px 2px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
   --series-ellie:   #f87171;
   --series-lilly:   #3987e5;
   --status-critical:#e66767;
@@ -129,13 +132,21 @@ header.top h1 {
   color: #ffffff;
 }
 .btn.accent {
-  background: color-mix(in srgb, var(--series-lilly) 14%, var(--surface-1));
-  border-color: color-mix(in srgb, var(--series-lilly) 40%, transparent);
-  color: var(--series-lilly);
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-primary);
 }
-.btn.accent:hover { background: color-mix(in srgb, var(--series-lilly) 22%, var(--surface-1)); }
+.btn.accent:hover { background: var(--gridline); }
 .btn.danger { color: var(--status-critical); }
 .btn:disabled { opacity: 0.5; cursor: default; }
+
+.section {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
 
 .section-header {
   display: flex;
@@ -400,29 +411,31 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
       </div>
     </div>
 
-    <div class="section-header">
-      <h2>Games</h2>
-      <button class="btn small accent" id="addGameBtn">+ Add game</button>
-    </div>
+    <div class="section">
+      <div class="section-header">
+        <h2>Games</h2>
+        <button class="btn small accent" id="addGameBtn">+ Add game</button>
+      </div>
 
-    <div class="table-scroll">
-      <table class="edit-table" id="editTable">
-        <colgroup>
-          <col style="width: 33%">
-          <col style="width: 39%">
-          <col style="width: 20%">
-          <col style="width: 8%">
-        </colgroup>
-        <thead>
-          <tr>
-            <th><div>Player</div><div>Date</div></th>
-            <th><div>Team</div><div>Opponent</div></th>
-            <th><div>Team GF-GA</div><div>Player G, A</div></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="editTableBody"></tbody>
-      </table>
+      <div class="table-scroll">
+        <table class="edit-table" id="editTable">
+          <colgroup>
+            <col style="width: 33%">
+            <col style="width: 39%">
+            <col style="width: 20%">
+            <col style="width: 8%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th><div>Player</div><div>Date</div></th>
+              <th><div>Team</div><div>Opponent</div></th>
+              <th><div>Team GF-GA</div><div>Player G, A</div></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="editTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
