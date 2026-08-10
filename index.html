@@ -550,6 +550,12 @@ const PLAYERS = ["Ellie", "Lilly"];
 let allGames = [];
 let filters = { player: "Both", season: "", team: "" }; // Games list filters.
 let summaryFilters = { seasonMode: "current", teamDetail: "show" };
+// The Season filter's default (most recent season with a game entry) can
+// only be computed once games are loaded, so it's set the first time
+// populateGameFilters() runs rather than in the initial state above -
+// this flag keeps a later call (e.g. after adding a game) from stomping
+// on whatever season the user has since picked.
+let seasonFilterDefaulted = false;
 
 function fmtDate(iso) {
   const [y, m, d] = iso.split("-");
@@ -775,8 +781,13 @@ function populateGameFilters() {
     .sort()
     .reverse();
   seasonSelect.innerHTML =
-    `<option value="">Season: All</option>` +
-    seasonYears.map((sy) => `<option value="${escapeHtml(sy)}">${escapeHtml(sy)}</option>`).join("");
+    seasonYears.map((sy) => `<option value="${escapeHtml(sy)}">${escapeHtml(sy)}</option>`).join("") +
+    `<option value="">Season: All</option>`;
+  if (!seasonFilterDefaulted) {
+    filters.season = seasonYears[0] || "";
+    seasonFilterDefaulted = true;
+  }
+  seasonSelect.value = filters.season;
 
   const teams = Array.from(new Set(allGames.map((g) => g.team))).sort();
   teamSelect.innerHTML =
