@@ -1088,6 +1088,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateAddGameDateDisplay();
     updateAddGameScoreFieldsDisabled();
   });
+  // Mobile Safari/Chrome open the native date picker on any tap, since the
+  // invisible input covers the whole styled box - desktop Chrome/Edge/
+  // Firefox only do that for a click on the tiny calendar-icon glyph, so a
+  // click anywhere else on the box looked like nothing happened. showPicker()
+  // opens it unconditionally on browsers that support it; unsupported
+  // browsers just keep the old click-to-focus behavior.
+  document.getElementById("addGameDate").addEventListener("click", (e) => {
+    if (typeof e.target.showPicker === "function") {
+      try {
+        e.target.showPicker();
+      } catch {
+        // Can throw (e.g. InvalidStateError) in some edge cases - falling
+        // back to the default click-to-focus behavior is fine.
+      }
+    }
+  });
 
   document.getElementById("exportExcelBtn").addEventListener("click", (e) => {
     e.preventDefault();

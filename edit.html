@@ -190,7 +190,6 @@ table.edit-table tr.row-top td { border-bottom: none; padding-bottom: 3px; }
 table.edit-table tr.row-bottom td { padding-top: 3px; }
 table.edit-table tbody tr.row-bottom:last-child td { border-bottom: none; }
 
-table.edit-table input[type="date"],
 table.edit-table input[type="text"],
 table.edit-table input[type="number"] {
   width: 100%;
@@ -201,6 +200,41 @@ table.edit-table input[type="number"] {
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 5px 6px;
+}
+
+/* A native date input (for its calendar picker) sits invisibly on top of a
+   plain text display showing the MM/DD/YY value - clicking/tapping the box
+   opens the native picker, but the visible text is always our own
+   controlled format rather than whatever the OS locale would show. */
+table.edit-table .date-picker-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 13px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0;
+  overflow: hidden;
+}
+table.edit-table .date-picker-field .cell-date-display {
+  padding: 5px 6px;
+  width: 100%;
+  pointer-events: none;
+  white-space: nowrap;
+}
+table.edit-table .date-picker-field input[type="date"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  opacity: 0;
+  cursor: pointer;
 }
 
 table.edit-table input:disabled {
@@ -461,22 +495,6 @@ function toMMDDYY(isoDate) {
   return `${m}/${d}/${y.slice(2)}`;
 }
 
-function fromMMDDYY(str) {
-  const match = str.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
-  if (!match) return null;
-  let [, m, d, y] = match;
-  if (y.length === 2) y = "20" + y;
-  m = m.padStart(2, "0");
-  d = d.padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-// Auto-inserts slashes as the user types digits, e.g. "081326" -> "08/13/26".
-function formatDateAsTyped(raw) {
-  const digits = raw.replace(/\D/g, "").slice(0, 6);
-  return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)].filter(Boolean).join("/");
-}
-
 // "Today" is always the current calendar date in US Eastern time, regardless
 // of the device's own timezone - handles the EST/EDT switch automatically.
 function todayEasternISO() {
@@ -549,7 +567,10 @@ function rowHtml(game, rowId) {
     </tr>
     <tr class="row-bottom" data-row-id="${rowId}">
       <td>
-        <input type="text" inputmode="numeric" class="cell-date" placeholder="MM/DD/YY" value="${escapeHtml(toMMDDYY(game.date))}">
+        <div class="date-picker-field">
+          <span class="cell-date-display">${escapeHtml(toMMDDYY(game.date))}</span>
+          <input type="date" class="cell-date" value="${escapeHtml(game.date || "")}">
+        </div>
       </td>
       <td>
         <input type="text" class="cell-opponent" value="${escapeHtml(game.opponent)}" placeholder="Opponent">
@@ -570,7 +591,7 @@ function updateScoreFieldsDisabled(rowId) {
   const topTr = document.querySelector(`#editTableBody tr[data-row-id="${rowId}"].row-top`);
   const bottomTr = document.querySelector(`#editTableBody tr[data-row-id="${rowId}"].row-bottom`);
   if (!topTr || !bottomTr) return;
-  const date = fromMMDDYY(bottomTr.querySelector(".cell-date").value);
+  const date = bottomTr.querySelector(".cell-date").value; // native date input - always ISO
   const future = date ? isFutureDate(date) : false;
   topTr.querySelector(".cell-gf").disabled = future;
   topTr.querySelector(".cell-ga").disabled = future;
@@ -643,18 +664,14 @@ function collectGames() {
   for (let i = 0; i < rowIds.length; i++) {
     const id = rowIds[i];
     const [topTr, bottomTr] = document.querySelectorAll(`#editTableBody tr[data-row-id="${id}"]`);
-    const dateRaw = bottomTr.querySelector(".cell-date").value;
-    const date = fromMMDDYY(dateRaw);
+    const date = bottomTr.querySelector(".cell-date").value; // native date input - always ISO
     const team = topTr.querySelector(".cell-team").value.trim();
     const opponent = bottomTr.querySelector(".cell-opponent").value.trim();
     const playerInput = topTr.querySelector("input[type=radio]:checked");
     const player = playerInput ? playerInput.value : "";
 
-    if (!team || !opponent || !player || !dateRaw) {
+    if (!team || !opponent || !player || !date) {
       return { error: `Row ${i + 1} is missing a required field (date, team, opponent, or player).` };
-    }
-    if (!date) {
-      return { error: `Row ${i + 1} has an invalid date - use MM/DD/YY.` };
     }
 
     games.push({
@@ -731,9 +748,25 @@ async function init() {
 
   document.getElementById("editTableBody").addEventListener("click", (e) => {
     const btn = e.target.closest(".row-delete-btn");
-    if (!btn) return;
-    pendingDeleteRowId = btn.closest("tr").dataset.rowId;
-    document.getElementById("deleteModalOverlay").classList.add("open");
+    if (btn) {
+      pendingDeleteRowId = btn.closest("tr").dataset.rowId;
+      document.getElementById("deleteModalOverlay").classList.add("open");
+      return;
+    }
+    // Mobile Safari/Chrome open the native date picker on any tap, since
+    // the invisible input covers the whole styled box - desktop Chrome/
+    // Edge/Firefox only do that for a click on the tiny calendar-icon
+    // glyph, so a click anywhere else on the box looked like nothing
+    // happened. showPicker() opens it unconditionally on browsers that
+    // support it; unsupported browsers just keep click-to-focus.
+    if (e.target.classList.contains("cell-date") && typeof e.target.showPicker === "function") {
+      try {
+        e.target.showPicker();
+      } catch {
+        // Can throw (e.g. InvalidStateError) in some edge cases - falling
+        // back to the default click-to-focus behavior is fine.
+      }
+    }
   });
 
   document.getElementById("deleteCancelBtn").addEventListener("click", () => {
@@ -753,9 +786,8 @@ async function init() {
 
   document.getElementById("editTableBody").addEventListener("input", (e) => {
     if (e.target.classList.contains("cell-date")) {
-      const cursorWasAtEnd = e.target.selectionStart === e.target.value.length;
-      e.target.value = formatDateAsTyped(e.target.value);
-      if (cursorWasAtEnd) e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+      const display = e.target.closest(".date-picker-field").querySelector(".cell-date-display");
+      display.textContent = e.target.value ? toMMDDYY(e.target.value) : "";
       updateScoreFieldsDisabled(e.target.closest("tr").dataset.rowId);
     }
   });
