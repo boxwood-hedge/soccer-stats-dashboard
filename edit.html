@@ -14,7 +14,6 @@
   --text-muted:     #898781;
   --gridline:       #e1e0d9;
   --border:         rgba(11, 11, 11, 0.10);
-  --shadow:         0 1px 2px rgba(11, 11, 11, 0.06), 0 8px 20px rgba(11, 11, 11, 0.07);
   --series-ellie:   #99000b;
   --series-lilly:   #2a78d6;
   --status-critical:#d03b3b;
@@ -31,7 +30,6 @@
     --text-muted:     #898781;
     --gridline:       #2c2c2a;
     --border:         rgba(255, 255, 255, 0.10);
-    --shadow:         0 1px 2px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
     --series-ellie:   #f87171;
     --series-lilly:   #3987e5;
     --status-critical:#e66767;
@@ -48,7 +46,6 @@
   --text-muted:     #898781;
   --gridline:       #2c2c2a;
   --border:         rgba(255, 255, 255, 0.10);
-  --shadow:         0 1px 2px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
   --series-ellie:   #f87171;
   --series-lilly:   #3987e5;
   --status-critical:#e66767;
@@ -94,16 +91,15 @@ header.top h1 {
   z-index: 10;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
   background: var(--surface-2);
   padding: 10px 0;
   margin-bottom: 12px;
 }
-.toolbar-actions {
+.header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .status-msg {
@@ -126,9 +122,9 @@ header.top h1 {
 }
 .btn.small { padding: 4px 9px; font-size: 12px; }
 .btn.primary {
-  background: var(--series-lilly);
-  border-color: var(--series-lilly);
-  color: #ffffff;
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--surface-1);
 }
 .btn.accent {
   background: var(--surface-2);
@@ -140,11 +136,7 @@ header.top h1 {
 .btn:disabled { opacity: 0.5; cursor: default; }
 
 .section {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: var(--shadow);
+  margin-bottom: 24px;
 }
 
 .section-header {
@@ -170,6 +162,8 @@ table.edit-table {
   table-layout: fixed;
   border-collapse: collapse;
   background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   font-size: 13px;
 }
 
@@ -285,35 +279,26 @@ table.edit-table input:disabled {
 .player-radios label.Ellie { color: var(--series-ellie); }
 .player-radios label.Lilly { color: var(--series-lilly); }
 
+/* A CSS Grid with explicit, fixed-width tracks (rather than flexbox with
+   a gap) keeps GF-GA and G-A tight and compact - not stretched across
+   the whole column - while each column's width stays locked regardless
+   of the separator glyph's own rendered width ("-" vs ","), which is
+   what was pushing GA out of alignment with A. Flexbox's gap property
+   in particular has a history of small cross-browser/iOS Safari
+   rendering inconsistencies that this sidesteps entirely. */
 .score-pair, .stat-pair {
-  display: flex;
+  display: inline-grid;
+  grid-template-columns: 24px 8px 24px;
   align-items: center;
-  gap: 2px;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-secondary);
 }
-/* "-" and "," render at different widths at the same font size, which
-   otherwise shifts the second input (GA vs A) out of alignment with the
-   row above/below it even though both inputs themselves are the same
-   width - fixing the separator's own width keeps both columns lined up. */
 .score-pair span, .stat-pair span {
-  display: inline-block;
-  width: 8px;
   text-align: center;
 }
-/* Anchoring the second input to the right edge of the (fixed-width)
-   column - rather than relying on the first input/separator's width to
-   land it in the same spot - guarantees GA lines up with A regardless
-   of any small rendering difference on the left side of the pair. */
-table.edit-table .score-pair input:last-of-type,
-table.edit-table .stat-pair input:last-of-type {
-  margin-left: auto;
-}
-
 table.edit-table .score-pair input, table.edit-table .stat-pair input {
-  width: 24px;
-  flex: none;
+  width: 100%;
   text-align: center;
   padding: 5px 0;
   -moz-appearance: textfield;
@@ -432,16 +417,16 @@ table.edit-table .score-pair input, table.edit-table .stat-pair input {
 
     <div class="toolbar">
       <span class="status-msg" id="statusMsg"></span>
-      <div class="toolbar-actions">
-        <button class="btn" id="cancelBtn">Cancel</button>
-        <button class="btn primary" id="submitBtn">Submit</button>
-      </div>
     </div>
 
     <div class="section">
       <div class="section-header">
         <h2>Games</h2>
-        <button class="btn small accent" id="addGameBtn">+ Add game</button>
+        <div class="header-actions">
+          <button class="btn accent" id="addGameBtn">+ Add game</button>
+          <button class="btn" id="cancelBtn">Cancel</button>
+          <button class="btn primary" id="submitBtn">Submit</button>
+        </div>
       </div>
 
       <div class="table-scroll">
@@ -585,6 +570,11 @@ function blankGame() {
 // since nothing then ties e.g. the (short) player radios to the (taller)
 // team input's height.
 function rowHtml(game, rowId) {
+  // Goals/assists always default to 0 in stored data (never null, unlike
+  // GF/GA), but showing that "0" for a game that hasn't been played yet
+  // reads like a recorded stat rather than "no data yet" - blank it out
+  // for display the same way an unset GF/GA already renders blank.
+  const gameIsFuture = isFutureDate(game.date);
   return `
     <tr class="row-top" data-row-id="${rowId}">
       <td>
@@ -617,9 +607,9 @@ function rowHtml(game, rowId) {
       </td>
       <td>
         <div class="stat-pair">
-          <input type="number" min="0" class="cell-goals" value="${game.goals}">
+          <input type="number" min="0" class="cell-goals" value="${gameIsFuture ? "" : game.goals}">
           <span>,</span>
-          <input type="number" min="0" class="cell-assists" value="${game.assists}">
+          <input type="number" min="0" class="cell-assists" value="${gameIsFuture ? "" : game.assists}">
         </div>
       </td>
     </tr>`;

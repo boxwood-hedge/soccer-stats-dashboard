@@ -14,7 +14,6 @@
   --text-muted:     #898781;
   --gridline:       #e1e0d9;
   --border:         rgba(11, 11, 11, 0.10);
-  --shadow:         0 1px 2px rgba(11, 11, 11, 0.06), 0 8px 20px rgba(11, 11, 11, 0.07);
   --series-ellie:   #99000b;
   --series-lilly:   #2a78d6;
   --series-both:    #6b6a64;
@@ -32,7 +31,6 @@
     --text-muted:     #898781;
     --gridline:       #2c2c2a;
     --border:         rgba(255, 255, 255, 0.10);
-    --shadow:         0 1px 2px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
     --series-ellie:   #f87171;
     --series-lilly:   #3987e5;
     --series-both:    #8a8980;
@@ -50,7 +48,6 @@
   --text-muted:     #898781;
   --gridline:       #2c2c2a;
   --border:         rgba(255, 255, 255, 0.10);
-  --shadow:         0 1px 2px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
   --series-ellie:   #f87171;
   --series-lilly:   #3987e5;
   --series-both:    #8a8980;
@@ -121,8 +118,9 @@ header.top .sub {
 }
 
 .games-filters #teamFilter {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -130,12 +128,7 @@ header.top .sub {
 
 
 .section {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
   margin-bottom: 24px;
-  box-shadow: var(--shadow);
 }
 
 .section-header {
@@ -174,9 +167,9 @@ header.top .sub {
 }
 
 .btn.primary {
-  background: var(--series-lilly);
-  border-color: var(--series-lilly);
-  color: #ffffff;
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--surface-1);
 }
 .btn.accent {
   background: var(--surface-2);
@@ -461,9 +454,9 @@ table.data-table td.empty-cell {
       <div class="section-header">
         <h2>Games</h2>
         <div class="header-actions">
-          <a href="#" class="btn accent small" id="addGameLink">+ Add game</a>
-          <a href="edit.html" class="btn accent small" id="editGamesLink">Edit</a>
-          <a href="#" class="btn accent small" id="exportExcelBtn">Export</a>
+          <a href="#" class="btn accent" id="addGameLink">+ Add game</a>
+          <a href="edit.html" class="btn accent" id="editGamesLink">Edit</a>
+          <a href="#" class="btn accent" id="exportExcelBtn">Export</a>
         </div>
       </div>
       <div class="games-filters">
@@ -754,6 +747,26 @@ function formatGoalsAssists(goals, assists) {
   return parts.join(", ");
 }
 
+// Sizes a <select> to fit its widest option's rendered text, rather than
+// the browser's default of sizing to whatever's currently selected (which
+// would otherwise grow/shrink the box as different options are picked) or
+// stretching to fill its flex row (which left the Team filter needlessly
+// wide on desktop). min-width: 0 plus flex-shrink still lets it shrink
+// below this on a narrow phone screen if there isn't room for it.
+function sizeSelectToWidestOption(selectEl) {
+  const canvas = sizeSelectToWidestOption._canvas || (sizeSelectToWidestOption._canvas = document.createElement("canvas"));
+  const ctx = canvas.getContext("2d");
+  const cs = getComputedStyle(selectEl);
+  ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+  const maxTextWidth = Array.from(selectEl.options).reduce(
+    (max, opt) => Math.max(max, ctx.measureText(opt.textContent).width),
+    0
+  );
+  // Padding to cover the select's own left/right padding and the native
+  // dropdown arrow, which measureText() doesn't account for.
+  selectEl.style.width = `${Math.ceil(maxTextWidth) + 40}px`;
+}
+
 function populateGameFilters() {
   const seasonSelect = document.getElementById("seasonFilter");
   const teamSelect = document.getElementById("teamFilter");
@@ -769,6 +782,7 @@ function populateGameFilters() {
   teamSelect.innerHTML =
     `<option value="">Team: All</option>` +
     teams.map((t) => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  sizeSelectToWidestOption(teamSelect);
 }
 
 function renderGames() {
