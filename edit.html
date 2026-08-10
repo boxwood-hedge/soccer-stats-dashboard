@@ -171,8 +171,6 @@ table.edit-table {
   table-layout: fixed;
   border-collapse: collapse;
   background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 12px;
   font-size: 13px;
 }
 
@@ -200,6 +198,17 @@ table.edit-table td.delete-cell { width: 1%; padding-left: 2px; padding-right: 4
 table.edit-table tr.row-top td { border-bottom: none; padding-bottom: 3px; }
 table.edit-table tr.row-bottom td { padding-top: 3px; }
 table.edit-table tbody tr.row-bottom:last-child td { border-bottom: none; }
+
+/* The delete button's cell spans both rows of a game entry, but it's
+   written inside the row-top <tr>, so the row-top rule above (which
+   suppresses the divider between a pair's own two rows) was also
+   suppressing its bottom border - the one divider that's actually
+   supposed to separate one game entry from the next. Restoring it here
+   (and re-suppressing it only for the last entry, to match every other
+   column not drawing a line below the last row) makes it span the full
+   row width like every other column's divider. */
+table.edit-table tr.row-top td.delete-cell { border-bottom: 1px solid var(--gridline); }
+table.edit-table tr.row-top:has(+ tr.row-bottom:last-child) td.delete-cell { border-bottom: none; }
 
 table.edit-table input[type="text"],
 table.edit-table input[type="number"] {
@@ -283,6 +292,15 @@ table.edit-table input:disabled {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-secondary);
+}
+/* "-" and "," render at different widths at the same font size, which
+   otherwise shifts the second input (GA vs A) out of alignment with the
+   row above/below it even though both inputs themselves are the same
+   width - fixing the separator's own width keeps both columns lined up. */
+.score-pair span, .stat-pair span {
+  display: inline-block;
+  width: 8px;
+  text-align: center;
 }
 table.edit-table .score-pair input, table.edit-table .stat-pair input {
   width: 24px;
