@@ -1809,6 +1809,16 @@
       "assists": 0,
       "teamGoalsFor": 0,
       "teamGoalsAgainst": 1
+    },
+    {
+      "date": "2026-08-22",
+      "team": "ISC U12 N1",
+      "opponent": "Carmel FC Gold",
+      "player": "Lilly",
+      "goals": 2,
+      "assists": 0,
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 0
     }
   ]
 }
