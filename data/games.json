@@ -1819,6 +1819,16 @@
       "assists": 0,
       "teamGoalsFor": 5,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-08-22",
+      "team": "ISC U12 N1",
+      "opponent": "Fort Wayne Sports Club",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 0
     }
   ]
 }
