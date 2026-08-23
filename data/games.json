@@ -2,9 +2,9 @@
   "games": [
     {
       "date": "2026-08-23",
-      "team": "ISC U12 N1",
-      "opponent": "NWI Lions United White",
-      "player": "Lilly",
+      "team": "Revere U14 Fall",
+      "opponent": "Solon",
+      "player": "Ellie",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": null,
@@ -22,22 +22,12 @@
     },
     {
       "date": "2026-08-23",
-      "team": "Revere U14 Fall",
-      "opponent": "Solon",
-      "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": null,
-      "teamGoalsAgainst": null
-    },
-    {
-      "date": "2026-08-22",
       "team": "ISC U12 N1",
-      "opponent": "FW Sport Club Munich",
+      "opponent": "NWI Lions United White",
       "player": "Lilly",
-      "goals": 1,
+      "goals": 5,
       "assists": 0,
-      "teamGoalsFor": 5,
+      "teamGoalsFor": 14,
       "teamGoalsAgainst": 0
     },
     {
@@ -46,6 +36,16 @@
       "opponent": "Carmel FC Gold",
       "player": "Lilly",
       "goals": 2,
+      "assists": 0,
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-08-22",
+      "team": "ISC U12 N1",
+      "opponent": "FW Sport Club Munich",
+      "player": "Lilly",
+      "goals": 1,
       "assists": 0,
       "teamGoalsFor": 5,
       "teamGoalsAgainst": 0
@@ -73,7 +73,7 @@
     {
       "date": "2026-06-07",
       "team": "Revere U14 2",
-      "opponent": "Lakewood United",
+      "opponent": "Solon",
       "player": "Ellie",
       "goals": 1,
       "assists": 0,
@@ -83,11 +83,21 @@
     {
       "date": "2026-06-07",
       "team": "Revere U14 2",
-      "opponent": "Solon",
+      "opponent": "Lakewood United",
       "player": "Ellie",
       "goals": 1,
       "assists": 0,
       "teamGoalsFor": 4,
+      "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-06-06",
+      "team": "Revere U14 2",
+      "opponent": "Medina White",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
       "teamGoalsAgainst": 0
     },
     {
@@ -101,9 +111,9 @@
       "teamGoalsAgainst": 0
     },
     {
-      "date": "2026-06-06",
+      "date": "2026-05-31",
       "team": "Revere U14 2",
-      "opponent": "Medina White",
+      "opponent": "West Geauga",
       "player": "Ellie",
       "goals": 0,
       "assists": 0,
@@ -121,13 +131,13 @@
       "teamGoalsAgainst": 1
     },
     {
-      "date": "2026-05-31",
-      "team": "Revere U14 2",
-      "opponent": "West Geauga",
-      "player": "Ellie",
+      "date": "2026-05-30",
+      "team": "CVSA U12 White",
+      "opponent": "Manta",
+      "player": "Lilly",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 2,
+      "teamGoalsFor": 0,
       "teamGoalsAgainst": 0
     },
     {
@@ -141,16 +151,6 @@
       "teamGoalsAgainst": 1
     },
     {
-      "date": "2026-05-30",
-      "team": "CVSA U12 White",
-      "opponent": "Manta",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 0
-    },
-    {
       "date": "2026-05-29",
       "team": "Revere U12 4S",
       "opponent": "Louisville",
@@ -159,16 +159,6 @@
       "assists": 0,
       "teamGoalsFor": 3,
       "teamGoalsAgainst": 0
-    },
-    {
-      "date": "2026-05-24",
-      "team": "CVSA U12 White",
-      "opponent": "FC Pittsburgh Gold",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 2
     },
     {
       "date": "2026-05-24",
@@ -181,13 +171,23 @@
       "teamGoalsAgainst": 4
     },
     {
-      "date": "2026-05-23",
-      "team": "CVSA U14 White",
-      "opponent": "MASC",
-      "player": "Ellie",
-      "goals": 3,
+      "date": "2026-05-24",
+      "team": "CVSA U12 White",
+      "opponent": "FC Pittsburgh Gold",
+      "player": "Lilly",
+      "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 8,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 2
+    },
+    {
+      "date": "2026-05-23",
+      "team": "CVSA U12 White",
+      "opponent": "Century United White",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
     },
     {
@@ -202,12 +202,12 @@
     },
     {
       "date": "2026-05-23",
-      "team": "CVSA U12 White",
-      "opponent": "Century United White",
-      "player": "Lilly",
-      "goals": 1,
+      "team": "CVSA U14 White",
+      "opponent": "MASC",
+      "player": "Ellie",
+      "goals": 3,
       "assists": 0,
-      "teamGoalsFor": 1,
+      "teamGoalsFor": 8,
       "teamGoalsAgainst": 0
     },
     {
@@ -222,16 +222,6 @@
     },
     {
       "date": "2026-05-19",
-      "team": "Revere U12 4S",
-      "opponent": "North Royalton",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 3
-    },
-    {
-      "date": "2026-05-19",
       "team": "Revere U14 2",
       "opponent": "Green",
       "player": "Ellie",
@@ -239,6 +229,16 @@
       "assists": 0,
       "teamGoalsFor": 0,
       "teamGoalsAgainst": 4
+    },
+    {
+      "date": "2026-05-19",
+      "team": "Revere U12 4S",
+      "opponent": "North Royalton",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 3
     },
     {
       "date": "2026-05-17",
@@ -252,16 +252,6 @@
     },
     {
       "date": "2026-05-16",
-      "team": "CVSA U12 White",
-      "opponent": "Stark United",
-      "player": "Lilly",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2026-05-16",
       "team": "CVSA U14 White",
       "opponent": "Liberty",
       "player": "Ellie",
@@ -271,14 +261,24 @@
       "teamGoalsAgainst": 5
     },
     {
-      "date": "2026-05-15",
+      "date": "2026-05-16",
       "team": "CVSA U12 White",
-      "opponent": "North FC East Blue",
+      "opponent": "Stark United",
       "player": "Lilly",
-      "goals": 0,
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 1,
+      "teamGoalsFor": 2,
       "teamGoalsAgainst": 4
+    },
+    {
+      "date": "2026-05-15",
+      "team": "CVSA U14 White",
+      "opponent": "Cleveland Kickers Blue",
+      "player": "Ellie",
+      "goals": 2,
+      "assists": 0,
+      "teamGoalsFor": 3,
+      "teamGoalsAgainst": 2
     },
     {
       "date": "2026-05-15",
@@ -292,13 +292,13 @@
     },
     {
       "date": "2026-05-15",
-      "team": "CVSA U14 White",
-      "opponent": "Cleveland Kickers Blue",
-      "player": "Ellie",
-      "goals": 2,
+      "team": "CVSA U12 White",
+      "opponent": "North FC East Blue",
+      "player": "Lilly",
+      "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 3,
-      "teamGoalsAgainst": 2
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 4
     },
     {
       "date": "2026-05-10",
@@ -312,23 +312,13 @@
     },
     {
       "date": "2026-05-09",
-      "team": "CVSA U14 White",
-      "opponent": "CAU Force White",
-      "player": "Ellie",
+      "team": "CVSA U12 White",
+      "opponent": "Cleveland Force Yellow",
+      "player": "Lilly",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2026-05-09",
-      "team": "CVSA U14 White",
-      "opponent": "Caps",
-      "player": "Ellie",
-      "goals": 3,
-      "assists": 2,
-      "teamGoalsFor": 11,
-      "teamGoalsAgainst": 1
+      "teamGoalsAgainst": 0
     },
     {
       "date": "2026-05-09",
@@ -342,13 +332,23 @@
     },
     {
       "date": "2026-05-09",
-      "team": "CVSA U12 White",
-      "opponent": "Cleveland Force Yellow",
-      "player": "Lilly",
+      "team": "CVSA U14 White",
+      "opponent": "Caps",
+      "player": "Ellie",
+      "goals": 3,
+      "assists": 2,
+      "teamGoalsFor": 11,
+      "teamGoalsAgainst": 1
+    },
+    {
+      "date": "2026-05-09",
+      "team": "CVSA U14 White",
+      "opponent": "CAU Force White",
+      "player": "Ellie",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 0
+      "teamGoalsAgainst": 4
     },
     {
       "date": "2026-05-05",
@@ -392,13 +392,13 @@
     },
     {
       "date": "2026-04-19",
-      "team": "CVSA U14 White",
-      "opponent": "Ashland United",
-      "player": "Ellie",
+      "team": "Revere U12 4S",
+      "opponent": "Buckeye",
+      "player": "Lilly",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 3
+      "teamGoalsAgainst": 5
     },
     {
       "date": "2026-04-19",
@@ -412,32 +412,22 @@
     },
     {
       "date": "2026-04-19",
-      "team": "Revere U12 4S",
-      "opponent": "Buckeye",
-      "player": "Lilly",
+      "team": "CVSA U14 White",
+      "opponent": "Ashland United",
+      "player": "Ellie",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 5
-    },
-    {
-      "date": "2026-04-18",
-      "team": "CVSA U14 White",
-      "opponent": "Steel City",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 1,
       "teamGoalsAgainst": 3
     },
     {
       "date": "2026-04-18",
-      "team": "CVSA U14 White",
-      "opponent": "Club Ohio East Black",
-      "player": "Ellie",
+      "team": "CVSA U12 White",
+      "opponent": "Erie Commodores Yellow",
+      "player": "Lilly",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 3,
+      "teamGoalsFor": 0,
       "teamGoalsAgainst": 5
     },
     {
@@ -452,12 +442,32 @@
     },
     {
       "date": "2026-04-18",
-      "team": "CVSA U12 White",
-      "opponent": "Erie Commodores Yellow",
-      "player": "Lilly",
+      "team": "CVSA U14 White",
+      "opponent": "Club Ohio East Black",
+      "player": "Ellie",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 0,
+      "teamGoalsFor": 3,
+      "teamGoalsAgainst": 5
+    },
+    {
+      "date": "2026-04-18",
+      "team": "CVSA U14 White",
+      "opponent": "Steel City",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2026-04-12",
+      "team": "Revere U14 2",
+      "opponent": "Parma",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
       "teamGoalsAgainst": 5
     },
     {
@@ -469,16 +479,6 @@
       "assists": 0,
       "teamGoalsFor": 3,
       "teamGoalsAgainst": 0
-    },
-    {
-      "date": "2026-04-12",
-      "team": "Revere U14 2",
-      "opponent": "Parma",
-      "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 5
     },
     {
       "date": "2026-04-11",
@@ -502,16 +502,6 @@
     },
     {
       "date": "2026-03-22",
-      "team": "United 2012",
-      "opponent": "Brunswick 2011/12",
-      "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2026-03-22",
       "team": "CVSA U14 White",
       "opponent": "Croatia Juniors",
       "player": "Ellie",
@@ -521,14 +511,24 @@
       "teamGoalsAgainst": 2
     },
     {
+      "date": "2026-03-22",
+      "team": "United 2012",
+      "opponent": "Brunswick 2011/12",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 4
+    },
+    {
       "date": "2026-03-14",
-      "team": "CVSA U12 White",
-      "opponent": "Cobras",
-      "player": "Lilly",
+      "team": "United 2012",
+      "opponent": "ISC 2014 White",
+      "player": "Ellie",
       "goals": 1,
-      "assists": 1,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 5
+      "assists": 0,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 7
     },
     {
       "date": "2026-03-14",
@@ -542,13 +542,13 @@
     },
     {
       "date": "2026-03-14",
-      "team": "United 2012",
-      "opponent": "ISC 2014 White",
-      "player": "Ellie",
+      "team": "CVSA U12 White",
+      "opponent": "Cobras",
+      "player": "Lilly",
       "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 7
+      "assists": 1,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 5
     },
     {
       "date": "2026-03-08",
@@ -592,16 +592,6 @@
     },
     {
       "date": "2026-02-22",
-      "team": "CVSA U12 White",
-      "opponent": "Cleveland Force Yellow",
-      "player": "Lilly",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 8
-    },
-    {
-      "date": "2026-02-22",
       "team": "United 2012",
       "opponent": "Revere Goal Get Hers",
       "player": "Ellie",
@@ -609,6 +599,16 @@
       "assists": 0,
       "teamGoalsFor": 4,
       "teamGoalsAgainst": 2
+    },
+    {
+      "date": "2026-02-22",
+      "team": "CVSA U12 White",
+      "opponent": "Cleveland Force Yellow",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 8
     },
     {
       "date": "2026-02-16",
@@ -623,12 +623,12 @@
     {
       "date": "2026-02-15",
       "team": "CVSA U14 White",
-      "opponent": "Croatia Juniors",
+      "opponent": "Erie FC 2012/13 Red",
       "player": "Ellie",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 0
+      "teamGoalsAgainst": 2
     },
     {
       "date": "2026-02-15",
@@ -643,21 +643,21 @@
     {
       "date": "2026-02-15",
       "team": "CVSA U14 White",
-      "opponent": "Erie FC 2012/13 Red",
+      "opponent": "Croatia Juniors",
       "player": "Ellie",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 2
+      "teamGoalsAgainst": 0
     },
     {
       "date": "2026-02-14",
-      "team": "CVSA U12 White",
-      "opponent": "Spire FC",
-      "player": "Lilly",
-      "goals": 1,
+      "team": "United 2012",
+      "opponent": "Revere Goal Get Hers",
+      "player": "Ellie",
+      "goals": 3,
       "assists": 0,
-      "teamGoalsFor": 4,
+      "teamGoalsFor": 7,
       "teamGoalsAgainst": 2
     },
     {
@@ -672,12 +672,12 @@
     },
     {
       "date": "2026-02-14",
-      "team": "United 2012",
-      "opponent": "Revere Goal Get Hers",
-      "player": "Ellie",
-      "goals": 3,
+      "team": "CVSA U12 White",
+      "opponent": "Spire FC",
+      "player": "Lilly",
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 7,
+      "teamGoalsFor": 4,
       "teamGoalsAgainst": 2
     },
     {
@@ -692,16 +692,6 @@
     },
     {
       "date": "2026-02-07",
-      "team": "CVSA U14 White",
-      "opponent": "Ambassadors 2014 Ext",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 5
-    },
-    {
-      "date": "2026-02-07",
       "team": "United 2012",
       "opponent": "Brunswick 2011/12",
       "player": "Ellie",
@@ -711,14 +701,14 @@
       "teamGoalsAgainst": 4
     },
     {
-      "date": "2026-01-31",
-      "team": "CVSA U12 White",
-      "opponent": "Manta 2016 Pink",
-      "player": "Lilly",
+      "date": "2026-02-07",
+      "team": "CVSA U14 White",
+      "opponent": "Ambassadors 2014 Ext",
+      "player": "Ellie",
       "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 3,
-      "teamGoalsAgainst": 3
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 5
     },
     {
       "date": "2026-01-31",
@@ -731,14 +721,14 @@
       "teamGoalsAgainst": 5
     },
     {
-      "date": "2026-01-24",
+      "date": "2026-01-31",
       "team": "CVSA U12 White",
-      "opponent": "Stark United",
+      "opponent": "Manta 2016 Pink",
       "player": "Lilly",
-      "goals": 3,
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 8,
-      "teamGoalsAgainst": 0
+      "teamGoalsFor": 3,
+      "teamGoalsAgainst": 3
     },
     {
       "date": "2026-01-24",
@@ -749,6 +739,16 @@
       "assists": 0,
       "teamGoalsFor": 0,
       "teamGoalsAgainst": 1
+    },
+    {
+      "date": "2026-01-24",
+      "team": "CVSA U12 White",
+      "opponent": "Stark United",
+      "player": "Lilly",
+      "goals": 3,
+      "assists": 0,
+      "teamGoalsFor": 8,
+      "teamGoalsAgainst": 0
     },
     {
       "date": "2026-01-18",
@@ -772,16 +772,6 @@
     },
     {
       "date": "2026-01-10",
-      "team": "United 2012",
-      "opponent": "ISC 2013",
-      "player": "Ellie",
-      "goals": 3,
-      "assists": 0,
-      "teamGoalsFor": 5,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2026-01-10",
       "team": "CVSA U14 White",
       "opponent": "Manta 2014 Pink",
       "player": "Ellie",
@@ -789,6 +779,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-01-10",
+      "team": "United 2012",
+      "opponent": "ISC 2013",
+      "player": "Ellie",
+      "goals": 3,
+      "assists": 0,
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 4
     },
     {
       "date": "2026-01-03",
@@ -872,13 +872,13 @@
     },
     {
       "date": "2025-11-16",
-      "team": "CVSA U14 White",
-      "opponent": "Liberty",
-      "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 1
+      "team": "CVSA U12 White",
+      "opponent": "Cleveland Cobras",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 1,
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 5
     },
     {
       "date": "2025-11-16",
@@ -892,13 +892,13 @@
     },
     {
       "date": "2025-11-16",
-      "team": "CVSA U12 White",
-      "opponent": "Cleveland Cobras",
-      "player": "Lilly",
-      "goals": 1,
-      "assists": 1,
-      "teamGoalsFor": 5,
-      "teamGoalsAgainst": 5
+      "team": "CVSA U14 White",
+      "opponent": "Liberty",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 1
     },
     {
       "date": "2025-11-09",
@@ -912,16 +912,6 @@
     },
     {
       "date": "2025-11-02",
-      "team": "CVSA U14 White",
-      "opponent": "Ohio Strikers United Black 2011",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2025-11-02",
       "team": "CVSA U13 White",
       "opponent": "Square One Sports 2013-14",
       "player": "Lilly",
@@ -931,24 +921,24 @@
       "teamGoalsAgainst": 1
     },
     {
-      "date": "2025-11-01",
+      "date": "2025-11-02",
       "team": "CVSA U14 White",
-      "opponent": "Club Ohio Aspire 2011",
+      "opponent": "Ohio Strikers United Black 2011",
       "player": "Ellie",
-      "goals": 0,
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 6
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 4
     },
     {
       "date": "2025-11-01",
-      "team": "CVSA U14 White",
-      "opponent": "Club Ohio North Black 2011",
-      "player": "Ellie",
+      "team": "CVSA U13 White",
+      "opponent": "Club Ohio West Green",
+      "player": "Lilly",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 0
+      "teamGoalsAgainst": 2
     },
     {
       "date": "2025-11-01",
@@ -962,13 +952,23 @@
     },
     {
       "date": "2025-11-01",
-      "team": "CVSA U13 White",
-      "opponent": "Club Ohio West Green",
-      "player": "Lilly",
+      "team": "CVSA U14 White",
+      "opponent": "Club Ohio North Black 2011",
+      "player": "Ellie",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 0,
-      "teamGoalsAgainst": 2
+      "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2025-11-01",
+      "team": "CVSA U14 White",
+      "opponent": "Club Ohio Aspire 2011",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 6
     },
     {
       "date": "2025-10-26",
@@ -1012,22 +1012,22 @@
     },
     {
       "date": "2025-10-12",
-      "team": "Revere U14 3W",
-      "opponent": "Amherst",
-      "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 3
-    },
-    {
-      "date": "2025-10-12",
       "team": "Revere U13 4E",
       "opponent": "Solon United Blue",
       "player": "Lilly",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 2,
+      "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2025-10-12",
+      "team": "Revere U14 3W",
+      "opponent": "Amherst",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 1,
       "teamGoalsAgainst": 3
     },
     {
@@ -1042,13 +1042,13 @@
     },
     {
       "date": "2025-10-05",
-      "team": "Revere U13 4E",
-      "opponent": "Medina",
-      "player": "Lilly",
-      "goals": 0,
+      "team": "Revere U14 3W",
+      "opponent": "Fairview Park",
+      "player": "Ellie",
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 5
+      "teamGoalsFor": 6,
+      "teamGoalsAgainst": 3
     },
     {
       "date": "2025-10-05",
@@ -1062,33 +1062,23 @@
     },
     {
       "date": "2025-10-05",
-      "team": "Revere U14 3W",
-      "opponent": "Fairview Park",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 6,
-      "teamGoalsAgainst": 3
-    },
-    {
-      "date": "2025-10-04",
       "team": "Revere U13 4E",
-      "opponent": "Strongsville",
+      "opponent": "Medina",
       "player": "Lilly",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 5,
-      "teamGoalsAgainst": 3
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 5
     },
     {
       "date": "2025-10-04",
       "team": "Revere U14 3W",
-      "opponent": "Geauga Federation",
+      "opponent": "Shaker Youth Soccer Assoc",
       "player": "Ellie",
-      "goals": 1,
+      "goals": 2,
       "assists": 0,
-      "teamGoalsFor": 4,
-      "teamGoalsAgainst": 3
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 1
     },
     {
       "date": "2025-10-04",
@@ -1103,12 +1093,22 @@
     {
       "date": "2025-10-04",
       "team": "Revere U14 3W",
-      "opponent": "Shaker Youth Soccer Assoc",
+      "opponent": "Geauga Federation",
       "player": "Ellie",
-      "goals": 2,
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 4,
+      "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2025-10-04",
+      "team": "Revere U13 4E",
+      "opponent": "Strongsville",
+      "player": "Lilly",
+      "goals": 0,
       "assists": 0,
       "teamGoalsFor": 5,
-      "teamGoalsAgainst": 1
+      "teamGoalsAgainst": 3
     },
     {
       "date": "2025-10-02",
@@ -1142,23 +1142,13 @@
     },
     {
       "date": "2025-09-20",
-      "team": "CVSA U14 White",
-      "opponent": "Cleveland Force Black",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 3,
-      "teamGoalsAgainst": 0
-    },
-    {
-      "date": "2025-09-20",
-      "team": "CVSA U14 White",
-      "opponent": "Caps",
-      "player": "Ellie",
+      "team": "CVSA U13 White",
+      "opponent": "Ohio Strikers Black",
+      "player": "Lilly",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 2,
-      "teamGoalsAgainst": 1
+      "teamGoalsAgainst": 5
     },
     {
       "date": "2025-09-20",
@@ -1172,13 +1162,23 @@
     },
     {
       "date": "2025-09-20",
-      "team": "CVSA U13 White",
-      "opponent": "Ohio Strikers Black",
-      "player": "Lilly",
+      "team": "CVSA U14 White",
+      "opponent": "Caps",
+      "player": "Ellie",
       "goals": 0,
       "assists": 0,
       "teamGoalsFor": 2,
-      "teamGoalsAgainst": 5
+      "teamGoalsAgainst": 1
+    },
+    {
+      "date": "2025-09-20",
+      "team": "CVSA U14 White",
+      "opponent": "Cleveland Force Black",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 3,
+      "teamGoalsAgainst": 0
     },
     {
       "date": "2025-09-19",
@@ -1192,16 +1192,6 @@
     },
     {
       "date": "2025-09-14",
-      "team": "Revere U13 4E",
-      "opponent": "Nordonia",
-      "player": "Lilly",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 5,
-      "teamGoalsAgainst": 2
-    },
-    {
-      "date": "2025-09-14",
       "team": "Revere U14 3W",
       "opponent": "Green",
       "player": "Ellie",
@@ -1211,14 +1201,14 @@
       "teamGoalsAgainst": 2
     },
     {
-      "date": "2025-09-13",
-      "team": "CVSA U14 White",
-      "opponent": "Ohio Strikers Black",
-      "player": "Ellie",
+      "date": "2025-09-14",
+      "team": "Revere U13 4E",
+      "opponent": "Nordonia",
+      "player": "Lilly",
       "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 3,
-      "teamGoalsAgainst": 1
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 2
     },
     {
       "date": "2025-09-13",
@@ -1231,13 +1221,13 @@
       "teamGoalsAgainst": 1
     },
     {
-      "date": "2025-09-12",
-      "team": "Revere U14 3W",
-      "opponent": "Chippewa",
+      "date": "2025-09-13",
+      "team": "CVSA U14 White",
+      "opponent": "Ohio Strikers Black",
       "player": "Ellie",
       "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 4,
+      "teamGoalsFor": 3,
       "teamGoalsAgainst": 1
     },
     {
@@ -1251,6 +1241,16 @@
       "teamGoalsAgainst": 7
     },
     {
+      "date": "2025-09-12",
+      "team": "Revere U14 3W",
+      "opponent": "Chippewa",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 4,
+      "teamGoalsAgainst": 1
+    },
+    {
       "date": "2025-09-07",
       "team": "Revere U14 3W",
       "opponent": "Fairview Park",
@@ -1259,6 +1259,16 @@
       "assists": 1,
       "teamGoalsFor": 6,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2025-08-24",
+      "team": "Revere U13 4E",
+      "opponent": "West Geauga",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 4
     },
     {
       "date": "2025-08-24",
@@ -1271,11 +1281,21 @@
       "teamGoalsAgainst": 1
     },
     {
-      "date": "2025-08-24",
-      "team": "Revere U13 4E",
-      "opponent": "West Geauga",
+      "date": "2025-08-23",
+      "team": "CVSA U13 White",
+      "opponent": "North FC Grey",
       "player": "Lilly",
       "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 4,
+      "teamGoalsAgainst": 2
+    },
+    {
+      "date": "2025-08-23",
+      "team": "CVSA U14 White",
+      "opponent": "Soccer Vision Academy 2012/11",
+      "player": "Ellie",
+      "goals": 1,
       "assists": 0,
       "teamGoalsFor": 2,
       "teamGoalsAgainst": 4
@@ -1291,26 +1311,6 @@
       "teamGoalsAgainst": 1
     },
     {
-      "date": "2025-08-23",
-      "team": "CVSA U14 White",
-      "opponent": "Soccer Vision Academy 2012/11",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2025-08-23",
-      "team": "CVSA U13 White",
-      "opponent": "North FC Grey",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 4,
-      "teamGoalsAgainst": 2
-    },
-    {
       "date": "2025-08-21",
       "team": "Revere U14 3W",
       "opponent": "Amherst",
@@ -1322,16 +1322,6 @@
     },
     {
       "date": "2025-08-16",
-      "team": "CVSA U13 White",
-      "opponent": "BG Fall Challenge",
-      "player": "Lilly",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 7,
-      "teamGoalsAgainst": 5
-    },
-    {
-      "date": "2025-08-16",
       "team": "CVSA U14 White",
       "opponent": "BG Fall Challenge",
       "player": "Ellie",
@@ -1339,6 +1329,16 @@
       "assists": 0,
       "teamGoalsFor": 9,
       "teamGoalsAgainst": 6
+    },
+    {
+      "date": "2025-08-16",
+      "team": "CVSA U13 White",
+      "opponent": "BG Fall Challenge",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 7,
+      "teamGoalsAgainst": 5
     },
     {
       "date": "2025-06-08",
@@ -1352,26 +1352,6 @@
     },
     {
       "date": "2025-06-07",
-      "team": "LFC U12",
-      "opponent": "Caps U13",
-      "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2025-06-07",
-      "team": "LFC U12",
-      "opponent": "Caps U13",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 4
-    },
-    {
-      "date": "2025-06-07",
       "team": "LFC U13",
       "opponent": "Cleveland Kickers",
       "player": "Ellie",
@@ -1381,33 +1361,33 @@
       "teamGoalsAgainst": 5
     },
     {
-      "date": "2025-05-31",
-      "team": "Revere U12",
-      "opponent": "Lakewood",
+      "date": "2025-06-07",
+      "team": "LFC U12",
+      "opponent": "Caps U13",
       "player": "Lilly",
-      "goals": 2,
+      "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 7,
-      "teamGoalsAgainst": 1
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 4
     },
     {
-      "date": "2025-05-31",
+      "date": "2025-06-07",
       "team": "LFC U12",
-      "opponent": "Cleveland Select 2012G",
+      "opponent": "Caps U13",
       "player": "Ellie",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 0
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 4
     },
     {
       "date": "2025-05-31",
-      "team": "LFC U12",
-      "opponent": "Cleveland Select 2012G",
-      "player": "Lilly",
+      "team": "LFC U13",
+      "opponent": "Croatia Juniors 12G",
+      "player": "Ellie",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 0,
+      "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
     },
     {
@@ -1422,13 +1402,33 @@
     },
     {
       "date": "2025-05-31",
-      "team": "LFC U13",
-      "opponent": "Croatia Juniors 12G",
+      "team": "LFC U12",
+      "opponent": "Cleveland Select 2012G",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2025-05-31",
+      "team": "LFC U12",
+      "opponent": "Cleveland Select 2012G",
       "player": "Ellie",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 1,
+      "teamGoalsFor": 0,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2025-05-31",
+      "team": "Revere U12",
+      "opponent": "Lakewood",
+      "player": "Lilly",
+      "goals": 2,
+      "assists": 0,
+      "teamGoalsFor": 7,
+      "teamGoalsAgainst": 1
     },
     {
       "date": "2025-05-29",
@@ -1453,6 +1453,36 @@
     {
       "date": "2025-05-25",
       "team": "LFC U12",
+      "opponent": "SVA",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 4
+    },
+    {
+      "date": "2025-05-25",
+      "team": "LFC U12",
+      "opponent": "SVA",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 4
+    },
+    {
+      "date": "2025-05-25",
+      "team": "LFC U12",
+      "opponent": "2014 PreECNL",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 5
+    },
+    {
+      "date": "2025-05-25",
+      "team": "LFC U12",
       "opponent": "2014 PreECNL",
       "player": "Ellie",
       "goals": 0,
@@ -1461,34 +1491,34 @@
       "teamGoalsAgainst": 5
     },
     {
-      "date": "2025-05-25",
+      "date": "2025-05-24",
       "team": "LFC U12",
-      "opponent": "2014 PreECNL",
+      "opponent": "Whitby Yellow",
       "player": "Lilly",
       "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 5
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 1
     },
     {
-      "date": "2025-05-25",
+      "date": "2025-05-24",
       "team": "LFC U12",
-      "opponent": "SVA",
+      "opponent": "Whitby Yellow",
       "player": "Ellie",
-      "goals": 0,
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 4
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 1
     },
     {
-      "date": "2025-05-25",
+      "date": "2025-05-24",
       "team": "LFC U12",
-      "opponent": "SVA",
+      "opponent": "Century United",
       "player": "Lilly",
-      "goals": 0,
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 4
+      "teamGoalsFor": 6,
+      "teamGoalsAgainst": 3
     },
     {
       "date": "2025-05-24",
@@ -1499,36 +1529,6 @@
       "assists": 0,
       "teamGoalsFor": 6,
       "teamGoalsAgainst": 3
-    },
-    {
-      "date": "2025-05-24",
-      "team": "LFC U12",
-      "opponent": "Century United",
-      "player": "Lilly",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 6,
-      "teamGoalsAgainst": 3
-    },
-    {
-      "date": "2025-05-24",
-      "team": "LFC U12",
-      "opponent": "Whitby Yellow",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 1
-    },
-    {
-      "date": "2025-05-24",
-      "team": "LFC U12",
-      "opponent": "Whitby Yellow",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 1
     },
     {
       "date": "2025-05-20",
@@ -1542,13 +1542,13 @@
     },
     {
       "date": "2025-05-18",
-      "team": "Revere U13",
-      "opponent": "Vermillion",
-      "player": "Ellie",
-      "goals": 1,
+      "team": "Revere U12",
+      "opponent": "Avon JB",
+      "player": "Lilly",
+      "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 1
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 7
     },
     {
       "date": "2025-05-18",
@@ -1562,33 +1562,13 @@
     },
     {
       "date": "2025-05-18",
-      "team": "Revere U12",
-      "opponent": "Avon JB",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 7
-    },
-    {
-      "date": "2025-05-17",
-      "team": "LFC U12",
-      "opponent": "Cleveland Kickers",
+      "team": "Revere U13",
+      "opponent": "Vermillion",
       "player": "Ellie",
-      "goals": 0,
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 3
-    },
-    {
-      "date": "2025-05-17",
-      "team": "LFC U12",
-      "opponent": "Cleveland Kickers",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 3
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 1
     },
     {
       "date": "2025-05-17",
@@ -1599,6 +1579,26 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 8
+    },
+    {
+      "date": "2025-05-17",
+      "team": "LFC U12",
+      "opponent": "Cleveland Kickers",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2025-05-17",
+      "team": "LFC U12",
+      "opponent": "Cleveland Kickers",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 3
     },
     {
       "date": "2025-05-13",
@@ -1612,33 +1612,13 @@
     },
     {
       "date": "2025-05-11",
-      "team": "LFC U12",
-      "opponent": "North FC Grey",
+      "team": "Revere U14",
+      "opponent": "Independence",
       "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 8
-    },
-    {
-      "date": "2025-05-11",
-      "team": "LFC U12",
-      "opponent": "North FC Grey",
-      "player": "Lilly",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 8
-    },
-    {
-      "date": "2025-05-11",
-      "team": "Revere U13",
-      "opponent": "Rocky River KZ",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 4,
-      "teamGoalsAgainst": 0
+      "goals": 2,
+      "assists": 1,
+      "teamGoalsFor": 3,
+      "teamGoalsAgainst": 2
     },
     {
       "date": "2025-05-11",
@@ -1652,23 +1632,43 @@
     },
     {
       "date": "2025-05-11",
-      "team": "Revere U14",
-      "opponent": "Independence",
+      "team": "Revere U13",
+      "opponent": "Rocky River KZ",
       "player": "Ellie",
-      "goals": 2,
-      "assists": 1,
-      "teamGoalsFor": 3,
-      "teamGoalsAgainst": 2
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 4,
+      "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2025-05-11",
+      "team": "LFC U12",
+      "opponent": "North FC Grey",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 8
+    },
+    {
+      "date": "2025-05-11",
+      "team": "LFC U12",
+      "opponent": "North FC Grey",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 8
     },
     {
       "date": "2025-05-10",
-      "team": "LFC U12",
-      "opponent": "Upper 90 FC",
+      "team": "LFC U13",
+      "opponent": "AMFC G12",
       "player": "Ellie",
       "goals": 0,
-      "assists": 1,
+      "assists": 0,
       "teamGoalsFor": 1,
-      "teamGoalsAgainst": 4
+      "teamGoalsAgainst": 6
     },
     {
       "date": "2025-05-10",
@@ -1682,13 +1682,13 @@
     },
     {
       "date": "2025-05-10",
-      "team": "LFC U13",
-      "opponent": "AMFC G12",
+      "team": "LFC U12",
+      "opponent": "Upper 90 FC",
       "player": "Ellie",
       "goals": 0,
-      "assists": 0,
+      "assists": 1,
       "teamGoalsFor": 1,
-      "teamGoalsAgainst": 6
+      "teamGoalsAgainst": 4
     },
     {
       "date": "2025-05-09",
@@ -1742,13 +1742,13 @@
     },
     {
       "date": "2025-04-27",
-      "team": "LFC U12",
-      "opponent": "Stark United",
-      "player": "Lilly",
-      "goals": 0,
+      "team": "Revere U14",
+      "opponent": "Eastlake",
+      "player": "Ellie",
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 6
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 0
     },
     {
       "date": "2025-04-27",
@@ -1762,23 +1762,13 @@
     },
     {
       "date": "2025-04-27",
-      "team": "Revere U14",
-      "opponent": "Eastlake",
-      "player": "Ellie",
-      "goals": 1,
-      "assists": 0,
-      "teamGoalsFor": 5,
-      "teamGoalsAgainst": 0
-    },
-    {
-      "date": "2025-04-26",
       "team": "LFC U12",
-      "opponent": "Cleveland Select 2012G",
-      "player": "Ellie",
-      "goals": 1,
+      "opponent": "Stark United",
+      "player": "Lilly",
+      "goals": 0,
       "assists": 0,
-      "teamGoalsFor": 1,
-      "teamGoalsAgainst": 8
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 6
     },
     {
       "date": "2025-04-26",
@@ -1791,14 +1781,24 @@
       "teamGoalsAgainst": 8
     },
     {
-      "date": "2025-04-13",
-      "team": "LFC U13",
-      "opponent": "Soccer Vision Academy 12/13",
+      "date": "2025-04-26",
+      "team": "LFC U12",
+      "opponent": "Cleveland Select 2012G",
       "player": "Ellie",
       "goals": 1,
       "assists": 0,
       "teamGoalsFor": 1,
-      "teamGoalsAgainst": 2
+      "teamGoalsAgainst": 8
+    },
+    {
+      "date": "2025-04-13",
+      "team": "Revere U14",
+      "opponent": "Lakewood",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 1
     },
     {
       "date": "2025-04-13",
@@ -1812,23 +1812,13 @@
     },
     {
       "date": "2025-04-13",
-      "team": "Revere U14",
-      "opponent": "Lakewood",
-      "player": "Ellie",
-      "goals": 0,
-      "assists": 0,
-      "teamGoalsFor": 2,
-      "teamGoalsAgainst": 1
-    },
-    {
-      "date": "2025-04-12",
       "team": "LFC U13",
-      "opponent": "Columbus Force 12G Blue",
+      "opponent": "Soccer Vision Academy 12/13",
       "player": "Ellie",
-      "goals": 0,
+      "goals": 1,
       "assists": 0,
-      "teamGoalsFor": 0,
-      "teamGoalsAgainst": 1
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 2
     },
     {
       "date": "2025-04-12",
@@ -1839,6 +1829,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2025-04-12",
+      "team": "LFC U13",
+      "opponent": "Columbus Force 12G Blue",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 1
     }
   ]
 }
