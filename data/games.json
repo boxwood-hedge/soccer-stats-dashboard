@@ -1849,6 +1849,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-08-30",
+      "team": "Revere U13 Fall",
+      "opponent": "Shaker Heights Red",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 3
     }
   ]
 }
