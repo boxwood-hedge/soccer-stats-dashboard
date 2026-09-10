@@ -1859,6 +1859,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2026-09-12",
+      "team": "ISC U14 N1",
+      "opponent": "FC Pittsburgh Gold",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": null,
+      "teamGoalsAgainst": null
     }
   ]
 }
