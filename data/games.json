@@ -1909,6 +1909,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-09-15",
+      "team": "Revere U13 Fall",
+      "opponent": "Strongsville CL",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": null,
+      "teamGoalsAgainst": null
     }
   ]
 }
