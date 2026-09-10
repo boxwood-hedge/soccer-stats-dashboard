@@ -1909,6 +1909,16 @@
       "assists": 0,
       "teamGoalsFor": 0,
       "teamGoalsAgainst": 1
+    },
+    {
+      "date": "2026-09-13",
+      "team": "Revere U13 Fall",
+      "opponent": "Independence",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": null,
+      "teamGoalsAgainst": null
     }
   ]
 }
