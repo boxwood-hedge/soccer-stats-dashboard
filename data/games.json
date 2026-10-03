@@ -2039,6 +2039,16 @@
       "assists": 0,
       "teamGoalsFor": 4,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-10-03",
+      "team": "Revere U13 Fall",
+      "opponent": "North Royalton 4",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 1
     }
   ]
 }
