@@ -2029,6 +2029,16 @@
       "assists": 0,
       "teamGoalsFor": 2,
       "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2026-10-03",
+      "team": "Revere U14 Fall",
+      "opponent": "Shaker Heights",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 4,
+      "teamGoalsAgainst": 0
     }
   ]
 }
