@@ -2019,6 +2019,16 @@
       "assists": 0,
       "teamGoalsFor": 0,
       "teamGoalsAgainst": 6
+    },
+    {
+      "date": "2026-10-03",
+      "team": "Revere U14 Fall",
+      "opponent": "Green",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 3
     }
   ]
 }
