@@ -2059,6 +2059,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 5
+    },
+    {
+      "date": "2026-10-04",
+      "team": "Revere U14 Fall",
+      "opponent": "Jackson",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 0
     }
   ]
 }
