@@ -2079,6 +2079,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2026-10-08",
+      "team": "Revere U14 Fall",
+      "opponent": "Perry",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 0
     }
   ]
 }
