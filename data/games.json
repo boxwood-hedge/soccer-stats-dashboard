@@ -2089,6 +2089,16 @@
       "assists": 0,
       "teamGoalsFor": 2,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-10-11",
+      "team": "Revere U14 Fall",
+      "opponent": "Rocky River",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 2
     }
   ]
 }
