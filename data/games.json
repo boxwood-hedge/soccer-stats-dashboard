@@ -2109,6 +2109,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-10-18",
+      "team": "ISC U14 N1",
+      "opponent": "Cleveland Force Yellow",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 1
     }
   ]
 }
