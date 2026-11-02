@@ -2139,6 +2139,16 @@
       "assists": 0,
       "teamGoalsFor": 3,
       "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2026-10-31",
+      "team": "Revere U13 Fall",
+      "opponent": "Mayfield",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 4
     }
   ]
 }
