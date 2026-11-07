@@ -2179,6 +2179,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 8
+    },
+    {
+      "date": "2026-11-07",
+      "team": "United U14",
+      "opponent": "Lightning SC",
+      "player": "Ellie",
+      "goals": 2,
+      "assists": 0,
+      "teamGoalsFor": 4,
+      "teamGoalsAgainst": 0
     }
   ]
 }
