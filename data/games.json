@@ -2169,6 +2169,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 2
+    },
+    {
+      "date": "2026-10-23",
+      "team": "ISC U12 N1",
+      "opponent": "Ambassadors",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 8
     }
   ]
 }
