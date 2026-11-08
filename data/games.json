@@ -2199,6 +2199,16 @@
       "assists": 1,
       "teamGoalsFor": 2,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-11-08",
+      "team": "ISC U14 N1",
+      "opponent": "CVSA",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 0
     }
   ]
 }
