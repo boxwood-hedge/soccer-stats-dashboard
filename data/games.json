@@ -2189,6 +2189,16 @@
       "assists": 0,
       "teamGoalsFor": 4,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-11-07",
+      "team": "ISC U14 Indoor",
+      "opponent": "Brunswick Misfits",
+      "player": "Ellie",
+      "goals": 1,
+      "assists": 1,
+      "teamGoalsFor": 2,
+      "teamGoalsAgainst": 0
     }
   ]
 }
