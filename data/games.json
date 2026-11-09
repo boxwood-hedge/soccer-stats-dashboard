@@ -2209,6 +2209,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 0
+    },
+    {
+      "date": "2026-11-08",
+      "team": "ISC U12 Indoor",
+      "opponent": "Revere Rebels U11",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 3
     }
   ]
 }
