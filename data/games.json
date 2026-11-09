@@ -2219,6 +2219,16 @@
       "assists": 0,
       "teamGoalsFor": 5,
       "teamGoalsAgainst": 3
+    },
+    {
+      "date": "2026-11-08",
+      "team": "Revere U12 Indoor",
+      "opponent": "Brunswick Blue Devils",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 1,
+      "teamGoalsAgainst": 8
     }
   ]
 }
