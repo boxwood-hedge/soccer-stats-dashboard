@@ -2259,6 +2259,16 @@
       "assists": 0,
       "teamGoalsFor": null,
       "teamGoalsAgainst": null
+    },
+    {
+      "date": "2026-11-15",
+      "team": "ISC U12 Indoor",
+      "opponent": "ISC U13",
+      "player": "Lilly",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": null,
+      "teamGoalsAgainst": null
     }
   ]
 }
