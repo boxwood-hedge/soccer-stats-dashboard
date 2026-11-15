@@ -2229,6 +2229,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 8
+    },
+    {
+      "date": "2026-11-15",
+      "team": "ISC U12 Indoor",
+      "opponent": "Broadview Heights FC U12B",
+      "player": "Lilly",
+      "goals": 1,
+      "assists": 0,
+      "teamGoalsFor": 5,
+      "teamGoalsAgainst": 3
     }
   ]
 }
