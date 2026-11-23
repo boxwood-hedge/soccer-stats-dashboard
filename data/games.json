@@ -2329,6 +2329,16 @@
       "assists": 0,
       "teamGoalsFor": 0,
       "teamGoalsAgainst": 7
+    },
+    {
+      "date": "2026-11-22",
+      "team": "United U14",
+      "opponent": "Flames FC",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 5
     }
   ]
 }
