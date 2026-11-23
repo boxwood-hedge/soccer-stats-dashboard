@@ -2319,6 +2319,16 @@
       "assists": 0,
       "teamGoalsFor": 1,
       "teamGoalsAgainst": 8
+    },
+    {
+      "date": "2026-11-22",
+      "team": "ISC U14 N1",
+      "opponent": "Ohio Strikers Red",
+      "player": "Ellie",
+      "goals": 0,
+      "assists": 0,
+      "teamGoalsFor": 0,
+      "teamGoalsAgainst": 7
     }
   ]
 }
